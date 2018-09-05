@@ -125,10 +125,29 @@ def get_period_stats(datastring, i):
     return period_vector
 
 def get_td_content(string):
+
+    content = []
+
     for j in range(1,len(string)-5):
-        if string[j:j+3].lower() == "<td":
-            print("Startup string")
+        if string[j].lower() == ">":
 
-        td_close = 0
+            tag_start = 0
+            k=0
 
-        while td_close == 0:
+            while tag_start == 0:
+                k=k+1
+
+                if j+k > len(string):
+                    tag_start = 1
+                else:
+                    if string[j+k] == "<":
+                        tag_start = 1
+
+            if k > 2:
+                content.append(string[j+1:j+k])
+
+    return content
+
+
+
+
