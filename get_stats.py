@@ -9,8 +9,11 @@ def get_stats(id):
     gameUrl = "http://stats.swehockey.se/Game/LineUps/" + str(id)
     response = urllib.urlopen(gameUrl)
     page_source = str(response.read())
+
     page_source = page_source.replace("\\xc3\\xa5", "å")
     page_source = page_source.replace("\\xc3\\xa4", "ä")
+    page_source = page_source.replace("\\xc3\\xa9", "é")
+    page_source = page_source.replace("\\xc3\\xb6", "ö")
 
     gamedate = ""
     team_string = ""

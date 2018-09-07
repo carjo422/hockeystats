@@ -6,9 +6,18 @@ def get_lineups(id, team1, team2):
     response = urllib.urlopen(gameUrl)
     page_source = str(response.read())
 
+    page_source = page_source.replace("\\xc3\\xa5", "å")
+    page_source = page_source.replace("\\xc3\\xa4", "ä")
+    page_source = page_source.replace("\\xc2\\xa0", " ")
+    page_source = page_source.replace("\\xc3\\xa9", "é")
+    page_source = page_source.replace("\\xc3\\xb6", "ö")
+    page_source = page_source.replace("\\r", " ")
+    page_source = page_source.replace("\\n", " ")
+
     output = []
     line = ""
     team = team1
+    chng = 0
 
     for j in range(1, len(page_source) - 10):
 
@@ -32,10 +41,13 @@ def get_lineups(id, team1, team2):
         elif page_source[j:j + 8] == "4th Line":
             line = "4th Line"
 
-            if team == team1:
+            chng +=1
+            if chng == 2:
                 team = team2
-            else:
-                team = team1
+
+        elif page_source[j:j+5] == "Extra":
+            line = "Extra players"
+
 
         elif page_source[j:j + 7] == "Goalies":
             line = "Goalies"
@@ -62,6 +74,7 @@ def get_lineups(id, team1, team2):
             name_string = name_string.replace("\\xc3\\xb6", "ö")
             name_string = name_string.replace("\\xc3\\xa9", "é")
             name_string = name_string.replace("\\xc3\\xa4", "ä")
+            name_string = name_string.replace("\\xc3\\x96", "Ö")
 
             s3 = find_str(name_string, ".")
             s4 = find_str(name_string, ",")
@@ -73,6 +86,9 @@ def get_lineups(id, team1, team2):
                 forname = name_string[s4 + 1:s5]
             else:
                 forname = name_string[s4 + 1:]
+
+            if forname.find("(")>0:
+                forname = forname[0:forname.find("(")]
 
             output.append([id, team, number, forname, surname, line, startPlayer])
 

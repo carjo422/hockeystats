@@ -3,7 +3,7 @@ from functions import find_str
 from functions import get_td_content
 from functions import isnumber
 
-def get_actions(id, team1, team2):
+def get_actions(id, team1, team2,c):
     gameUrl = "http://stats.swehockey.se/Game/Events/" + str(id)
     response = urllib.urlopen(gameUrl)
     page_source = str(response.read())
@@ -40,11 +40,18 @@ def get_actions(id, team1, team2):
             events.append(event)
 
             if event[3] == "Goal":
-                pass#event = create_goal_event(id,period,content[i-1:i+9])
+
+                for j in range(5,5):
+                print(content[i + 5])
+                print(content[i + 6])
+                print(content[i + 7])
+                print(content[i + 8])
+                print(content[i + 9])
+
+
+                #event = create_goal_event(id,period,content[i-1:i+9])
 
             #events.append(event)
-
-    print(events)
 
 
 def create_event(id, period, content ):

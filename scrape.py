@@ -35,6 +35,19 @@ c = conn.cursor()
 #                SURNAME TEXT,
 #                POSITION TEXT)""")
 
+#c.execute("""CREATE TABLE lineups (
+#                ID integer,
+#                GAMEID integer,
+#                HOMETEAM TEXT,
+#                AWAYTEAM TEXT,
+#                TEAM TEXT,
+#                GAMEDATE TEXT,
+#                NUMBER integer,
+#                FORNAME TEXT,
+#                SURNAME TEXT,
+#                POSITION TEXT,
+#                START_PLAYER integer)""")
+
 for i in range(1,len(page_source)-10):
 
     if page_source[i:i+8] == "/Events/":
@@ -51,49 +64,77 @@ for i in range(1,len(page_source)-10):
 
 #Download Lineup data from each game
 
-for i in range(0,1):
+for j in range(0,1):
     #http://stats.swehockey.se/Game/Events/347351/
     #http://stats.swehockey.se/Game/LineUps/347351
 
     # Download Action data from each game
-    stats = get_stats(gameVector[i])
-    lineups = get_lineups(gameVector[i], stats[2], stats[3])
-    actions = get_actions(gameVector[i], stats[2], stats[3])
-    get_refs(gameVector[i])
+    stats = get_stats(gameVector[j])
+    lineups = get_lineups(gameVector[j], stats[2], stats[3])
+    get_refs(gameVector[j])
 
-    print(lineups)
+    print("Game " + str(stats[0]) + " loaded")
 
-#Save data to tables
+#Create roster table
 
-for i in range(0,len(lineups)):
-    c.execute("SELECT ID as ID FROM roster where TEAM = ? and NUMBER = ? and FORNAME = ? and SURNAME = ?", [lineups[i][1],lineups[i][2],lineups[i][3],lineups[i][4]])
-    hits = c.fetchall()
+    for i in range(0,len(lineups)):
+        c.execute("SELECT ID as ID FROM roster where TEAM = ? and NUMBER = ? and FORNAME = ? and SURNAME = ?", [lineups[i][1],lineups[i][2],lineups[i][3],lineups[i][4]])
+        hits = c.fetchall()
 
-    c.execute("SELECT ID as ID FROM roster")
-    ids = c.fetchall()
+        c.execute("SELECT ID as ID FROM roster")
+        ids = c.fetchall()
 
-    if len(ids) > 0:
-        id = max(ids)[0]+1
-    else:
-        id = 1
-
-    if len(hits) == 0:
-        pass
-
-        if lineups[5] == "Goalies":
-            position = "G"
+        if len(ids) > 0:
+            id = max(ids)[0]+1
         else:
-            position = "D/F"
+            id = 1
 
-        c.execute("""INSERT INTO
-            roster (
-                ID,TEAM,NUMBER,FORNAME,SURNAME,POSITION)
-            VALUES
-                (?,?,?,?,?,?)""",
-                  (id,lineups[i][1],lineups[i][2],lineups[i][3],lineups[i][4],position))
+        if len(hits) == 0:
 
-    else:
-        pass
+            if lineups[5] == "Goalies":
+                position = "G"
+            else:
+                position = "D/F"
 
-conn.commit()
+            c.execute("""INSERT INTO
+                roster (
+                    ID,TEAM,NUMBER,FORNAME,SURNAME,POSITION)
+                VALUES
+                    (?,?,?,?,?,?)""",
+                      (id,lineups[i][1],lineups[i][2],lineups[i][3],lineups[i][4],position))
+
+        else:
+            pass
+
+    conn.commit()
+
+#Create lineup table
+
+    for i in range(0,len(lineups)):
+        c.execute("SELECT ID as ID FROM lineups where GAMEID = ? and TEAM = ? and NUMBER = ? and FORNAME = ? and SURNAME = ?", [lineups[i][0], lineups[i][1], lineups[i][2], lineups[i][3], lineups[i][4]])
+        hits = c.fetchall()
+        c.execute("SELECT ID as ID FROM lineups")
+        ids = c.fetchall()
+
+        if len(ids) > 0:
+            id = max(ids)[0] + 1
+        else:
+            id = 1
+
+        if len(hits) == 0:
+
+            c.execute("""INSERT INTO
+                        lineups (
+                            ID,GAMEID,HOMETEAM,AWAYTEAM,TEAM,GAMEDATE,NUMBER,FORNAME,SURNAME,POSITION,START_PLAYER)
+                        VALUES
+                            (?,?,?,?,?,?,?,?,?,?,?)""",
+                      (id, lineups[i][0], stats[2], stats[3], lineups[i][1], stats[1], lineups[i][2], lineups[i][3], lineups[i][4], lineups[i][5], lineups[i][6]))
+
+        else:
+            pass
+
+    conn.commit()
+
+    actions = get_actions(gameVector[j], stats[2], stats[3], c)
+
 c.close
