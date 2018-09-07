@@ -2,6 +2,7 @@ import urllib.request as urllib
 from functions import find_str
 from functions import get_td_content
 from functions import isnumber
+from functions import get_all_numbers
 
 def get_actions(id, team1, team2,c):
     gameUrl = "http://stats.swehockey.se/Game/Events/" + str(id)
@@ -41,17 +42,51 @@ def get_actions(id, team1, team2,c):
 
             if event[3] == "Goal":
 
-                for j in range(5,5):
-                print(content[i + 5])
-                print(content[i + 6])
-                print(content[i + 7])
-                print(content[i + 8])
-                print(content[i + 9])
+                for j in range(5,10):
+                    if isnumber(content[i+j][0]) and content[i+j].find(".") > 0 and content[i + j].find(".") < 5:
+                        event = create_assist_event(content[i+j], event)
+                        events.append(event)
+
+                    if "Neg." in content[i+j]:
+                        numbers = (get_all_numbers(content[i + j]))
+
+                        for k in range(0,len(numbers)):
+                            event = create_plus_minus_event(event, -1, numbers[k])
+                            events.append(event)
+
+                    if "Pos." in content[i + j]:
+                        numbers = (get_all_numbers(content[i + j]))
+
+                        for k in range(0, len(numbers)):
+                            event = create_plus_minus_event(event, 1, numbers[k])
+                            events.append(event)
 
 
-                #event = create_goal_event(id,period,content[i-1:i+9])
+    home_team_short = events[-1][4]
 
-            #events.append(event)
+    for i in range(0,len(events)):
+        if events[i][3] != -1:
+            if events[i][4] == home_team_short:
+                events[i][4] = team1
+            else:
+                events[i][4] = team2
+        else:
+            if events[i][4] == home_team_short:
+                events[i][4] = team2
+            else:
+                events[i][4] = team1
+
+        if events[i][3] in [-1,1]:
+            c.execute("SELECT FORNAME, SURNAME FROM lineups where GAMEID = ? and TEAM = ? and NUMBER = ?",
+                      [events[i][0], events[i][4], events[i][5]])
+            player_name = c.fetchall()
+            events[i][6] = player_name[0][1]
+            events[i][7] = player_name[0][0]
+
+    print(events)
+
+
+
 
 
 def create_event(id, period, content ):
@@ -78,8 +113,8 @@ def create_event(id, period, content ):
         p2 = content[4].find(",")
 
         output5 = content[4][0:p1]
-        output6 = content[4][p1:p2]
-        output7 = content[4][p2:len(content[4])]
+        output6 = content[4][p1+1:p2]
+        output7 = content[4][p2+1:len(content[4])]
 
 
     else:
@@ -96,5 +131,39 @@ def create_event(id, period, content ):
 
     return output
 
-def create_goal_event(id, period, content ):
-    pass
+def create_assist_event(content, event):
+    output0 = event[0]
+    output1 = event[1]
+    output2 = event[2]
+    output3 = "Assist"
+    output4 = event[4]
+
+    content = content.replace(" ", "")
+
+    p1 = content.find(".")
+    p2 = content.find(",")
+
+    output5 = content[0:p1]
+    output6 = content[p1+1:p2]
+    output7 = content[p2+1:len(content)]
+
+    output8 = ""
+
+    output = [output0, output1, output2, output3, output4, output5, output6, output7, output8]
+
+    return output
+
+def create_plus_minus_event(event, sign, number):
+    output0 = event[0]
+    output1 = event[1]
+    output2 = event[2]
+    output3 = sign
+    output4 = event[4]
+    output5 = number
+    output6 = ""
+    output7 = ""
+    output8 = ""
+
+    output = [output0, output1, output2, output3, output4, output5, output6, output7, output8]
+
+    return output
