@@ -137,4 +137,8 @@ for j in range(0,1):
 
     actions = get_actions(gameVector[j], stats[2], stats[3], c)
 
+#Create event table
+#Create stats table
+#Create ref table
+
 c.close
