@@ -83,7 +83,8 @@ def get_actions(id, team1, team2,c):
             events[i][6] = player_name[0][1]
             events[i][7] = player_name[0][0]
 
-    print(events)
+    #print(events)
+    return events
 
 
 
