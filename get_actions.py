@@ -37,12 +37,12 @@ def get_actions(id, team1, team2,c):
 
         if isnumber(content[i][0:2]) and isnumber(content[i][3:5]) and content[i][2] == ":":
 
-            event = create_event(id, period, content[i-1:i+5])
+            event = create_event(id, period, content[i-1:i+6])
             events.append(event)
 
             if event[3] == "Goal":
 
-                for j in range(5,10):
+                for j in range(5,9):
                     if isnumber(content[i+j][0]) and content[i+j].find(".") > 0 and content[i + j].find(".") < 5:
                         event = create_assist_event(content[i+j], event)
                         events.append(event)
@@ -80,6 +80,7 @@ def get_actions(id, team1, team2,c):
             c.execute("SELECT FORNAME, SURNAME FROM lineups where GAMEID = ? and TEAM = ? and NUMBER = ?",
                       [events[i][0], events[i][4], events[i][5]])
             player_name = c.fetchall()
+
             events[i][6] = player_name[0][1]
             events[i][7] = player_name[0][0]
 
@@ -88,13 +89,16 @@ def get_actions(id, team1, team2,c):
 
 
 
-
-
 def create_event(id, period, content ):
+
+    n=0
 
     output0 = id
     output1 = period
     output2 = content[1]
+
+    output8 = ""
+    output9 = ""
 
     if content[2] in ['GK Out', 'GK In', 'TO']:
         output3 = content[2]
@@ -105,17 +109,26 @@ def create_event(id, period, content ):
     else:
         output3 = content[2]
 
-    output4 = content[3]
+    if "PP" in content[2]:
+        output8 = "PP"
+    if "SH" in content[2]:
+        output8 = "SH"
+
+    if "ENG" in content[3]:
+        output9 = "ENG"
+        n=1
+
+    output4 = content[3+n]
 
     if content[2] not in ['TO']:
-        content[4] = content[4].replace(" ", "")
+        content[4+n] = content[4+n].replace(" ", "")
 
-        p1 = content[4].find(".")
-        p2 = content[4].find(",")
+        p1 = content[4+n].find(".")
+        p2 = content[4+n].find(",")
 
-        output5 = content[4][0:p1]
-        output6 = content[4][p1+1:p2]
-        output7 = content[4][p2+1:len(content[4])]
+        output5 = content[4+n][0:p1]
+        output6 = content[4+n][p1+1:p2]
+        output7 = content[4+n][p2+1:len(content[4+n])]
 
 
     else:
@@ -124,11 +137,9 @@ def create_event(id, period, content ):
         output7 = ""
 
     if output3 == "Penalty":
-        output8 = content[5]
-    else:
-        output8 = ""
+        output8 = content[5+n]
 
-    output = [output0, output1, output2, output3, output4, output5, output6, output7, output8]
+    output = [output0, output1, output2, output3, output4, output5, output6, output7, output8, output9]
 
     return output
 
@@ -149,8 +160,9 @@ def create_assist_event(content, event):
     output7 = content[p2+1:len(content)]
 
     output8 = ""
+    output9 = ""
 
-    output = [output0, output1, output2, output3, output4, output5, output6, output7, output8]
+    output = [output0, output1, output2, output3, output4, output5, output6, output7, output8, output9]
 
     return output
 
@@ -164,7 +176,8 @@ def create_plus_minus_event(event, sign, number):
     output6 = ""
     output7 = ""
     output8 = ""
+    output9 = ""
 
-    output = [output0, output1, output2, output3, output4, output5, output6, output7, output8]
+    output = [output0, output1, output2, output3, output4, output5, output6, output7, output8, output9]
 
     return output

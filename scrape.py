@@ -10,7 +10,7 @@ from get_refs import get_refs
 import urllib.request as urllib
 import numpy as np
 
-seasonID = 9006
+seasonID = 8121
 scheduleUrl = "http://stats.swehockey.se/ScheduleAndResults/Schedule/" + str(seasonID)
 
 nGames = 0
@@ -57,7 +57,9 @@ c = conn.cursor()
 #                TEAM TEXT,
 #                NUMBER TEXT,
 #                FORNAME TEXT,
-#                SURNAME TEXT)""")
+#                SURNAME TEXT,
+#                EXTRA1 TEXT,
+#                EXTRA2 TEXT)""")
 
 #c.execute("""CREATE TABLE stats (
 #                GAMEID integer,
@@ -122,17 +124,13 @@ for i in range(1,len(page_source)-10):
 
 #Download Lineup data from each game
 
-for j in range(0,1):
-    #http://stats.swehockey.se/Game/Events/347351/
-    #http://stats.swehockey.se/Game/LineUps/347351
+
+for j in range(0,len(gameVector)):
 
     # Download Action data from each game
     stats = get_stats(gameVector[j])
     lineups = get_lineups(gameVector[j], stats[2], stats[3])
     [refs, lines] = get_refs(gameVector[j])
-    events = get_actions(gameVector[j], stats[2], stats[3], c)
-
-    print("Game " + str(stats[0]) + " loaded")
 
 #Create roster table
 
@@ -196,6 +194,7 @@ for j in range(0,1):
 
     events = get_actions(gameVector[j], stats[2], stats[3], c)
 
+
 #Create event table
 
     for i in range(0, len(events)):
@@ -215,10 +214,10 @@ for j in range(0,1):
 
             c.execute("""INSERT INTO
                             events (
-                                ID,GAMEID,PERIOD,TIME,EVENT,TEAM,NUMBER,FORNAME,SURNAME)
+                                ID,GAMEID,PERIOD,TIME,EVENT,TEAM,NUMBER,FORNAME,SURNAME,EXTRA1,EXTRA2)
                             VALUES
-                                (?,?,?,?,?,?,?,?,?)""",
-                      (id, events[i][0], events[i][1], events[i][2], events[i][3], events[i][4], events[i][5], events[i][6],events[i][7]))
+                                (?,?,?,?,?,?,?,?,?,?,?)""",
+                      (id, events[i][0], events[i][1], events[i][2], events[i][3], events[i][4], events[i][5], events[i][6],events[i][7],events[i][8],events[i][9]))
 
         else:
             pass
@@ -227,118 +226,119 @@ for j in range(0,1):
 
 #Create stats table
 
-c.execute(
-    "SELECT GAMEID as GAMEID FROM stats where GAMEID = ?",
-    [stats[0]])
-
-hits = c.fetchall()
-
-if len(hits) == 0:
-
-    c.execute("""INSERT INTO
-                    stats (
-                        GAMEID,
-                        GAMEDATE,
-                        HOMETEAM,
-                        AWAYTEAM,
-                        HOMESCORE,
-                        AWAYSCORE,
-                        HOMESHOTS,
-                        AWAYSHOTS,
-                        HOMESAVES,
-                        AWAYSAVES,
-                        HOMEPENALTY,
-                        AWAYPENALTY,
-                        HSHOTS1,
-                        HSHOTS2,
-                        HSHOTS3,
-                        HSHOTS4,
-                        ASHOTS1,
-                        ASHOTS2,
-                        ASHOTS3,
-                        ASHOTS4,
-                        HSAVES1,
-                        HSAVES2,
-                        HSAVES3,
-                        HSAVES4,
-                        ASAVES1,
-                        ASAVES2,
-                        ASAVES3,
-                        ASAVES4,
-                        HPENALTY1,
-                        HPENALTY2,
-                        HPENALTY3,
-                        HPENALTY4,
-                        APENALTY1,
-                        APENALTY2,
-                        APENALTY3,
-                        APENALTY4)
-                    VALUES
-                        (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
-              (stats[0],
-               stats[1],
-               stats[2],
-               stats[3],
-               stats[4],
-               stats[5],
-               stats[6],
-               stats[7],
-               stats[8],
-               stats[9],
-               stats[10],
-               stats[11],
-               stats[12],
-               stats[13],
-               stats[14],
-               stats[15],
-               stats[16],
-               stats[17],
-               stats[18],
-               stats[19],
-               stats[20],
-               stats[21],
-               stats[22],
-               stats[23],
-               stats[24],
-               stats[25],
-               stats[26],
-               stats[27],
-               stats[28],
-               stats[29],
-               stats[30],
-               stats[31],
-               stats[32],
-               stats[33],
-               stats[34],
-               stats[35]
-               ))
-
-else:
-    pass
-
-conn.commit()
-
-#Create ref table
-
-for i in range(0, len(events)):
     c.execute(
-        "SELECT GAMEID as GAMEID FROM refs where GAMEID = ?",
+        "SELECT GAMEID as GAMEID FROM stats where GAMEID = ?",
         [stats[0]])
+
     hits = c.fetchall()
 
     if len(hits) == 0:
 
         c.execute("""INSERT INTO
-                        refs (
-                            GAMEID,HOMETEAM,AWAYTEAM,REF1,REF2,LINE1,LINE2)
+                        stats (
+                            GAMEID,
+                            GAMEDATE,
+                            HOMETEAM,
+                            AWAYTEAM,
+                            HOMESCORE,
+                            AWAYSCORE,
+                            HOMESHOTS,
+                            AWAYSHOTS,
+                            HOMESAVES,
+                            AWAYSAVES,
+                            HOMEPENALTY,
+                            AWAYPENALTY,
+                            HSHOTS1,
+                            HSHOTS2,
+                            HSHOTS3,
+                            HSHOTS4,
+                            ASHOTS1,
+                            ASHOTS2,
+                            ASHOTS3,
+                            ASHOTS4,
+                            HSAVES1,
+                            HSAVES2,
+                            HSAVES3,
+                            HSAVES4,
+                            ASAVES1,
+                            ASAVES2,
+                            ASAVES3,
+                            ASAVES4,
+                            HPENALTY1,
+                            HPENALTY2,
+                            HPENALTY3,
+                            HPENALTY4,
+                            APENALTY1,
+                            APENALTY2,
+                            APENALTY3,
+                            APENALTY4)
                         VALUES
-                            (?,?,?,?,?,?,?)""",
-                  (stats[0],stats[1],stats[2],refs[0],refs[1],lines[1],lines[2]))
+                            (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                  (stats[0],
+                   stats[1],
+                   stats[2],
+                   stats[3],
+                   stats[4],
+                   stats[5],
+                   stats[6],
+                   stats[7],
+                   stats[8],
+                   stats[9],
+                   stats[10],
+                   stats[11],
+                   stats[12],
+                   stats[13],
+                   stats[14],
+                   stats[15],
+                   stats[16],
+                   stats[17],
+                   stats[18],
+                   stats[19],
+                   stats[20],
+                   stats[21],
+                   stats[22],
+                   stats[23],
+                   stats[24],
+                   stats[25],
+                   stats[26],
+                   stats[27],
+                   stats[28],
+                   stats[29],
+                   stats[30],
+                   stats[31],
+                   stats[32],
+                   stats[33],
+                   stats[34],
+                   stats[35]
+                   ))
 
     else:
         pass
 
-conn.commit()
+    conn.commit()
 
+#Create ref table
+
+    for i in range(0, len(events)):
+        c.execute(
+            "SELECT GAMEID as GAMEID FROM refs where GAMEID = ?",
+            [stats[0]])
+        hits = c.fetchall()
+
+        if len(hits) == 0:
+
+            c.execute("""INSERT INTO
+                            refs (
+                                GAMEID,HOMETEAM,AWAYTEAM,REF1,REF2,LINE1,LINE2)
+                            VALUES
+                                (?,?,?,?,?,?,?)""",
+                      (stats[0],stats[1],stats[2],refs[0],refs[1],lines[1],lines[2]))
+
+        else:
+            pass
+
+    conn.commit()
+
+    print("Game " + str(stats[0]) + " loaded")
 
 c.close
