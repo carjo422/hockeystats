@@ -1,7 +1,7 @@
 import urllib.request as urllib
 from functions import find_str
 
-def get_lineups(id, team1, team2):
+def get_lineups(id, audience, venue, season, team1, team2):
     gameUrl = "http://stats.swehockey.se/Game/LineUps/" + str(id)
     response = urllib.urlopen(gameUrl)
     page_source = str(response.read())
@@ -11,6 +11,9 @@ def get_lineups(id, team1, team2):
     page_source = page_source.replace("\\xc2\\xa0", " ")
     page_source = page_source.replace("\\xc3\\xa9", "é")
     page_source = page_source.replace("\\xc3\\xb6", "ö")
+    page_source = page_source.replace("\\xc3\\x84", "Ä")
+    page_source = page_source.replace("\\xc3\\x85", "Å")
+    page_source = page_source.replace("\\xc3\\x96", "Ö")
     page_source = page_source.replace("\\r", " ")
     page_source = page_source.replace("\\n", " ")
 
@@ -47,7 +50,6 @@ def get_lineups(id, team1, team2):
 
         elif page_source[j:j+5] == "Extra":
             line = "Extra players"
-
 
         elif page_source[j:j + 7] == "Goalies":
             line = "Goalies"
@@ -90,6 +92,6 @@ def get_lineups(id, team1, team2):
             if forname.find("(")>0:
                 forname = forname[0:forname.find("(")]
 
-            output.append([id, team, number, forname, surname, line, startPlayer])
+            output.append([id, team, number, forname, surname, line, startPlayer, audience, venue, season])
 
     return output

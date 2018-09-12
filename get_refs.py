@@ -2,7 +2,7 @@ import urllib.request as urllib
 from functions import find_str
 from functions import get_td_content
 
-def get_refs(id):
+def get_refs(id, audience, venue, season):
     gameUrl = "http://stats.swehockey.se/Game/LineUps/" + str(id)
     response = urllib.urlopen(gameUrl)
     page_source = str(response.read())
@@ -12,15 +12,19 @@ def get_refs(id):
     page_source = page_source.replace("\\xc2\\xa0", " ")
     page_source = page_source.replace("\\xc3\\xa9", "é")
     page_source = page_source.replace("\\xc3\\xb6", "ö")
+    page_source = page_source.replace("\\xc3\\x84", "Ä")
+    page_source = page_source.replace("\\xc3\\x85", "Å")
+    page_source = page_source.replace("\\xc3\\x96", "Ö")
+
     page_source = page_source.replace("\\r", " ")
     page_source = page_source.replace("\\n", " ")
 
     content = get_td_content(page_source)
 
     refs = ""
-    rvect = ["",""]
+    rvect = []
     lines = ""
-    lvect = ["",""]
+    lvect = []
 
     for i in range(0,len(content)):
         if content[i] == "Referee(s)":
@@ -35,7 +39,7 @@ def get_refs(id):
             rvect.append(refs[a:i])
             a=i + 2
 
-    rvect.append(refs[a:-1])
+    rvect.append(refs[a:len(refs)])
 
     a = 0
 
@@ -44,6 +48,6 @@ def get_refs(id):
             lvect.append(lines[a:i])
             a = i + 2
 
-    lvect.append(lines[a:-1])
+    lvect.append(lines[a:len(lines)])
 
     return [rvect, lvect]

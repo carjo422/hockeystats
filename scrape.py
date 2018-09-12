@@ -3,6 +3,7 @@ from functions import find_str
 from functions import get_isolated_number
 from functions import get_isolated_percent
 from functions import get_period_stats
+from functions import get_td_content
 from get_lineups import get_lineups
 from get_stats import get_stats
 from get_actions import get_actions
@@ -11,10 +12,14 @@ import urllib.request as urllib
 import numpy as np
 
 seasonID = 8121
+seasonYear = 2018
 scheduleUrl = "http://stats.swehockey.se/ScheduleAndResults/Schedule/" + str(seasonID)
 
 nGames = 0
 gameVector = []
+venueVector = []
+audVector = []
+
 lineVector = []
 
 
@@ -29,6 +34,7 @@ c = conn.cursor()
 
 #c.execute("""CREATE TABLE roster (
 #                ID integer,
+#                SEASONID integer,
 #                TEAM TEXT,
 #                NUMBER integer,
 #                FORNAME TEXT,
@@ -38,6 +44,9 @@ c = conn.cursor()
 #c.execute("""CREATE TABLE lineups (
 #                ID integer,
 #                GAMEID integer,
+#                SEASONID integer,
+#                VENUE TEXT,
+#                AUDIENCE integer,
 #                HOMETEAM TEXT,
 #                AWAYTEAM TEXT,
 #                TEAM TEXT,
@@ -51,6 +60,9 @@ c = conn.cursor()
 #c.execute("""CREATE TABLE events (
 #                ID integer,
 #                GAMEID integer,
+#                SEASONID integer,
+#                VENUE TEXT,
+#                AUDIENCE integer,
 #                PERIOD integer,
 #                TIME TEXT,
 #                EVENT TEXT,
@@ -101,6 +113,9 @@ c = conn.cursor()
 
 #c.execute("""CREATE TABLE refs (
 #                GAMEID integer,
+#                SEASONID integer,
+#                VENUE TEXT,
+#                AUDIENCE integer,
 #                HOMETEAM TEXT,
 #                AWAYTEAM TEXT,
 #                REF1 TEXT,
@@ -121,6 +136,17 @@ for i in range(1,len(page_source)-10):
                     nGames += 1
                     gameVector.append(gameID)
 
+        audience = ""
+
+        tds = get_td_content(page_source[i:max(len(page_source)-10,i+200)])
+
+        inserted = 0
+
+        for j in range(0,10):
+            if isnumber(tds[j]) and inserted == 0:
+                inserted = 1
+                audVector.append(int(tds[j]))
+                venueVector.append(tds[j+1])
 
 #Download Lineup data from each game
 
@@ -129,13 +155,13 @@ for j in range(0,len(gameVector)):
 
     # Download Action data from each game
     stats = get_stats(gameVector[j])
-    lineups = get_lineups(gameVector[j], stats[2], stats[3])
-    [refs, lines] = get_refs(gameVector[j])
+    lineups = get_lineups(gameVector[j],audVector[j],venueVector[j], seasonYear, stats[2], stats[3])
+    [refs, lines] = get_refs(gameVector[j],audVector[j],venueVector[j],seasonYear)
 
 #Create roster table
 
     for i in range(0,len(lineups)):
-        c.execute("SELECT ID as ID FROM roster where TEAM = ? and NUMBER = ? and FORNAME = ? and SURNAME = ?", [lineups[i][1],lineups[i][2],lineups[i][3],lineups[i][4]])
+        c.execute("SELECT ID as ID FROM roster where TEAM = ? and NUMBER = ? and FORNAME = ? and SURNAME = ? and SEASONID = ?", [lineups[i][1],lineups[i][2],lineups[i][3],lineups[i][4],seasonYear])
         hits = c.fetchall()
 
         c.execute("SELECT ID as ID FROM roster")
@@ -148,17 +174,17 @@ for j in range(0,len(gameVector)):
 
         if len(hits) == 0:
 
-            if lineups[5] == "Goalies":
+            if lineups[i][5] == "Goalies":
                 position = "G"
             else:
                 position = "D/F"
 
             c.execute("""INSERT INTO
                 roster (
-                    ID,TEAM,NUMBER,FORNAME,SURNAME,POSITION)
+                    ID,SEASONID,TEAM,NUMBER,FORNAME,SURNAME,POSITION)
                 VALUES
-                    (?,?,?,?,?,?)""",
-                      (id,lineups[i][1],lineups[i][2],lineups[i][3],lineups[i][4],position))
+                    (?,?,?,?,?,?,?)""",
+                      (id,seasonYear,lineups[i][1],lineups[i][2],lineups[i][3],lineups[i][4],position))
 
         else:
             pass
@@ -182,17 +208,16 @@ for j in range(0,len(gameVector)):
 
             c.execute("""INSERT INTO
                         lineups (
-                            ID,GAMEID,HOMETEAM,AWAYTEAM,TEAM,GAMEDATE,NUMBER,FORNAME,SURNAME,POSITION,START_PLAYER)
+                            ID,GAMEID,SEASONID,AUDIENCE,VENUE,HOMETEAM,AWAYTEAM,TEAM,GAMEDATE,NUMBER,FORNAME,SURNAME,POSITION,START_PLAYER)
                         VALUES
-                            (?,?,?,?,?,?,?,?,?,?,?)""",
-                      (id, lineups[i][0], stats[2], stats[3], lineups[i][1], stats[1], lineups[i][2], lineups[i][3], lineups[i][4], lineups[i][5], lineups[i][6]))
-
+                            (?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                      (id, lineups[i][0], lineups[i][9], lineups[i][7], lineups[i][8], stats[2], stats[3], lineups[i][1], stats[1], lineups[i][2], lineups[i][3], lineups[i][4], lineups[i][5], lineups[i][6]))
         else:
             pass
 
     conn.commit()
 
-    events = get_actions(gameVector[j], stats[2], stats[3], c)
+    events = get_actions(gameVector[j],audVector[j],venueVector[j], seasonYear, stats[2], stats[3], c)
 
 
 #Create event table
@@ -214,10 +239,10 @@ for j in range(0,len(gameVector)):
 
             c.execute("""INSERT INTO
                             events (
-                                ID,GAMEID,PERIOD,TIME,EVENT,TEAM,NUMBER,FORNAME,SURNAME,EXTRA1,EXTRA2)
+                                ID,GAMEID,SEASONID,AUDIENCE,VENUE,PERIOD,TIME,EVENT,TEAM,NUMBER,FORNAME,SURNAME,EXTRA1,EXTRA2)
                             VALUES
-                                (?,?,?,?,?,?,?,?,?,?,?)""",
-                      (id, events[i][0], events[i][1], events[i][2], events[i][3], events[i][4], events[i][5], events[i][6],events[i][7],events[i][8],events[i][9]))
+                                (?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                      (id,events[i][0],events[i][12],events[i][10],events[i][11], events[i][1], events[i][2], events[i][3], events[i][4], events[i][5], events[i][6],events[i][7],events[i][8],events[i][9]))
 
         else:
             pass
@@ -329,10 +354,10 @@ for j in range(0,len(gameVector)):
 
             c.execute("""INSERT INTO
                             refs (
-                                GAMEID,HOMETEAM,AWAYTEAM,REF1,REF2,LINE1,LINE2)
+                                GAMEID,SEASONID,HOMETEAM,AWAYTEAM,REF1,REF2,LINE1,LINE2)
                             VALUES
-                                (?,?,?,?,?,?,?)""",
-                      (stats[0],stats[1],stats[2],refs[0],refs[1],lines[1],lines[2]))
+                                (?,?,?,?,?,?,?,?)""",
+                      (stats[0],seasonYear,refs[0],refs[1],stats[2],stats[3],lines[0],lines[1]))
 
         else:
             pass

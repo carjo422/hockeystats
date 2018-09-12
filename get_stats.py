@@ -14,6 +14,9 @@ def get_stats(id):
     page_source = page_source.replace("\\xc3\\xa4", "ä")
     page_source = page_source.replace("\\xc3\\xa9", "é")
     page_source = page_source.replace("\\xc3\\xb6", "ö")
+    page_source = page_source.replace("\\xc3\\x84", "Ä")
+    page_source = page_source.replace("\\xc3\\x85", "Å")
+    page_source = page_source.replace("\\xc3\\x96", "Ö")
 
     gamedate = ""
     team_string = ""
