@@ -86,6 +86,14 @@ c = conn.cursor()
 #                AWAYSAVES integer,
 #                HOMEPENALTY integer,
 #                AWAYPENALTY integer,
+#                HSCORE1 integer,
+#                HSCORE2 integer,
+#                HSCORE3 integer,
+#                HSCORE4 integer,
+#                ASCORE1 integer,
+#                ASCORE2 integer,
+#                ASCORE3 integer,
+#                ASCORE4 integer,
 #                HSHOTS1 integer,
 #                HSHOTS2 integer,
 #                HSHOTS3 integer,
@@ -273,6 +281,14 @@ for j in range(0,len(gameVector)):
                             AWAYSAVES,
                             HOMEPENALTY,
                             AWAYPENALTY,
+                            HSCORE1,
+                            HSCORE2,
+                            HSCORE3,
+                            HSCORE4,
+                            ASCORE1,
+                            ASCORE2,
+                            ASCORE3,
+                            ASCORE4,
                             HSHOTS1,
                             HSHOTS2,
                             HSHOTS3,
@@ -298,7 +314,7 @@ for j in range(0,len(gameVector)):
                             APENALTY3,
                             APENALTY4)
                         VALUES
-                            (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                            (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                   (stats[0],
                    stats[1],
                    stats[2],
@@ -334,7 +350,16 @@ for j in range(0,len(gameVector)):
                    stats[32],
                    stats[33],
                    stats[34],
-                   stats[35]
+                   stats[35],
+                   stats[36],
+                   stats[37],
+                   stats[38],
+                   stats[39],
+                   stats[40],
+                   stats[41],
+                   stats[42],
+                   stats[43]
+
                    ))
 
     else:

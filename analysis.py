@@ -1,6 +1,7 @@
 import sqlite3
 conn = sqlite3.connect('hockeystats.db')
 c = conn.cursor()
+import pandas as pd
 
 #c.execute("""CREATE TABLE roster (
 #                ID integer,
@@ -101,12 +102,43 @@ c.execute(
     ["Goal"])
 
 result = c.fetchall()
-print(result)
 
 c.execute(
     "SELECT NUMBER, FORNAME, SURNAME, COUNT(ID) as GOALS FROM events where EVENT = ? or EVENT = ? group by FORNAME, SURNAME, NUMBER order by GOALS DESC",
     ["Goal", "Assist"])
 
 result = c.fetchall()
+
+c.execute(
+    "SELECT HOMETEAM, CASE WHEN HSCORE1+HSCORE2+HSCORE3 > ASCORE1+ASCORE2+ASCORE3 THEN ? WHEN HSCORE1+HSCORE2+HSCORE3 = ASCORE1+ASCORE2+ASCORE3 THEN ? ELSE ? END AS RESULT, 1 FROM stats",["ETT","KRYSS","TVÅ"])
+
+result_table = c.fetchall()
+
+result_pandas = pd.DataFrame(result_table, columns = ['Lag', 'Tecken', 'Antal'])
+result = result_pandas.pivot_table(index='Lag', columns='Tecken', values='Antal', aggfunc='sum')
+[result['PERCENT1'],result['PERCENT2'],result['PERCENT3']] = [round(result['ETT']/26,2),round(result['KRYSS']/26,2),round(result['TVÅ']/26,2)]
+
+result = result.sort_values(['ETT', 'KRYSS'], ascending=[0, 0])
+
 print(result)
 
+c.execute(
+    "SELECT AWAYTEAM, CASE WHEN HSCORE1+HSCORE2+HSCORE3 < ASCORE1+ASCORE2+ASCORE3 THEN ? WHEN HSCORE1+HSCORE2+HSCORE3 = ASCORE1+ASCORE2+ASCORE3 THEN ? ELSE ? END AS RESULT, 1 FROM stats",["ETT","KRYSS","TVÅ"])
+
+result_table = c.fetchall()
+
+result_pandas = pd.DataFrame(result_table, columns = ['Lag', 'Tecken', 'Antal'])
+result = result_pandas.pivot_table(index='Lag', columns='Tecken', values='Antal', aggfunc='sum')
+[result['PERCENT1'],result['PERCENT2'],result['PERCENT3']] = [round(result['ETT']/26,2),round(result['KRYSS']/26,2),round(result['TVÅ']/26,2)]
+
+result = result.sort_values(['ETT', 'KRYSS'], ascending=[0, 0])
+
+print(result)
+
+#result_pandas = result_pandas[result_pandas['Tecken'] == 'ETT']
+#test = (result_pandas.groupby(['Lag','Tecken']).sum())
+#test['Procent'] = test['Antal']/25
+
+#result = test.sort_values('Antal',ascending=0)
+
+#print(result)
