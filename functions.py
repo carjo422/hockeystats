@@ -143,7 +143,7 @@ def get_td_content(string):
                     if string[j+k] == "<":
                         tag_start = 1
 
-            if k > 2:
+            if k > 1:
                 content.append(string[j+1:j+k])
 
     return content
