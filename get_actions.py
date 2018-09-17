@@ -46,23 +46,25 @@ def get_actions(id, audience, venue, season, team1, team2,c):
 
             if event[3] == "Goal":
 
+                extra = event[8]
+
                 for j in range(5,9):
                     if isnumber(content[i+j][0]) and content[i+j].find(".") > 0 and content[i + j].find(".") < 5:
-                        event = create_assist_event(content[i+j], event, audience, venue, season)
+                        event = create_assist_event(content[i+j], event, audience, venue, season, extra)
                         events.append(event)
 
                     if "Neg." in content[i+j]:
                         numbers = (get_all_numbers(content[i + j]))
 
                         for k in range(0,len(numbers)):
-                            event = create_plus_minus_event(event, -1, numbers[k], audience, venue, season)
+                            event = create_plus_minus_event(event, -1, numbers[k], audience, venue, season, extra)
                             events.append(event)
 
                     if "Pos." in content[i + j]:
                         numbers = (get_all_numbers(content[i + j]))
 
                         for k in range(0, len(numbers)):
-                            event = create_plus_minus_event(event, 1, numbers[k], audience, venue, season)
+                            event = create_plus_minus_event(event, 1, numbers[k], audience, venue, season, extra)
                             events.append(event)
 
 
@@ -150,7 +152,7 @@ def create_event(id, period, content, audience, venue, season):
 
     return output
 
-def create_assist_event(content, event, audience, venue, season):
+def create_assist_event(content, event, audience, venue, season,extra):
     output0 = event[0]
     output1 = event[1]
     output2 = event[2]
@@ -166,7 +168,7 @@ def create_assist_event(content, event, audience, venue, season):
     output6 = content[p1+1:p2]
     output7 = content[p2+1:len(content)]
 
-    output8 = ""
+    output8 = extra
     output9 = ""
     output10 = audience
     output11 = venue
@@ -176,7 +178,7 @@ def create_assist_event(content, event, audience, venue, season):
 
     return output
 
-def create_plus_minus_event(event, sign, number, audience, venue, season):
+def create_plus_minus_event(event, sign, number, audience, venue, season,extra):
     output0 = event[0]
     output1 = event[1]
     output2 = event[2]
@@ -186,6 +188,15 @@ def create_plus_minus_event(event, sign, number, audience, venue, season):
     output6 = ""
     output7 = ""
     output8 = ""
+
+    if sign == -1:
+        if extra == 'PP':
+            output8 = 'SH'
+        elif extra == 'SH':
+            output8 = 'PP'
+    else:
+        output8=extra
+
     output9 = ""
     output10 = audience
     output11 = venue

@@ -49,7 +49,19 @@ c = conn.cursor()
 #                FORNAME TEXT,
 #                SURNAME TEXT,
 #                POSITION TEXT,
-#                START_PLAYER integer)""")
+#                START_PLAYER integer,
+#                GOALS integer,
+#                PPGOALS integer,
+#                SHGOALS integer,
+#                ASSISTS integer,
+#                PLUS integer,
+#                MINUS integer,
+#                PENALTY integer,
+#                INPOWERPLAT integer,
+#                INBOXPLAY integer,
+#                SHOTSAT integer,
+#                SAVES integer
+#                )""")
 
 #c.execute("""CREATE TABLE events (
 #                ID integer,
@@ -231,10 +243,6 @@ for j in range(0,1):#len(gameVector)):
 
     conn.commit()
 
-    print("Game " + str(stats[0]) + " loaded")
-
-
-
     events = get_actions(gameVector[j],audVector[j],venueVector[j], seasonYear, stats[2], stats[3], c)
 
 #Create event table
@@ -323,5 +331,83 @@ for j in range(0,1):#len(gameVector)):
 
     conn.commit()
 
+
+#Update lineups with stats
+    c.execute("SELECT TEAM, NUMBER FROM lineups where GAMEID = ?",[gameVector[j]])
+    lineups = c.fetchall()
+
+    for i in range(0,len(lineups)):
+        c.execute("SELECT SUM(CASE WHEN EVENT = ? then 1 else 0 end) as X FROM events where GAMEID = ? and TEAM = ? and NUMBER = ?", ['Goal',gameVector[j], lineups[i][0],lineups[i][1]])
+        goals = c.fetchall()[0][0]
+
+        if goals == None:
+            goals = 0
+
+        c.execute("SELECT SUM(CASE WHEN EVENT = ? and EXTRA1 = ? then 1 else 0 end) as X FROM events where GAMEID = ? and TEAM = ? and NUMBER = ?",['Goal','PP', gameVector[j], lineups[i][0], lineups[i][1]])
+        PP = c.fetchall()[0][0]
+
+        if PP == None:
+            PP = 0
+
+        c.execute("SELECT SUM(CASE WHEN EVENT = ? and EXTRA1 = ? then 1 else 0 end) as X FROM events where GAMEID = ? and TEAM = ? and NUMBER = ?",['Goal','SH', gameVector[j], lineups[i][0], lineups[i][1]])
+        SH = c.fetchall()[0][0]
+
+        if SH == None:
+            SH = 0
+
+        c.execute("SELECT SUM(CASE WHEN EVENT = ? then 1 else 0 end) as X FROM events where GAMEID = ? and TEAM = ? and NUMBER = ?", ['Assist', gameVector[j], lineups[i][0], lineups[i][1]])
+        assist = c.fetchall()[0][0]
+
+        if assist == None:
+            assist = 0
+
+        c.execute("SELECT SUM(CASE WHEN EVENT = ? then 1 else 0 end) as X FROM events where GAMEID = ? and TEAM = ? and NUMBER = ?", ['1', gameVector[j], lineups[i][0], lineups[i][1]])
+        plus = c.fetchall()[0][0]
+
+        if plus == None:
+            plus = 0
+
+        c.execute("SELECT SUM(CASE WHEN EVENT = ? then 1 else 0 end) as X FROM events where GAMEID = ? and TEAM = ? and NUMBER = ?",['-1', gameVector[j], lineups[i][0], lineups[i][1]])
+        minus = c.fetchall()[0][0]
+
+        if minus == None:
+            minus = 0
+
+        c.execute("SELECT SUM(CASE WHEN EVENT = ? then 2 else 0 end) as X FROM events where GAMEID = ? and TEAM = ? and NUMBER = ?",['Penalty', gameVector[j], lineups[i][0], lineups[i][1]])
+        penalty = c.fetchall()[0][0]
+
+        if penalty == None:
+            penalty = 0
+
+        c.execute("SELECT SUM(CASE WHEN EXTRA1 = ? then 1 else 0 end) as X FROM events where GAMEID = ? and TEAM = ? and NUMBER = ?",['PP', gameVector[j], lineups[i][0], lineups[i][1]])
+        activePP = c.fetchall()[0][0]
+
+        if activePP == None:
+            activePP = 0
+        elif activePP > 1:
+            activePP = 1
+
+        c.execute("SELECT SUM(CASE WHEN EXTRA1 = ? then 1 else 0 end) as X FROM events where GAMEID = ? and TEAM = ? and NUMBER = ?",['SH', gameVector[j], lineups[i][0], lineups[i][1]])
+        activeBP = c.fetchall()[0][0]
+
+        if activeBP == None:
+            activeBP = 0
+        elif activeBP > 1:
+            activeBP = 1
+
+        shotsAt = 0
+        saves = 0
+
+        c.execute("UPDATE lineups SET GOALS = ?, PPGOALS = ?, SHGOALS = ?, ASSISTS = ?, PLUS = ?, MINUS = ?, PENALTY = ?, INPOWERPLAY = ?, INBOXPLAY = ?, SHOTSAT = ?, SAVES = ? WHERE GAMEID = ? and TEAM = ? and NUMBER = ?",
+                  [goals, PP, SH, assist, plus, minus, penalty, activePP, activeBP, shotsAt, saves, gameVector[j], lineups[i][0], lineups[i][1]])
+
+        conn.commit()
+
+    print("Game " + str(stats[0]) + " loaded")
+
+
+
 c.close
+
+
 
