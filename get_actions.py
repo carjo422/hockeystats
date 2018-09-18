@@ -39,6 +39,18 @@ def get_actions(id, audience, venue, season, team1, team2,c):
         elif "1st" in stn:
             period = 1
 
+        if "%" in content[i] and "(" in content[i+1] and ")" in content [i+1] and "/" in content[i+1]:
+            print(content[i+1])
+
+            [saves,shots] = get_all_numbers(content[i+1])
+            print(shots)
+            print(saves)
+
+            event = create_goalie_event(id, period, content[i-2:i+1], shots, saves, audience, venue, season)
+            print(event)
+            events.append(event)
+
+
         if isnumber(content[i][0:2]) and isnumber(content[i][3:5]) and content[i][2] == ":":
 
             event = create_event(id, period, content[i-1:i+6], audience, venue, season)
@@ -113,6 +125,7 @@ def create_event(id, period, content, audience, venue, season):
         output3 = content[2]
     elif content[2] in ['2 min', '5 min', '10 min', '20 min']:
         output3 = "Penalty"
+        output9 = content[2][0:2]
     elif "-" in content[2] and "(" in content[2] and ")" in content[2]:
         output3 = "Goal"
     else:
@@ -198,6 +211,34 @@ def create_plus_minus_event(event, sign, number, audience, venue, season,extra):
         output8=extra
 
     output9 = ""
+    output10 = audience
+    output11 = venue
+    output12 = season
+
+    output = [output0, output1, output2, output3, output4, output5, output6, output7, output8, output9, output10, output11, output12]
+
+    return output
+
+def create_goalie_event(id, period, content, shots, saves, audience, venue, season):
+
+    output0 = id
+    output1 = ""
+    output2 = ""
+    output3 = "Keeper stat"
+    output4 = content[0]
+
+    content[1] = content[1].replace(" ", "")
+
+    p1 = content[1].find(".")
+    p2 = content[1].find(",")
+
+    output5 = content[1][0:p1]
+    output6 = content[1][p1 + 1:p2]
+    output7 = content[1][p2 + 1:len(content[1])]
+
+
+    output8 = shots
+    output9 = saves
     output10 = audience
     output11 = venue
     output12 = season

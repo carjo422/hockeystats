@@ -13,8 +13,8 @@ from official_roster import get_official_roster
 import numpy as np
 import datetime
 
-seasonID = 8121
-seasonYear = 2018
+seasonID = 9171
+seasonYear = 2019
 serie = "SHL"
 scheduleUrl = "http://stats.swehockey.se/ScheduleAndResults/Schedule/" + str(seasonID)
 
@@ -29,128 +29,24 @@ lineVector = []
 response = urllib.urlopen(scheduleUrl)
 page_source = str(response.read())
 
+page_source = page_source.replace("\\xc3\\xa5", "å")
+page_source = page_source.replace("\\xc3\\xa4", "ä")
+page_source = page_source.replace("\\xc2\\xa0", " ")
+page_source = page_source.replace("\\xc3\\xa9", "é")
+page_source = page_source.replace("\\xc3\\xb6", "ö")
+page_source = page_source.replace("\\xc3\\x84", "Ä")
+page_source = page_source.replace("\\xc3\\x85", "Å")
+page_source = page_source.replace("\\xc3\\x96", "Ö")
+page_source = page_source.replace("\\r", " ")
+page_source = page_source.replace("\\n", " ")
+
 line = ""
 
 import sqlite3
 conn = sqlite3.connect('hockeystats.db')
 c = conn.cursor()
 
-#c.execute("""CREATE TABLE lineups (
-#                ID integer,
-#                GAMEID integer,
-#                SEASONID integer,
-#                VENUE TEXT,
-#                AUDIENCE integer,
-#                HOMETEAM TEXT,
-#                AWAYTEAM TEXT,
-#                TEAM TEXT,
-#                GAMEDATE TEXT,
-#                NUMBER integer,
-#                FORNAME TEXT,
-#                SURNAME TEXT,
-#                POSITION TEXT,
-#                START_PLAYER integer,
-#                GOALS integer,
-#                PPGOALS integer,
-#                SHGOALS integer,
-#                ASSISTS integer,
-#                PLUS integer,
-#                MINUS integer,
-#                PENALTY integer,
-#                INPOWERPLAT integer,
-#                INBOXPLAY integer,
-#                SHOTSAT integer,
-#                SAVES integer
-#                )""")
 
-#c.execute("""CREATE TABLE events (
-#                ID integer,
-#                GAMEID integer,
-#                SEASONID integer,
-#                VENUE TEXT,
-#                AUDIENCE integer,
-#                PERIOD integer,
-#                TIME TEXT,
-#                EVENT TEXT,
-#                TEAM TEXT,
-#                NUMBER TEXT,
-#                PERSONNR TEXT,
-#                FORNAME TEXT,
-#                SURNAME TEXT,
-#                EXTRA1 TEXT,
-#                EXTRA2 TEXT)""")
-
-#c.execute("""CREATE TABLE stats (
-#                GAMEID integer,
-#                GAMEDATE TEXT,
-#                HOMETEAM TEXT,
-#                AWAYTEAM TEXT,
-#                HOMESCORE integer,
-#                AWAYSCORE integer,
-#                HOMESHOTS integer,
-#                AWAYSHOTS integer,
-#                HOMESAVES integer,
-#                AWAYSAVES integer,
-#                HOMEPENALTY integer,
-#                AWAYPENALTY integer,
-#                HSCORE1 integer,
-#                HSCORE2 integer,
-#                HSCORE3 integer,
-#                HSCORE4 integer,
-#                ASCORE1 integer,
-#                ASCORE2 integer,
-#                ASCORE3 integer,
-#                ASCORE4 integer,
-#                HSHOTS1 integer,
-#                HSHOTS2 integer,
-#                HSHOTS3 integer,
-#                HSHOTS4 integer,
-#                ASHOTS1 integer,
-#                ASHOTS2 integer,
-#                ASHOTS3 integer,
-#                ASHOTS4 integer,
-#                HSAVES1 integer,
-#                HSAVES2 integer,
-#                HSAVES3 integer,
-#                HSAVES4 integer,
-#                ASAVES1 integer,
-#                ASAVES2 integer,
-#                ASAVES3 integer,
-#                ASAVES4 integer,
-#                HPENALTY1 integer,
-#                HPENALTY2 integer,
-#                HPENALTY3 integer,
-#                HPENALTY4 integer,
-#                APENALTY1 integer,
-#                APENALTY2 integer,
-#                APENALTY3 integer,
-#                APENALTY4 integer)""")
-
-#c.execute("""CREATE TABLE refs (
-#                GAMEID integer,
-#                SEASONID integer,
-#                VENUE TEXT,
-#                AUDIENCE integer,
-#                HOMETEAM TEXT,
-#                AWAYTEAM TEXT,
-#                REF1 TEXT,
-#                REF2 TEXT,
-#                LINE1 TEXT,
-#                LINE2 TEXT)""")
-
-#c.execute("""CREATE TABLE rosters (
-#                SEASONID integer,
-#                TEAM TEXT,
-#                SERIE TEXT,
-#                NUMBER integer,
-#                SURNAME TEXT,
-#                FORNAME TEXT,
-#                PERSONNR TEXT,
-#                POSITION TEXT,
-#                HANDLE TEXT,
-#                LENGHT integer,
-#                WEIGHT integer,
-#                LAST_UPDATE)""")
 
 for i in range(1,len(page_source)-10):
 
@@ -180,7 +76,7 @@ for i in range(1,len(page_source)-10):
 #Download Lineup data from each game
 
 
-for j in range(0,1):#len(gameVector)):
+for j in range(0,6):#len(gameVector)):
 
     # Download Action data from each game
     stats = get_stats(gameVector[j])
@@ -295,12 +191,12 @@ for j in range(0,1):#len(gameVector)):
 
         c.execute("""INSERT INTO
                         stats (
-                            GAMEID,GAMEDATE,HOMETEAM,AWAYTEAM,HOMESCORE,AWAYSCORE,HOMESHOTS,AWAYSHOTS,HOMESAVES,AWAYSAVES,HOMEPENALTY,AWAYPENALTY,HSCORE1,HSCORE2,HSCORE3,HSCORE4,ASCORE1,ASCORE2,ASCORE3,ASCORE4,HSHOTS1,
-                            HSHOTS2,HSHOTS3,HSHOTS4,ASHOTS1,ASHOTS2,ASHOTS3,ASHOTS4,HSAVES1,HSAVES2,HSAVES3,HSAVES4,ASAVES1,ASAVES2,ASAVES3,ASAVES4,HPENALTY1,HPENALTY2,HPENALTY3,HPENALTY4,APENALTY1,APENALTY2,APENALTY3,
+                            SEASONID,SERIE,GAMEID,GAMEDATE,HOMETEAM,AWAYTEAM,HOMESCORE,AWAYSCORE,HOMESHOTS,AWAYSHOTS,HOMESAVES,AWAYSAVES,HOMEPENALTY,AWAYPENALTY,HSCORE1,HSCORE2,HSCORE3,HSCORE4,ASCORE1,ASCORE2,ASCORE3,ASCORE4,
+                            HSHOTS1,HSHOTS2,HSHOTS3,HSHOTS4,ASHOTS1,ASHOTS2,ASHOTS3,ASHOTS4,HSAVES1,HSAVES2,HSAVES3,HSAVES4,ASAVES1,ASAVES2,ASAVES3,ASAVES4,HPENALTY1,HPENALTY2,HPENALTY3,HPENALTY4,APENALTY1,APENALTY2,APENALTY3,
                             APENALTY4)
                         VALUES
-                            (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
-                  (stats[0],stats[1],stats[2],stats[3],stats[4],stats[5],stats[6],stats[7],stats[8],stats[9],stats[10],stats[11],stats[12],stats[13],stats[14],stats[15],stats[16],stats[17],stats[18],stats[19],stats[20],
+                            (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                  (seasonYear,serie,stats[0],stats[1],stats[2],stats[3],stats[4],stats[5],stats[6],stats[7],stats[8],stats[9],stats[10],stats[11],stats[12],stats[13],stats[14],stats[15],stats[16],stats[17],stats[18],stats[19],stats[20],
                    stats[21],stats[22],stats[23],stats[24],stats[25],stats[26],stats[27],stats[28],stats[29],stats[30],stats[31],stats[32],stats[33],stats[34],stats[35],stats[36],stats[37],stats[38],stats[39],stats[40],
                    stats[41],stats[42],stats[43]))
 
@@ -373,7 +269,7 @@ for j in range(0,1):#len(gameVector)):
         if minus == None:
             minus = 0
 
-        c.execute("SELECT SUM(CASE WHEN EVENT = ? then 2 else 0 end) as X FROM events where GAMEID = ? and TEAM = ? and NUMBER = ?",['Penalty', gameVector[j], lineups[i][0], lineups[i][1]])
+        c.execute("SELECT SUM(CASE WHEN EVENT = ? then CAST(EXTRA2 as INT) else 0 end) as X FROM events where GAMEID = ? and TEAM = ? and NUMBER = ?",['Penalty', gameVector[j], lineups[i][0], lineups[i][1]])
         penalty = c.fetchall()[0][0]
 
         if penalty == None:
@@ -395,15 +291,70 @@ for j in range(0,1):#len(gameVector)):
         elif activeBP > 1:
             activeBP = 1
 
-        shotsAt = 0
-        saves = 0
+        #Addera kod för shots/saves
+
+        c.execute("SELECT EXTRA1, EXTRA2 from events where EVENT = ? and GAMEID = ? and TEAM = ? and NUMBER = ?",['Keeper stat', gameVector[j], lineups[i][0], lineups[i][1]])
+        golieStats = c.fetchall()
+
+        if golieStats == []:
+            shotsAt = 0
+            saves = 0
+        else:
+            print(golieStats)
+            shotsAt = golieStats[0][0]
+            saves = golieStats[0][1]
+            print(shotsAt)
+            print(saves)
 
         c.execute("UPDATE lineups SET GOALS = ?, PPGOALS = ?, SHGOALS = ?, ASSISTS = ?, PLUS = ?, MINUS = ?, PENALTY = ?, INPOWERPLAY = ?, INBOXPLAY = ?, SHOTSAT = ?, SAVES = ? WHERE GAMEID = ? and TEAM = ? and NUMBER = ?",
                   [goals, PP, SH, assist, plus, minus, penalty, activePP, activeBP, shotsAt, saves, gameVector[j], lineups[i][0], lineups[i][1]])
 
         conn.commit()
 
+
+    #Team games table
+
+    c.execute("CREATE TABLE TEAMGAMES")
+
+
+    #Standings table
+
+
+    #Calculate the standings
+
+
+
+
+    c.execute("DROP TABLE standings")
+
+#    c.execute("""CREATE TABLE standings as
+#                SELECT
+#                    ? as SEASONID,
+#                    ? as SERIE
+#                    ? as DATE
+#                    distinct a.TEAM,
+
+
+#(
+#                SEASONID INTEGER,
+#                SERIE INTEGER,
+#                DATE TEXT,
+#                TEAM TEXT,
+#                WINS INTEGER,
+#                OT_WINS INTEGER,
+#                OT_LOSSES INTEGER,
+#                LOSSES INTEGER,
+#                SCORED INTEGER,
+#                CONCEDED INTEGER,
+#                DIFF INTEGER,
+#                POINTS INTEGER,
+#                POSITION INTEGER
+#                )""")  #Pre match table
+
     print("Game " + str(stats[0]) + " loaded")
+
+
+
 
 
 
