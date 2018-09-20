@@ -1,4 +1,9 @@
 import numpy as np
+import datetime
+import calendar
+from functions import add_months
+
+
 
 def create_game_rating(lineup,c,team):
 
@@ -72,9 +77,8 @@ def create_game_rating(lineup,c,team):
         #Half should come from players, half from form
         #Select from gamesmatchtable
 
-        print(stats[0][3])
 
-        c.execute("SELECT SEASONID, SERIE, SUM(CASE WHEN OUTCOME = 1 THEN 3 WHEN OUTCOME = 2 THEN 2 WHEN OUTCOME = 3 THEN 1 ELSE 0 END) POINTS, COUNT(TEAM) as MATCHES FROM TEAMGAMES WHERE TEAM = ? AND SEASONID = ? AND GAMEDATE < ? AND GAMEDATE > ? GROUP BY SEASONID, SERIE", [opponent, stats[0][0], stats[0][3], 20 days back])
+        c.execute("SELECT SEASONID, SERIE, SUM(CASE WHEN OUTCOME = 1 THEN 3 WHEN OUTCOME = 2 THEN 2 WHEN OUTCOME = 3 THEN 1 ELSE 0 END) POINTS, COUNT(TEAM) as MATCHES FROM TEAMGAMES WHERE TEAM = ? AND SEASONID = ? AND GAMEDATE < ? AND GAMEDATE > ? GROUP BY SEASONID, SERIE", [opponent, stats[0][0], stats[0][3], olddate])
         form = c.fetchall()
 
         #Select from rosters
