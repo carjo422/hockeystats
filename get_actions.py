@@ -40,14 +40,11 @@ def get_actions(id, audience, venue, season, team1, team2,c):
             period = 1
 
         if "%" in content[i] and "(" in content[i+1] and ")" in content [i+1] and "/" in content[i+1]:
-            print(content[i+1])
+            #print(content[i+1])
 
             [saves,shots] = get_all_numbers(content[i+1])
-            print(shots)
-            print(saves)
 
             event = create_goalie_event(id, period, content[i-2:i+1], shots, saves, audience, venue, season)
-            print(event)
             events.append(event)
 
 

@@ -9,12 +9,13 @@ from get_stats import get_stats
 from get_actions import get_actions
 from get_refs import get_refs
 import urllib.request as urllib
+from calcFunctions import create_game_rating
 from official_roster import get_official_roster
 import numpy as np
 import datetime
 
-seasonID = 9171
-seasonYear = 2019
+seasonID = 8121
+seasonYear = 2018
 serie = "SHL"
 scheduleUrl = "http://stats.swehockey.se/ScheduleAndResults/Schedule/" + str(seasonID)
 
@@ -76,7 +77,7 @@ for i in range(1,len(page_source)-10):
 #Download Lineup data from each game
 
 
-for j in range(0,6):#len(gameVector)):
+for j in range(16,17):#len(gameVector)):
 
     # Download Action data from each game
     stats = get_stats(gameVector[j])
@@ -101,10 +102,10 @@ for j in range(0,6):#len(gameVector)):
 
             c.execute("""INSERT INTO
                         lineups (
-                            ID,GAMEID,SEASONID,AUDIENCE,VENUE,HOMETEAM,AWAYTEAM,TEAM,GAMEDATE,NUMBER,FORNAME,SURNAME,POSITION,START_PLAYER)
+                            ID,GAMEID,SEASONID,SERIE,AUDIENCE,VENUE,HOMETEAM,AWAYTEAM,TEAM,GAMEDATE,NUMBER,FORNAME,SURNAME,POSITION,START_PLAYER)
                         VALUES
-                            (?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
-                      (id, lineups[i][0], lineups[i][9], lineups[i][7], lineups[i][8], stats[2], stats[3], lineups[i][1], stats[1], lineups[i][2], lineups[i][3], lineups[i][4], lineups[i][5], lineups[i][6]))
+                            (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                      (id, lineups[i][0], lineups[i][9], serie, lineups[i][7], lineups[i][8], stats[2], stats[3], lineups[i][1], stats[1], lineups[i][2], lineups[i][3], lineups[i][4], lineups[i][5], lineups[i][6]))
 
         else:
             pass
@@ -300,21 +301,35 @@ for j in range(0,6):#len(gameVector)):
             shotsAt = 0
             saves = 0
         else:
-            print(golieStats)
             shotsAt = golieStats[0][0]
             saves = golieStats[0][1]
-            print(shotsAt)
-            print(saves)
 
-        c.execute("UPDATE lineups SET GOALS = ?, PPGOALS = ?, SHGOALS = ?, ASSISTS = ?, PLUS = ?, MINUS = ?, PENALTY = ?, INPOWERPLAY = ?, INBOXPLAY = ?, SHOTSAT = ?, SAVES = ? WHERE GAMEID = ? and TEAM = ? and NUMBER = ?",
-                  [goals, PP, SH, assist, plus, minus, penalty, activePP, activeBP, shotsAt, saves, gameVector[j], lineups[i][0], lineups[i][1]])
+        c.execute("SELECT * from lineups where GAMEID = ? and TEAM = ? and NUMBER = ?",[gameVector[j], lineups[i][0], lineups[i][1]])
+        lineup = c.fetchall()
+
+        if len(lineup) > 0:
+
+            c.execute(
+                "UPDATE lineups SET GOALS = ?, PPGOALS = ?, SHGOALS = ?, ASSISTS = ?, PLUS = ?, MINUS = ?, PENALTY = ?, INPOWERPLAY = ?, INBOXPLAY = ?, SHOTSAT = ?, SAVES = ? WHERE GAMEID = ? and TEAM = ? and NUMBER = ?",
+                [goals, PP, SH, assist, plus, minus, penalty, activePP, activeBP, shotsAt, saves, gameVector[j], lineups[i][0], lineups[i][1]])
+
+            conn.commit()
+
+            c.execute("SELECT * from lineups where GAMEID = ? and TEAM = ? and NUMBER = ?",
+                      [gameVector[j], lineups[i][0], lineups[i][1]])
+            lineup = c.fetchall()
+
+            score = create_game_rating(lineup, c, lineups[i][0])
+
+            if len(score) < 2:
+                score = ['0','0']
+
+            c.execute("UPDATE lineups SET SCORE = ?, FINALSCORE = ? WHERE GAMEID = ? and TEAM = ? and NUMBER = ?",[score[0], score[1], gameVector[j], lineups[i][0], lineups[i][1]])
 
         conn.commit()
 
 
     #Team games table
-
-    #c.execute("CREATE TABLE TEAMGAMES (SEASONID, SERIE, GAMEID, GAMEDATE, TEAM, HOMEAWAY, OPPONENT, OUTCOME, SCORE1, SCORE2, SHOTS1, SHOTS2, SAVES1, SAVES2, PENALTY1, PENALTY2, SCORE11, SCORE12, SCORE13, SCORE14, SCORE21, SCORE22, SCORE23, SCORE24, SHOTS11, SHOTS12, SHOTS13, SHOTS14, SHOTS21, SHOTS22, SHOTS23, SHOTS24)")
 
     c.execute("SELECT * FROM stats WHERE SEASONID = ? and SERIE = ?",[seasonYear,serie])
     statsgames = c.fetchall()
@@ -393,38 +408,21 @@ for j in range(0,6):#len(gameVector)):
 
     #Standings table
 
+    c.execute("""SELECT TEAM, COUNT(TEAM) as MATCHES, SUM(CASE WHEN OUTCOME = 1 then 1 else 0 end) as WINS, SUM(CASE WHEN OUTCOME = 2 then 1 else 0 end) as OT_WINS, SUM(CASE WHEN OUTCOME = 3 then 1 else 0 end) as OT_LOSS,
+                 SUM(CASE WHEN OUTCOME = 4 then 1 else 0 end) as LOSS,  SUM(CASE WHEN OUTCOME = 1 then 3 WHEN OUTCOME = 2 then 2 WHEN OUTCOME = 1 then 1 else 0 end) as POINTS, SUM(SCORE1) as G, SUM(SCORE2) as C,
+                 SUM(SCORE1)-SUM(SCORE2) as D FROM TEAMGAMES WHERE SEASONID = ? AND SERIE = ? GROUP BY TEAM""",[str(seasonYear),serie])
 
-    #Calculate the standings
+    standings = c.fetchall()
+
+    standings = np.array(standings)
+
+    np.sort(standings, axis=0)
+
+    print(standings)
 
 
-#    c.execute("""CREATE TABLE standings as
-#                SELECT
-#                    ? as SEASONID,
-#                    ? as SERIE
-#                    ? as DATE
-#                    distinct a.TEAM,
-
-
-#(
-#                SEASONID INTEGER,
-#                SERIE INTEGER,
-#                DATE TEXT,
-#                TEAM TEXT,
-#                WINS INTEGER,
-#                OT_WINS INTEGER,
-#                OT_LOSSES INTEGER,
-#                LOSSES INTEGER,
-#                SCORED INTEGER,
-#                CONCEDED INTEGER,
-#                DIFF INTEGER,
-#                POINTS INTEGER,
-#                POSITION INTEGER
-#                )""")  #Pre match table
 
     print("Game " + str(stats[0]) + " loaded")
-
-
-
 
 
 

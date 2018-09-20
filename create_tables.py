@@ -2,6 +2,7 @@
 #                ID integer,
 #                GAMEID integer,
 #                SEASONID integer,
+#                SERIE TEXT,
 #                VENUE TEXT,
 #                AUDIENCE integer,
 #                HOMETEAM TEXT,
@@ -23,7 +24,9 @@
 #                INPOWERPLAT integer,
 #                INBOXPLAY integer,
 #                SHOTSAT integer,
-#                SAVES integer
+#                SAVES integer,
+#                SCORE integer,
+#                FINALSCORE integer
 #                )""")
 
 #c.execute("""CREATE TABLE events (
@@ -165,4 +168,8 @@
 #                HOMETEAM TEXT,
 #                AWAYTEAM TEXT,
 #                VENUE TEXT)""")
+
+
+#c.execute("CREATE TABLE TEAMGAMES (SEASONID, SERIE, GAMEID, GAMEDATE, TEAM, HOMEAWAY, OPPONENT, OUTCOME, SCORE1, SCORE2, SHOTS1, SHOTS2, SAVES1, SAVES2, PENALTY1, PENALTY2, SCORE11, SCORE12, SCORE13, SCORE14, SCORE21, SCORE22, SCORE23, SCORE24, SHOTS11, SHOTS12, SHOTS13, SHOTS14, SHOTS21, SHOTS22, SHOTS23, SHOTS24)")
+
 
