@@ -14,8 +14,8 @@ from official_roster import get_official_roster
 import numpy as np
 import datetime
 
-seasonID = 8121
-seasonYear = 2018
+seasonID = 9171
+seasonYear = 2019
 serie = "SHL"
 scheduleUrl = "http://stats.swehockey.se/ScheduleAndResults/Schedule/" + str(seasonID)
 
@@ -77,7 +77,7 @@ for i in range(1,len(page_source)-10):
 #Download Lineup data from each game
 
 
-for j in range(16,17):#len(gameVector)):
+for j in range(11,12):#len(gameVector)):
 
     # Download Action data from each game
     stats = get_stats(gameVector[j])
@@ -120,8 +120,8 @@ for j in range(16,17):#len(gameVector)):
 
     for i in range(0, len(rosters)):
         c.execute(
-            "SELECT PERSONNR FROM rosters where TEAM = ? and PERSONNR = ?",
-            (rosters[i][1], rosters[i][6]))
+            "SELECT PERSONNR FROM rosters where SEASONID = ? and TEAM = ? and PERSONNR = ?",
+            (seasonYear, rosters[i][1], rosters[i][6]))
         hits = c.fetchall()
 
         if len(hits) == 0:
@@ -230,7 +230,7 @@ for j in range(16,17):#len(gameVector)):
 
 
 #Update lineups with stats
-    c.execute("SELECT TEAM, NUMBER FROM lineups where GAMEID = ?",[gameVector[j]])
+    c.execute("SELECT TEAM, NUMBER, FORNAME, SURNAME FROM lineups where GAMEID = ?",[gameVector[j]])
     lineups = c.fetchall()
 
     for i in range(0,len(lineups)):
@@ -326,6 +326,20 @@ for j in range(16,17):#len(gameVector)):
 
             c.execute("UPDATE lineups SET SCORE = ?, FINALSCORE = ? WHERE GAMEID = ? and TEAM = ? and NUMBER = ?",[score[0], score[1], gameVector[j], lineups[i][0], lineups[i][1]])
 
+            c.execute("SELECT PERSONNR from rosters where SEASONID = ? and TEAM = ? and NUMBER = ?",[seasonYear, lineups[i][0], lineups[i][1]])
+            personnr = c.fetchall()
+
+            persnr = ''
+
+            if len(personnr) > 0:
+                persnr = personnr[0][0]
+
+            c.execute("UPDATE lineups SET PERSONNR = ? WHERE SEASONID = ? and TEAM = ? and NUMBER = ? and FORNAME = ? and SURNAME = ?",[persnr, seasonYear, lineups[i][0], lineups[i][1], lineups[i][2], lineups[i][3]])
+
+            conn.commit()
+
+            # Update lineups with old stats
+
         conn.commit()
 
 
@@ -418,7 +432,7 @@ for j in range(16,17):#len(gameVector)):
 
     np.sort(standings, axis=0)
 
-    print(standings)
+    #print(standings)
 
 
 

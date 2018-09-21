@@ -1,7 +1,6 @@
 import numpy as np
 import datetime
 import calendar
-from functions import add_months
 
 
 
@@ -14,7 +13,7 @@ def create_game_rating(lineup,c,team):
     c.execute("SELECT * FROM stats where gameid = ?",[lineup[0][1]])
     stats = c.fetchall()
 
-    print(stats)
+    #print(stats)
     if team == stats[0][4]:
         opponent = stats[0][5]
         homeaway = 1
@@ -47,7 +46,7 @@ def create_game_rating(lineup,c,team):
         else:
             line = 'Extra'
 
-
+        print([lineup[i][2], team, lineup[i][3], lineup[i][10]])
         c.execute("SELECT position from rosters where SEASONID = ? and TEAM = ? and SERIE = ? and NUMBER = ?",[lineup[i][2],team,lineup[i][3],lineup[i][10]])
         position = c.fetchall()
 
@@ -56,17 +55,17 @@ def create_game_rating(lineup,c,team):
         else:
             position = ""
 
-        goals = lineup[i][15]
-        PPgoals = lineup[i][16]
-        SHgoals = lineup[i][17]
-        assist = lineup[i][18]
-        plus = lineup[i][19]
-        minus = lineup[i][20]
-        penalty = lineup[i][21]
-        inPP = lineup[i][22]
-        inBP = lineup[i][23]
-        shots = lineup[i][24]
-        saves = lineup[i][25]
+        goals = lineup[i][16]
+        PPgoals = lineup[i][17]
+        SHgoals = lineup[i][18]
+        assist = lineup[i][19]
+        plus = lineup[i][20]
+        minus = lineup[i][21]
+        penalty = lineup[i][22]
+        inPP = lineup[i][23]
+        inBP = lineup[i][24]
+        shots = lineup[i][25]
+        saves = lineup[i][26]
 
         if lineup[i][6] == lineup[i][8]:
             comp = lineup[i][7]
@@ -77,12 +76,12 @@ def create_game_rating(lineup,c,team):
         #Half should come from players, half from form
         #Select from gamesmatchtable
 
-
-        c.execute("SELECT SEASONID, SERIE, SUM(CASE WHEN OUTCOME = 1 THEN 3 WHEN OUTCOME = 2 THEN 2 WHEN OUTCOME = 3 THEN 1 ELSE 0 END) POINTS, COUNT(TEAM) as MATCHES FROM TEAMGAMES WHERE TEAM = ? AND SEASONID = ? AND GAMEDATE < ? AND GAMEDATE > ? GROUP BY SEASONID, SERIE", [opponent, stats[0][0], stats[0][3], olddate])
+        olddate = stats[0][3]
+        c.execute("SELECT SEASONID, SERIE, SUM(CASE WHEN OUTCOME = 1 THEN 3 WHEN OUTCOME = 2 THEN 2 WHEN OUTCOME = 3 THEN 1 ELSE 0 END) POINTS, COUNT(TEAM) as MATCHES FROM TEAMGAMES WHERE TEAM = ? AND SEASONID = ? AND GAMEDATE < ? AND GAMEDATE >= ? GROUP BY SEASONID, SERIE", [opponent, stats[0][0], stats[0][3], olddate])
         form = c.fetchall()
 
         #Select from rosters
-
+        print(position)
 
         if "D" in position:
 
@@ -105,10 +104,8 @@ def create_game_rating(lineup,c,team):
             score += assist * 10
             score += plus * 5
             score += minus *-5
-            score += shots*2
+            score += shots*2.6
             score += (shots-saves)*-20
-
-
 
         else:
 
@@ -125,7 +122,7 @@ def create_game_rating(lineup,c,team):
 
             score += (shots1 - (18 + (5.5-compstat) * 3)) * 1.5  # Competition
 
-        score = score + (score1-score2)*(compstat)
+        score += (score1-score2)*(compstat)
 
         if homeaway == 2:
             score += 4
