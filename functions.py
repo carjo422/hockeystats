@@ -150,3 +150,36 @@ def get_td_content(string):
 
     return content
 
+
+def transform_date(date,n):
+
+    year = int(date[0:4])
+    month = int(date[5:7])
+    day = int(date[8:10])
+
+    day = day-n
+    if day <= 0:
+        month-=1
+        day+=30
+
+        if month <= 0:
+            year-=1
+            month+=12
+
+    new_year = str(year)
+
+    if month > 9:
+        new_month = str(month)
+    else:
+        new_month = '0'+str(month)
+
+    if day > 9:
+        new_day = str(day)
+    else:
+        new_day = '0' + str(day)
+
+
+    new_date = new_year+'-'+new_month+'-'+new_day
+
+    return(new_date)
+

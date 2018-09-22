@@ -46,7 +46,6 @@ def create_game_rating(lineup,c,team):
         else:
             line = 'Extra'
 
-        print([lineup[i][2], team, lineup[i][3], lineup[i][10]])
         c.execute("SELECT position from rosters where SEASONID = ? and TEAM = ? and SERIE = ? and NUMBER = ?",[lineup[i][2],team,lineup[i][3],lineup[i][10]])
         position = c.fetchall()
 
@@ -81,7 +80,6 @@ def create_game_rating(lineup,c,team):
         form = c.fetchall()
 
         #Select from rosters
-        print(position)
 
         if "D" in position:
 

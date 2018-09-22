@@ -4,6 +4,7 @@ from functions import get_isolated_number
 from functions import get_isolated_percent
 from functions import get_period_stats
 from functions import get_td_content
+from functions import transform_date
 from get_lineups import get_lineups
 from get_stats import get_stats
 from get_actions import get_actions
@@ -14,8 +15,9 @@ from official_roster import get_official_roster
 import numpy as np
 import datetime
 
-seasonID = 9171
-seasonYear = 2019
+
+seasonID = 8121
+seasonYear = 2018
 serie = "SHL"
 scheduleUrl = "http://stats.swehockey.se/ScheduleAndResults/Schedule/" + str(seasonID)
 
@@ -77,7 +79,7 @@ for i in range(1,len(page_source)-10):
 #Download Lineup data from each game
 
 
-for j in range(11,12):#len(gameVector)):
+for j in range(55,56):#len(gameVector)):
 
     # Download Action data from each game
     stats = get_stats(gameVector[j])
@@ -230,7 +232,7 @@ for j in range(11,12):#len(gameVector)):
 
 
 #Update lineups with stats
-    c.execute("SELECT TEAM, NUMBER, FORNAME, SURNAME FROM lineups where GAMEID = ?",[gameVector[j]])
+    c.execute("SELECT TEAM, NUMBER, FORNAME, SURNAME, GAMEDATE FROM lineups where GAMEID = ?",[gameVector[j]])
     lineups = c.fetchall()
 
     for i in range(0,len(lineups)):
@@ -339,6 +341,61 @@ for j in range(11,12):#len(gameVector)):
             conn.commit()
 
             # Update lineups with old stats
+
+            year = seasonYear
+            year1 = seasonYear-1
+            year2 = seasonYear-2
+
+            # Last five games
+
+            c.execute("SELECT SCORE, GOALS, ASSISTS, GAMEDATE, TEAM, FORNAME, SURNAME FROM lineups WHERE GAMEDATE < ? and GAMEDATE > ? and TEAM = ? and NUMBER = ? and FORNAME = ? and SURNAME = ? ORDER BY GAMEDATE DESC",[lineups[i][4],transform_date(lineups[i][4],20), lineups[i][0], lineups[i][1], lineups[i][2], lineups[i][3]])
+            output = np.array(c.fetchall())
+
+            games5 = min(len(output),5)
+
+            score5 = 0
+            goals5 = 0
+            assist5 = 0
+
+            for i in range(0,games5):
+                score5 += float(output[i][0]) / games5
+                goals5 += float(output[i][1]) / games5
+                assist5 += float(output[i][2]) / games5
+
+            # Current season
+
+            c.execute("SELECT SCORE, GOALS, ASSISTS, GAMEDATE, TEAM, FORNAME, SURNAME FROM lineups WHERE SEASONID = ? and TEAM = ? and NUMBER = ? and FORNAME = ? and SURNAME = ? ORDER BY GAMEDATE DESC",[year, lineups[i][0], lineups[i][1], lineups[i][2],lineups[i][3]])
+            output = np.array(c.fetchall())
+
+            gamescurr = len(output)
+
+            scorecurr = 0
+            goalscurr = 0
+            assistcurr = 0
+
+            for i in range(0, gamescurr):
+                scorecurr += float(output[i][0]) / gamescurr
+                goalscurr += float(output[i][1]) / gamescurr
+                assistcurr += float(output[i][2]) / gamescurr
+
+            # Last season
+
+            c.execute(
+                "SELECT SCORE, GOALS, ASSISTS, GAMEDATE, TEAM, FORNAME, SURNAME FROM lineups WHERE SEASONID = ? and TEAM = ? and NUMBER = ? and FORNAME = ? and SURNAME = ? ORDER BY GAMEDATE DESC",
+                [year1, lineups[i][0], lineups[i][1], lineups[i][2], lineups[i][3]])
+            output = np.array(c.fetchall())
+
+            gameslast = len(output)
+
+            scorelast = 0
+            goalslast = 0
+            assistlast = 0
+
+            for i in range(0, gameslast):
+                scorelast += float(output[i][0]) / gameslast
+                goalslast += float(output[i][1]) / gameslast
+                assistlast += float(output[i][2]) / gameslast
+
 
         conn.commit()
 
