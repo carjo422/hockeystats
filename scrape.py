@@ -79,7 +79,7 @@ for i in range(1,len(page_source)-10):
 #Download Lineup data from each game
 
 
-for j in range(55,56):#len(gameVector)):
+for j in range(0,len(gameVector)):
 
     # Download Action data from each game
     stats = get_stats(gameVector[j])
@@ -348,7 +348,7 @@ for j in range(55,56):#len(gameVector)):
 
             # Last five games
 
-            c.execute("SELECT SCORE, GOALS, ASSISTS, GAMEDATE, TEAM, FORNAME, SURNAME FROM lineups WHERE GAMEDATE < ? and GAMEDATE > ? and TEAM = ? and NUMBER = ? and FORNAME = ? and SURNAME = ? ORDER BY GAMEDATE DESC",[lineups[i][4],transform_date(lineups[i][4],20), lineups[i][0], lineups[i][1], lineups[i][2], lineups[i][3]])
+            c.execute("SELECT SCORE, GOALS, ASSISTS, GAMEDATE, TEAM, FORNAME, SURNAME FROM lineups WHERE GAMEDATE < ? and GAMEDATE > ? and FORNAME = ? and SURNAME = ? and PERSONNR = ? ORDER BY GAMEDATE DESC",[lineups[i][4],transform_date(lineups[i][4],20), lineups[i][2], lineups[i][3], persnr])
             output = np.array(c.fetchall())
 
             games5 = min(len(output),5)
@@ -357,14 +357,14 @@ for j in range(55,56):#len(gameVector)):
             goals5 = 0
             assist5 = 0
 
-            for i in range(0,games5):
-                score5 += float(output[i][0]) / games5
-                goals5 += float(output[i][1]) / games5
-                assist5 += float(output[i][2]) / games5
+            for k in range(0,games5):
+                score5 += float(output[k][0]) / games5
+                goals5 += float(output[k][1]) / games5
+                assist5 += float(output[k][2]) / games5
 
             # Current season
 
-            c.execute("SELECT SCORE, GOALS, ASSISTS, GAMEDATE, TEAM, FORNAME, SURNAME FROM lineups WHERE SEASONID = ? and TEAM = ? and NUMBER = ? and FORNAME = ? and SURNAME = ? ORDER BY GAMEDATE DESC",[year, lineups[i][0], lineups[i][1], lineups[i][2],lineups[i][3]])
+            c.execute("SELECT SCORE, GOALS, ASSISTS, GAMEDATE, TEAM, FORNAME, SURNAME FROM lineups WHERE SEASONID = ? and FORNAME = ? and SURNAME = ? and PERSONNR = ? ORDER BY GAMEDATE DESC",[year, lineups[i][2],lineups[i][3], persnr])
             output = np.array(c.fetchall())
 
             gamescurr = len(output)
@@ -373,16 +373,14 @@ for j in range(55,56):#len(gameVector)):
             goalscurr = 0
             assistcurr = 0
 
-            for i in range(0, gamescurr):
-                scorecurr += float(output[i][0]) / gamescurr
-                goalscurr += float(output[i][1]) / gamescurr
-                assistcurr += float(output[i][2]) / gamescurr
+            for k in range(0, gamescurr):
+                scorecurr += float(output[k][0]) / gamescurr
+                goalscurr += float(output[k][1]) / gamescurr
+                assistcurr += float(output[k][2]) / gamescurr
 
             # Last season
 
-            c.execute(
-                "SELECT SCORE, GOALS, ASSISTS, GAMEDATE, TEAM, FORNAME, SURNAME FROM lineups WHERE SEASONID = ? and TEAM = ? and NUMBER = ? and FORNAME = ? and SURNAME = ? ORDER BY GAMEDATE DESC",
-                [year1, lineups[i][0], lineups[i][1], lineups[i][2], lineups[i][3]])
+            c.execute("SELECT SCORE, GOALS, ASSISTS, GAMEDATE, TEAM, FORNAME, SURNAME, SERIE FROM lineups WHERE SEASONID = ? and FORNAME = ? and SURNAME = ? and PERSONNR = ? ORDER BY GAMEDATE DESC",[year1, lineups[i][2], lineups[i][3], persnr])
             output = np.array(c.fetchall())
 
             gameslast = len(output)
@@ -391,11 +389,42 @@ for j in range(55,56):#len(gameVector)):
             goalslast = 0
             assistlast = 0
 
-            for i in range(0, gameslast):
-                scorelast += float(output[i][0]) / gameslast
-                goalslast += float(output[i][1]) / gameslast
-                assistlast += float(output[i][2]) / gameslast
+            if len(output) > 0:
+                serielast = output[0][7]
+            else:
+                serielast = ""
 
+            for k in range(0, gameslast):
+                scorelast += float(output[k][0]) / gameslast
+                goalslast += float(output[k][1]) / gameslast
+                assistlast += float(output[k][2]) / gameslast
+
+                # Last season
+
+            c.execute("SELECT SCORE, GOALS, ASSISTS, GAMEDATE, TEAM, FORNAME, SURNAME, SERIE FROM lineups WHERE SEASONID = ? and FORNAME = ? and SURNAME = ? and PERSONNR = ? ORDER BY GAMEDATE DESC", [year2, lineups[i][2], lineups[i][3], persnr])
+            output = np.array(c.fetchall())
+
+            gameslast2 = len(output)
+
+            scorelast2 = 0
+            goalslast2 = 0
+            assistlast2 = 0
+
+            if len(output) > 0:
+                serielast2 = output[0][7]
+            else:
+                serielast2 = ""
+
+            for k in range(0, gameslast2):
+                scorelast2 += float(output[k][0]) / gameslast2
+                goalslast2 += float(output[k][1]) / gameslast2
+                assistlast2 += float(output[k][2]) / gameslast2
+
+
+
+            c.execute("""UPDATE lineups SET SCORE5 = ?, GOALS5 = ?, ASSIST5 = ?, SCORE_CURRENT = ?, GOALS_CURRENT = ?, ASSIST_CURRENT = ?, SCORE_LAST = ?, GOALS_LAST = ?, ASSIST_LAST = ?, SERIE_LAST = ?, SCORE_LAST2 = ?, GOALS_LAST2 = ?, ASSIST_LAST2 = ?, SERIE_LAST2 = ?, GAMES5 = ?, GAMES_CURRENT = ?, GAMES_LAST = ?, GAMES_LAST2 =?
+                       WHERE GAMEID = ? and PERSONNR = ? and FORNAME = ? and SURNAME = ?""",
+                      [score5, goals5, assist5, scorecurr, goalscurr, assistcurr, scorelast, goalslast, assistlast, serielast, scorelast2, goalslast2, assistlast2, serielast2, games5, gamescurr, gameslast, gameslast2, gameVector[j], persnr, lineups[i][2], lineups[i][3]])
 
         conn.commit()
 
@@ -487,9 +516,11 @@ for j in range(55,56):#len(gameVector)):
 
     standings = np.array(standings)
 
+
     np.sort(standings, axis=0)
 
     #print(standings)
+
 
 
 
