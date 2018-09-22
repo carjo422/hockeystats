@@ -5,7 +5,7 @@ from functions import get_period_stats
 import urllib.request as urllib
 
 
-def get_stats(id):
+def get_stats(id, gamedate):
     gameUrl = "http://stats.swehockey.se/Game/LineUps/" + str(id)
     response = urllib.urlopen(gameUrl)
     page_source = str(response.read())
@@ -18,7 +18,6 @@ def get_stats(id):
     page_source = page_source.replace("\\xc3\\x85", "Å")
     page_source = page_source.replace("\\xc3\\x96", "Ö")
 
-    gamedate = ""
     team_string = ""
     num_vect = []
     pct_vect = []
@@ -40,10 +39,6 @@ def get_stats(id):
             period_vector = get_period_stats(page_source, j)
             if period_vector != []:
                 period_list.append(period_vector)
-
-        if isnumber(page_source[j:j + 4]) and page_source[j + 4] == "-" and isnumber(page_source[j + 5:j + 7]) and \
-                        page_source[j + 7] == "-" and isnumber(page_source[j + 7:j + 9]):
-            gamedate = page_source[j:j + 10]
 
         if page_source[j:j + 17] == "\\xc2\\xa0-\\xc2\\xa0":
 

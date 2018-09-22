@@ -61,6 +61,6 @@ def get_official_roster(seasonID, season, serie):
 
             output.append(player)
 
-    print(output)
+    #print(output)
 
     return output
