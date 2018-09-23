@@ -139,7 +139,7 @@ def get_td_content(string):
             while tag_start == 0:
                 k=k+1
 
-                if j+k > len(string):
+                if j+k >= len(string):
                     tag_start = 1
                 else:
                     if string[j+k] == "<":

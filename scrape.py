@@ -12,6 +12,7 @@ from get_refs import get_refs
 import urllib.request as urllib
 from calcFunctions import create_game_rating
 from official_roster import get_official_roster
+from get_year_statistics import get_year_statistics
 import numpy as np
 import datetime
 
@@ -124,6 +125,8 @@ for i in range(0, len(rosters)):
         pass
 
 conn.commit()
+
+get_year_statistics(seasonID, seasonYear, serie)
 
 for j in range(0,30):#len(gameVector)):
     #Test if game exists
