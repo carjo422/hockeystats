@@ -126,6 +126,7 @@ for i in range(0, len(rosters)):
 
 conn.commit()
 
+#Add roster statistics
 get_year_statistics(seasonID, seasonYear, serie)
 
 for j in range(0,30):#len(gameVector)):
