@@ -18,8 +18,8 @@ import datetime
 
 t=0
 t_count = 1
-seasonID = 7132
-seasonYear = 2017
+seasonID = 9171
+seasonYear = 2019
 serie = "SHL"
 scheduleUrl = "http://stats.swehockey.se/ScheduleAndResults/Schedule/" + str(seasonID)
 

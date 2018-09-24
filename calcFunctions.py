@@ -36,6 +36,8 @@ def create_game_rating(lineup,c,team):
         seasonid = lineup[i][2]
         gameid = lineup[i][1]
 
+    # Get player line
+
         if lineup[i][13] == 'Goalies':
             line = '0. MV'
         elif lineup[i][13] == '1st Line':
@@ -49,6 +51,8 @@ def create_game_rating(lineup,c,team):
         else:
             line = 'Extra'
 
+    # Get player position
+
         c.execute("SELECT position from rosters where SEASONID = ? and TEAM = ? and SERIE = ? and NUMBER = ?",[lineup[i][2],team,lineup[i][3],lineup[i][10]])
         position = c.fetchall()
 
@@ -56,6 +60,8 @@ def create_game_rating(lineup,c,team):
             position = position[0][0]
         else:
             position = ""
+
+    # Get lineup information
 
         goals = lineup[i][16]
         PPgoals = lineup[i][17]
@@ -74,7 +80,7 @@ def create_game_rating(lineup,c,team):
         else:
             comp = lineup[i][6]
 
-        # How good is the competition
+    # How good is the competition
 
         c.execute("SELECT * FROM TEAMGAMES WHERE TEAM = ? and GAMEDATE < ? and SEASONID = ? ORDER BY GAMEDATE DESC",[comp, gamedate, str(lineup[i][2])])
         last5games = np.array(c.fetchall())
@@ -144,21 +150,24 @@ def create_game_rating(lineup,c,team):
         c.execute("SELECT SEASONID, SERIE, SUM(CASE WHEN OUTCOME = 1 THEN 3 WHEN OUTCOME = 2 THEN 2 WHEN OUTCOME = 3 THEN 1 ELSE 0 END) POINTS, COUNT(TEAM) as MATCHES FROM TEAMGAMES WHERE TEAM = ? AND SEASONID = ? AND GAMEDATE < ? AND GAMEDATE >= ? GROUP BY SEASONID, SERIE", [opponent, stats[0][0], stats[0][3], olddate])
         form = c.fetchall()
 
-        #Select from rosters
 
         if "D" in position:
 
             score = 0
 
-            score += goals*10
-            score += PPgoals*5
-            score += SHgoals*10
-            score += assist*5
-            score += plus*5
-            score += minus*-8
+            score += goals * 12
+            score += PPgoals * 6
+            score += SHgoals * 12
+            score += assist * 6
+            score += plus * 5
+            score += minus * -8
             score += inPP * 5
             score += inBP * 5
-            score += ((18+compstat*3)-shots2)*1.5 #shots against
+            score -= penalty * 4
+
+            #shots against code
+            #boast for conceding few goals
+            #Goalie save % contribution
 
         elif position == "GK":
 
@@ -169,6 +178,8 @@ def create_game_rating(lineup,c,team):
             score += minus *-5
             score += shots*2.6
             score += (shots-saves)*-20
+            score -= penalty * 10
+
 
         else:
 
@@ -182,13 +193,16 @@ def create_game_rating(lineup,c,team):
             score += minus * -7
             score += inPP * 5
             score += inBP * 5
+            score -= penalty * 6
 
-            score += (shots1 - (18 + (5.5-compstat) * 3)) * 1.5  # Competition
+
+            # shots against code
+            # boast for conceding few goals
 
         score += (score1-score2)*(compstat)
 
         if homeaway == 2:
-            score += 4
+            score += 5
 
         if score < -10:
             finalScore = 1
