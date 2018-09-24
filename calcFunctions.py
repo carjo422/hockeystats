@@ -1,6 +1,7 @@
 import numpy as np
 import datetime
 import calendar
+import sqlite3
 
 from functions import mean_list
 
@@ -220,6 +221,89 @@ def create_game_rating(lineup,c,team):
     playerScore = [score, finalScore]
 
     return playerScore
+
+
+
+def create_teamgames(seasonYear, serie):
+#Team games table
+
+    conn = sqlite3.connect('hockeystats.db')
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM stats WHERE SEASONID = ? and SERIE = ?",[seasonYear,serie])
+    statsgames = c.fetchall()
+
+    for i in range(0, len(statsgames)):
+        c.execute(
+            "SELECT GAMEID as GAMEID FROM TEAMGAMES where GAMEID = ? and TEAM = ?",
+            [statsgames[i][2],statsgames[i][4]])
+        hits = c.fetchall()
+
+        if len(hits) == 0:
+
+            outcome = 0
+
+            if statsgames[i][14]+statsgames[i][15]+statsgames[i][16] > statsgames[i][18]+statsgames[i][19]+statsgames[i][20]:
+                outcome = 1
+            elif statsgames[i][14]+statsgames[i][15]+statsgames[i][16] < statsgames[i][18]+statsgames[i][19]+statsgames[i][20]:
+                outcome = 4
+            else:
+                if statsgames[i][6] > statsgames[i][7]:
+                    outcome = 2
+                else:
+                    outcome = 3
+
+            c.execute("""INSERT INTO
+                            TEAMGAMES (
+                               SEASONID,SERIE,GAMEID,GAMEDATE,TEAM,HOMEAWAY,OPPONENT,OUTCOME,SCORE1,SCORE2,SHOTS1,SHOTS2,SAVES1,SAVES2,PENALTY1,PENALTY2,SCORE11,SCORE12,SCORE13,SCORE14,SCORE21,SCORE22,SCORE23,SCORE24,SHOTS11,SHOTS12,SHOTS13,SHOTS14,SHOTS21,SHOTS22,SHOTS23,SHOTS24)
+                            VALUES
+                                (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                      (statsgames[i][0], statsgames[i][1],statsgames[i][2],statsgames[i][3],statsgames[i][4],'H',statsgames[i][5],outcome,statsgames[i][6],statsgames[i][7],statsgames[i][8],statsgames[i][9],statsgames[i][10],statsgames[i][11],statsgames[i][12],statsgames[i][13],statsgames[i][14],statsgames[i][15],statsgames[i][16],statsgames[i][17],
+                       statsgames[i][18], statsgames[i][19], statsgames[i][20], statsgames[i][21], statsgames[i][22], statsgames[i][23],statsgames[i][24], statsgames[i][25],statsgames[i][26], statsgames[i][27], statsgames[i][28], statsgames[i][29]
+
+                       ))
+
+        else:
+            pass
+
+        c.execute(
+            "SELECT GAMEID as GAMEID FROM TEAMGAMES where GAMEID = ? and TEAM = ?",
+            [statsgames[i][2], statsgames[i][5]])
+        hits = c.fetchall()
+
+        if len(hits) == 0:
+
+            outcome = 0
+
+            if statsgames[i][14] + statsgames[i][15] + statsgames[i][16] < statsgames[i][18] + statsgames[i][19] + statsgames[i][20]:
+                outcome = 1
+            elif statsgames[i][14] + statsgames[i][15] + statsgames[i][16] > statsgames[i][18] + statsgames[i][19] + statsgames[i][20]:
+                outcome = 4
+            else:
+                if statsgames[i][6] < statsgames[i][7]:
+                    outcome = 2
+                else:
+                    outcome = 3
+
+            c.execute("""INSERT INTO
+                                    TEAMGAMES (
+                                       SEASONID,SERIE,GAMEID,GAMEDATE,TEAM,HOMEAWAY,OPPONENT,OUTCOME,SCORE1,SCORE2,SHOTS1,SHOTS2,SAVES1,SAVES2,PENALTY1,PENALTY2,SCORE11,SCORE12,SCORE13,SCORE14,SCORE21,SCORE22,SCORE23,SCORE24,SHOTS11,SHOTS12,SHOTS13,SHOTS14,SHOTS21,SHOTS22,SHOTS23,SHOTS24)
+                                    VALUES
+                                        (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                      (statsgames[i][0], statsgames[i][1], statsgames[i][2], statsgames[i][3], statsgames[i][5], 'A',
+                       statsgames[i][4], outcome, statsgames[i][7], statsgames[i][6], statsgames[i][9],
+                       statsgames[i][8], statsgames[i][11], statsgames[i][10], statsgames[i][13], statsgames[i][12],
+                       statsgames[i][18], statsgames[i][19], statsgames[i][20], statsgames[i][21],
+                       statsgames[i][14], statsgames[i][15], statsgames[i][16], statsgames[i][17],
+                       statsgames[i][26], statsgames[i][27], statsgames[i][28], statsgames[i][29],
+                       statsgames[i][22], statsgames[i][23], statsgames[i][24], statsgames[i][25]
+
+                       ))
+
+        else:
+            pass
+
+    conn.commit()
 
 
 
