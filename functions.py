@@ -1,5 +1,17 @@
 import datetime, calendar
 
+def mean_list(list,n):
+    sum=0
+    for i in range(0, len(list)):
+        sum+= float(list[i][n])
+
+
+    sum = sum / len(list)
+
+    return sum
+
+
+
 def isnumber(s):
     try:
         int(s)

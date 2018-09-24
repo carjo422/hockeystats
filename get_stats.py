@@ -6,6 +6,7 @@ import urllib.request as urllib
 
 
 def get_stats(id, gamedate):
+
     gameUrl = "http://stats.swehockey.se/Game/LineUps/" + str(id)
     response = urllib.urlopen(gameUrl)
     page_source = str(response.read())
@@ -91,12 +92,38 @@ def get_stats(id, gamedate):
     else:
         ap4score = 0
 
-    hp1shots = period_list[0][0]
-    hp2shots = period_list[0][1]
-    hp3shots = period_list[0][2]
-    ap1shots = period_list[2][0]
-    ap2shots = period_list[2][1]
-    ap3shots = period_list[2][2]
+    hp1shots = 0
+    hp2shots = 0
+    hp3shots = 0
+    ap1shots = 0
+    ap2shots = 0
+    ap3shots = 0
+
+
+    try:
+        hp1shots = period_list[0][0]
+    except IndexError:
+        pass
+    try:
+        hp2shots = period_list[0][1]
+    except IndexError:
+        pass
+    try:
+        hp3shots = period_list[0][2]
+    except IndexError:
+        pass
+    try:
+        ap1shots = period_list[2][0]
+    except IndexError:
+        pass
+    try:
+        ap2shots = period_list[2][1]
+    except IndexError:
+        pass
+    try:
+        ap3shots = period_list[2][2]
+    except IndexError:
+        pass
 
     if len(period_list[0]) > 3:
         hp4shots = period_list[0][3]

@@ -16,9 +16,10 @@ from get_year_statistics import get_year_statistics
 import numpy as np
 import datetime
 
-
-seasonID = 8121
-seasonYear = 2018
+t=0
+t_count = 1
+seasonID = 7132
+seasonYear = 2017
 serie = "SHL"
 scheduleUrl = "http://stats.swehockey.se/ScheduleAndResults/Schedule/" + str(seasonID)
 
@@ -129,7 +130,7 @@ conn.commit()
 #Add roster statistics
 get_year_statistics(seasonID, seasonYear, serie)
 
-for j in range(0,30):#len(gameVector)):
+for j in range(0,len(gameVector)):
     #Test if game exists
 
     c.execute("SELECT * FROM stats where GAMEID = ?",[gameVector[j][0]])
@@ -159,9 +160,10 @@ for j in range(0,30):#len(gameVector)):
 
                 c.execute("""INSERT INTO
                             lineups (
-                                ID,GAMEID,SEASONID,SERIE,AUDIENCE,VENUE,HOMETEAM,AWAYTEAM,TEAM,GAMEDATE,NUMBER,FORNAME,SURNAME,POSITION,START_PLAYER)
+                                ID,GAMEID,SEASONID,SERIE,AUDIENCE,VENUE,HOMETEAM,AWAYTEAM,TEAM,GAMEDATE,NUMBER,FORNAME,SURNAME,POSITION,START_PLAYER,
+                                GOALS, PPGOALS, SHGOALS, ASSISTS, PLUS, MINUS, PENALTY, INPOWERPLAY, INBOXPLAY, SHOTSAT, SAVES, SCORE, FINALSCORE, SCORE5, GOALS5, ASSIST5, GAMES5, SCORE_CURRENT, GOALS_CURRENT, ASSIST_CURRENT, GAMES_CURRENT)
                             VALUES
-                                (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                                (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)""",
                           (id, lineups[i][0], lineups[i][9], serie, lineups[i][7], lineups[i][8], stats[2], stats[3], lineups[i][1], stats[1], lineups[i][2], lineups[i][3], lineups[i][4], lineups[i][5], lineups[i][6]))
 
             else:
@@ -336,6 +338,7 @@ for j in range(0,30):#len(gameVector)):
             c.execute("SELECT * from lineups where GAMEID = ? and TEAM = ? and NUMBER = ?",[gameVector[j][0], lineups[i][0], lineups[i][1]])
             lineup = c.fetchall()
 
+
             if len(lineup) > 0:
 
                 c.execute(
@@ -507,6 +510,10 @@ for j in range(0,30):#len(gameVector)):
         print("Game " + str(stats[0]) + " loaded")
     else:
         print("Game already loaded")
+
+    if t_count == 1:
+        t+=1
+        print(str(t) + "/" + str(len(gameVector)) + " done")
 
 
 c.close

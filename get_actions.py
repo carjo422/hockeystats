@@ -96,8 +96,17 @@ def get_actions(id, audience, venue, season, team1, team2,c):
                       [events[i][0], events[i][4], events[i][5]])
             player_name = c.fetchall()
 
-            events[i][6] = player_name[0][1]
-            events[i][7] = player_name[0][0]
+            events[i][6]=""
+            events[i][7]=""
+
+            try:
+                events[i][6] = player_name[0][1]
+            except IndexError:
+                pass
+            try:
+                events[i][7] = player_name[0][0]
+            except IndexError:
+                pass
 
     #print(events)
     return events
