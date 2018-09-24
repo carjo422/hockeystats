@@ -130,6 +130,8 @@ def create_game_rating(lineup,c,team):
             player_score_sum = 0
             n_players = 0
 
+        #CHANGE THIS TO ROSTER
+
             for i in range(0,len(opposition_team)):
                 c.execute("SELECT SEASONID, SERIE, SUM(SCORE)/COUNT(SCORE) as SCORE FROM lineups WHERE FORNAME = ? and SURNAME = ? and PERSONNR = ? and GAMEDATE < ?",[opposition_team[i][0],opposition_team[i][1],opposition_team[i][2],gamedate])
                 player_scores = c.fetchall()

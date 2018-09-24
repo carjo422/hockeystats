@@ -37,9 +37,14 @@ def add_rosters(seasonID, seasonYear, serie):
     get_year_statistics(seasonID, seasonYear, serie)
 
 
+def add_team_games(seasonID, seasonYear, serie):
+    pass
+
+add_team_games(2892, 2013, "SHL")
+add_team_games(3905, 2014, "SHL")
+add_team_games(5056, 2015, "SHL")
+
+
 add_rosters(2892, 2013, "SHL")
 add_rosters(3905, 2014, "SHL")
 add_rosters(5056, 2015, "SHL")
-add_rosters(6052, 2016, "SHL")
-add_rosters(7132, 2017, "SHL")
-add_rosters(8121, 2018, "SHL")
