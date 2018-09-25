@@ -107,28 +107,96 @@ def add_team_games(seasonID, seasonYear, serie):
             c.execute("INSERT INTO schedule (SEASONID, SERIE, GAMEID, GAMEDATE, AUD, VENUE) VALUES (?,?,?,?,?,?)",
                       [seasonYear, serie, gameVector[j], dateVector[j + 1], audVector[j], venueVector[j]])
 
-    c.execute("SELECT GAMEID from schedule where SEASONID = ? and SERIE = ?", [seasonYear, serie])
-    gameVector = c.fetchall()
-    c.execute("SELECT GAMEDATE from schedule where SEASONID = ? and SERIE = ?", [seasonYear, serie])
-    dateVector = c.fetchall()
-    c.execute("SELECT AUD from schedule where SEASONID = ? and SERIE = ?", [seasonYear, serie])
-    audVector = c.fetchall()
-    c.execute("SELECT VENUE from schedule where SEASONID = ? and SERIE = ?", [seasonYear, serie])
-    venueVector = c.fetchall()
+        c.execute("SELECT GAMEID from schedule where SEASONID = ? and SERIE = ?", [seasonYear, serie])
+        gameVector = c.fetchall()
+        c.execute("SELECT GAMEDATE from schedule where SEASONID = ? and SERIE = ?", [seasonYear, serie])
+        dateVector = c.fetchall()
+        c.execute("SELECT AUD from schedule where SEASONID = ? and SERIE = ?", [seasonYear, serie])
+        audVector = c.fetchall()
+        c.execute("SELECT VENUE from schedule where SEASONID = ? and SERIE = ?", [seasonYear, serie])
+        venueVector = c.fetchall()
+
+    else:
+
+        c.execute("SELECT GAMEID from schedule where SEASONID = ? and SERIE = ?", [seasonYear, serie])
+        gameVector = c.fetchall()
+        c.execute("SELECT GAMEDATE from schedule where SEASONID = ? and SERIE = ?", [seasonYear, serie])
+        dateVector = c.fetchall()
+        c.execute("SELECT AUD from schedule where SEASONID = ? and SERIE = ?", [seasonYear, serie])
+        audVector = c.fetchall()
+        c.execute("SELECT VENUE from schedule where SEASONID = ? and SERIE = ?", [seasonYear, serie])
+        venueVector = c.fetchall()
+
+
+    for j in range(0, len(gameVector)):
+        stats = get_stats(gameVector[j][0], dateVector[j][0])
+
+        c.execute("SELECT GAMEID as GAMEID FROM stats where GAMEID = ?",[stats[0]])
+
+        hits = c.fetchall()
+
+        if len(hits) == 0:
+
+            c.execute("""INSERT INTO
+                            stats (
+                                SEASONID,SERIE,GAMEID,GAMEDATE,HOMETEAM,AWAYTEAM,HOMESCORE,AWAYSCORE,HOMESHOTS,AWAYSHOTS,HOMESAVES,AWAYSAVES,HOMEPENALTY,AWAYPENALTY,HSCORE1,HSCORE2,HSCORE3,HSCORE4,ASCORE1,ASCORE2,ASCORE3,ASCORE4,
+                                HSHOTS1,HSHOTS2,HSHOTS3,HSHOTS4,ASHOTS1,ASHOTS2,ASHOTS3,ASHOTS4,HSAVES1,HSAVES2,HSAVES3,HSAVES4,ASAVES1,ASAVES2,ASAVES3,ASAVES4,HPENALTY1,HPENALTY2,HPENALTY3,HPENALTY4,APENALTY1,APENALTY2,APENALTY3,
+                                APENALTY4)
+                            VALUES
+                                (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                      (
+                      seasonYear, serie, stats[0], stats[1], stats[2], stats[3], stats[4], stats[5], stats[6], stats[7],
+                      stats[8], stats[9], stats[10], stats[11], stats[12], stats[13], stats[14], stats[15], stats[16],
+                      stats[17], stats[18], stats[19], stats[20],
+                      stats[21], stats[22], stats[23], stats[24], stats[25], stats[26], stats[27], stats[28], stats[29],
+                      stats[30], stats[31], stats[32], stats[33], stats[34], stats[35], stats[36], stats[37], stats[38],
+                      stats[39], stats[40],
+                      stats[41], stats[42], stats[43]))
+
+        else:
+            pass
 
     conn.commit()
 
-    stats = get_stats(gameVector[j][0], dateVector[j][0])
-
-    print(stats)
-
-    #create_teamgames(seasonYear, serie)
-
-add_team_games(2892, 2013, "SHL")
-add_team_games(3905, 2014, "SHL")
-add_team_games(5056, 2015, "SHL")
+    create_teamgames(seasonYear, serie)
 
 
-add_rosters(2892, 2013, "SHL")
-add_rosters(3905, 2014, "SHL")
-add_rosters(5056, 2015, "SHL")
+#c.execute("DELETE FROM rosters where seasonID = ? and serie = ?",['2019','SHL'])
+#c.execute("DELETE FROM schedule where seasonID = ? and serie = ?",['2019','SHL'])
+#c.execute("DELETE FROM teamgames where seasonID = ? and serie = ?",['2019','SHL'])
+#c.execute("DELETE FROM lineups where seasonID = ? and serie = ?",['2019','SHL'])
+#c.execute("DELETE FROM events where seasonID = ?",['2019'])
+#conn.commit()
+
+c.execute("UPDATE lineups SET GAMEDATE = SUBSTR(GAMEDATE,1,10)")
+c.execute("UPDATE teamgames SET GAMEDATE = SUBSTR(GAMEDATE,1,10)")
+c.execute("UPDATE stats SET GAMEDATE = SUBSTR(GAMEDATE,1,10)")
+c.execute("UPDATE schedule SET GAMEDATE = SUBSTR(GAMEDATE,1,10)")
+conn.commit()
+
+#add_team_games(2892, 2013, "SHL")
+#add_team_games(3905, 2014, "SHL")
+#add_team_games(5056, 2015, "SHL")
+
+
+#add_rosters(2892, 2013, "SHL")
+#add_rosters(3905, 2014, "SHL")
+#add_rosters(5056, 2015, "SHL")
+
+
+#add_team_games(8122, 2018, "HA")
+#add_team_games(7157, 2017, "HA")
+#add_team_games(6053, 2016, "HA")
+#add_team_games(5057, 2015, "HA")
+#add_team_games(3906, 2014, "HA")
+#add_team_games(3005, 2013, "HA")
+
+
+#add_rosters(8122, 2018, "HA")
+#add_rosters(7157, 2017, "HA")
+#add_rosters(6053, 2016, "HA")
+#add_rosters(5057, 2015, "HA")
+#add_rosters(3906, 2014, "HA")
+#add_rosters(3005, 2013, "HA")
+
+
