@@ -62,7 +62,7 @@ if len(sc) == 0:
     for i in range(1,len(page_source)-10):
 
         if isnumber(page_source[i:i+4]) and page_source[i+4] == '-' and isnumber(page_source[i+5:i+7]) and page_source[i+7] and isnumber(page_source[i+8:i+10]):
-            dateVector.append(page_source[i:i+11])
+            dateVector.append(page_source[i:i+10])
 
         if page_source[i:i+8] == "/Events/":
 
@@ -134,7 +134,7 @@ get_year_statistics(seasonID, seasonYear, serie)
 for j in range(0,len(gameVector)):
     #Test if game exists
 
-    c.execute("SELECT * FROM stats where GAMEID = ?",[gameVector[j][0]])
+    c.execute("SELECT * FROM lineups where GAMEID = ?",[gameVector[j][0]])
     check = c.fetchall()
 
     if len(check) == 0:
@@ -165,7 +165,7 @@ for j in range(0,len(gameVector)):
                                 GOALS, PPGOALS, SHGOALS, ASSISTS, PLUS, MINUS, PENALTY, INPOWERPLAY, INBOXPLAY, SHOTSAT, SAVES, SCORE, FINALSCORE, SCORE5, GOALS5, ASSIST5, GAMES5, SCORE_CURRENT, GOALS_CURRENT, ASSIST_CURRENT, GAMES_CURRENT)
                             VALUES
                                 (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)""",
-                          (id, lineups[i][0], lineups[i][9], serie, lineups[i][7], lineups[i][8], stats[2], stats[3], lineups[i][1], stats[1], lineups[i][2], lineups[i][3], lineups[i][4], lineups[i][5], lineups[i][6]))
+                          (id, lineups[i][0], lineups[i][9], serie, lineups[i][7], lineups[i][8], stats[2], stats[3], lineups[i][1][0:10], stats[1], lineups[i][2], lineups[i][3], lineups[i][4], lineups[i][5], lineups[i][6]))
 
             else:
                 pass
@@ -230,7 +230,7 @@ for j in range(0,len(gameVector)):
                                 APENALTY4)
                             VALUES
                                 (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
-                      (seasonYear,serie,stats[0],stats[1],stats[2],stats[3],stats[4],stats[5],stats[6],stats[7],stats[8],stats[9],stats[10],stats[11],stats[12],stats[13],stats[14],stats[15],stats[16],stats[17],stats[18],stats[19],stats[20],
+                      (seasonYear,serie,stats[0],stats[1][0:10],stats[2],stats[3],stats[4],stats[5],stats[6],stats[7],stats[8],stats[9],stats[10],stats[11],stats[12],stats[13],stats[14],stats[15],stats[16],stats[17],stats[18],stats[19],stats[20],
                        stats[21],stats[22],stats[23],stats[24],stats[25],stats[26],stats[27],stats[28],stats[29],stats[30],stats[31],stats[32],stats[33],stats[34],stats[35],stats[36],stats[37],stats[38],stats[39],stats[40],
                        stats[41],stats[42],stats[43]))
 
@@ -354,10 +354,10 @@ for j in range(0,len(gameVector)):
 
                 score = create_game_rating(lineup, c, lineups[i][0])
 
-                if len(score) < 2:
-                    score = ['0','0']
+                if len(score) < 4:
+                    score = ['0','0','0','0']
 
-                c.execute("UPDATE lineups SET SCORE = ?, FINALSCORE = ? WHERE GAMEID = ? and TEAM = ? and NUMBER = ?",[score[0], score[1], gameVector[j][0], lineups[i][0], lineups[i][1]])
+                c.execute("UPDATE lineups SET SCORE = ?, FINALSCORE = ?, OFFSCORE = ?, DEFSCORE = ? WHERE GAMEID = ? and TEAM = ? and NUMBER = ?",[score[0], score[1], score[2], score[3], gameVector[j][0], lineups[i][0], lineups[i][1]])
 
                 c.execute("SELECT PERSONNR from rosters where SEASONID = ? and TEAM = ? and NUMBER = ?",[seasonYear, lineups[i][0], lineups[i][1]])
                 personnr = c.fetchall()

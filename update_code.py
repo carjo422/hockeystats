@@ -8,8 +8,9 @@ c.execute("SELECT * FROM lineups")
 full_lineup = c.fetchall()
 
 n = len(full_lineup)
+print(n)
 
-c.execute("SELECT * FROM lineups where id = ?",[1300])
+c.execute("SELECT * FROM lineups where id = ?",[45555])
 lineup = c.fetchall()
 
 score = create_game_rating(lineup, c, lineup[0][8])

@@ -100,7 +100,6 @@ import numpy as np
 
 #TEST
 
-c.execute("SELECT TEAM,FORNAME,SURNAME, SCORE_CURRENT FROM lineups WHERE GAMEDATE = ? or GAMEDATE = ? ORDER BY SCORE_CURRENT DESC", ['2018-03-10','2018-03-11'])
-test = np.array(c.fetchall())
+from calcFunctions import calculate_team_strength
 
-print(test)
+print(calculate_team_strength("Linköping HC",'2018-09-20'))
