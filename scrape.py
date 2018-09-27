@@ -21,8 +21,8 @@ t=0
 t_count = 0 # Counts number of update
 
 #Input variables on seasons
-seasonID = 9171
-seasonYear = 2019
+seasonID = 7132
+seasonYear = 2017
 serie = "SHL"
 
 
@@ -459,7 +459,6 @@ for j in range(0,len(gameVector)):
         t+=1
         print(str(t) + "/" + str(len(gameVector)) + " done")
 
-
 #Update score for games
 
 for j in range(0, len(gameVector)):
@@ -474,7 +473,7 @@ for j in range(0, len(gameVector)):
         c.execute("SELECT * from lineups where GAMEID = ? and TEAM = ? and NUMBER = ?",[gameVector[j][0], lineups[i][0], lineups[i][1]])
         lineup = c.fetchall()
 
-        score = create_game_rating(lineup, lineups[i][0])
+        score = create_game_rating(lineup, lineups[i][0], c,conn)
 
         if len(score) < 4:
             score = ['0', '0', '0', '0']
@@ -483,7 +482,7 @@ for j in range(0, len(gameVector)):
             "UPDATE lineups SET SCORE = ?, FINALSCORE = ?, OFFSCORE = ?, DEFSCORE = ? WHERE GAMEID = ? and TEAM = ? and NUMBER = ?",
             [score[0], score[1], score[2], score[3], gameVector[j][0], lineups[i][0], lineups[i][1]])
 
-        print("Score updated")
+    print("Score updated")
 
     conn.commit
 

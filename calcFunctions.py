@@ -8,9 +8,7 @@ from functions import mean_list
 import sqlite3
 
 
-def create_game_rating(lineup,team):
-    conn = sqlite3.connect('hockeystats.db')
-    c = conn.cursor()
+def create_game_rating(lineup,team,c,conn):
 
     output = []
 
@@ -98,9 +96,11 @@ def create_game_rating(lineup,team):
     if len(cstat) > 0:
         compstat = cstat[0][0]
     else:
-        compstat = calculate_team_strength(comp,gamedate)
-        c.execute("INSERT INTO TEAMSCORE (GAMEID, GAMEDATE, TEAM, SCORE) VALUES (?,?,?,?)",[gameid, gamedate, comp, compstat])
+
+        [compstat, form_score, last_seasons_score, player_score] = calculate_team_strength(comp,gamedate,c)
+        c.execute("INSERT INTO TEAMSCORE (SEASONID, SERIE, GAMEID, GAMEDATE, TEAM, SCORE, FORM_SCORE, LAST_SEASONS_SCORE, PLAYER_SCORE) VALUES (?,?,?,?,?,?,?,?,?)",[stats[0][0], stats[0][1], gameid, gamedate, comp, compstat, form_score, last_seasons_score, player_score])
         conn.commit()
+        print(compstat)
 
 
     #Calculate score for player
@@ -146,7 +146,7 @@ def create_game_rating(lineup,team):
         score += (shots * 2.6 + (shots - saves) * -20) / 15
 
 
-    score *= ((compstat)/2+0.5)
+    #score += (compstat-1)*5
 
 
     if homeaway == 2:
@@ -168,17 +168,12 @@ def create_game_rating(lineup,team):
 
     playerScore = [score, finalScore, offScore, defScore]
 
-    c.close()
-
     return playerScore
 
 
 
-def create_teamgames(seasonYear, serie):
+def create_teamgames(seasonYear, serie,c):
 #Team games table
-
-    conn = sqlite3.connect('hockeystats.db')
-    c = conn.cursor()
 
     c.execute("SELECT * FROM stats WHERE SEASONID = ? and SERIE = ?",[seasonYear,serie])
     statsgames = c.fetchall()
@@ -235,9 +230,7 @@ def create_teamgames(seasonYear, serie):
                 else:
                     outcome = 3
 
-            c.execute("""INSERT INTO
-                                    TEAMGAMES (
-                                       SEASONID,SERIE,GAMEID,GAMEDATE,TEAM,HOMEAWAY,OPPONENT,OUTCOME,SCORE1,SCORE2,SHOTS1,SHOTS2,SAVES1,SAVES2,PENALTY1,PENALTY2,SCORE11,SCORE12,SCORE13,SCORE14,SCORE21,SCORE22,SCORE23,SCORE24,SHOTS11,SHOTS12,SHOTS13,SHOTS14,SHOTS21,SHOTS22,SHOTS23,SHOTS24)
+            c.execute("""INSERT INTO TEAMGAMES (SEASONID,SERIE,GAMEID,GAMEDATE,TEAM,HOMEAWAY,OPPONENT,OUTCOME,SCORE1,SCORE2,SHOTS1,SHOTS2,SAVES1,SAVES2,PENALTY1,PENALTY2,SCORE11,SCORE12,SCORE13,SCORE14,SCORE21,SCORE22,SCORE23,SCORE24,SHOTS11,SHOTS12,SHOTS13,SHOTS14,SHOTS21,SHOTS22,SHOTS23,SHOTS24)
                                     VALUES
                                         (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                       (statsgames[i][0], statsgames[i][1], statsgames[i][2], statsgames[i][3], statsgames[i][5], 'A',
@@ -253,17 +246,13 @@ def create_teamgames(seasonYear, serie):
         else:
             pass
 
-    conn.commit()
 
+def calculate_team_strength(team,gamedate,c):
 
-def calculate_team_strength(team,gamedate):
-
-    #Import and establish database connection
-    conn = sqlite3.connect('hockeystats.db')
-    c = conn.cursor()
+    ######################################################## CODE TO GET AVERAGE SCORE FROM LAST GAMES ##############################################################
 
     c.execute("SELECT * from lineups where gamedate = ? and TEAM = ? ",[gamedate,team])
-
+    #print([gamedate,team])
     lineup = c.fetchall()
     lineup = lineup[0]
 
@@ -280,16 +269,17 @@ def calculate_team_strength(team,gamedate):
     if n_games > 0:
 
         for i in range(0, n_games):
-            points += (4 - int(last5games[i][7])) / n_games
-            score += int(last5games[i][8]) / n_games
-            score -= int(last5games[i][9]) / n_games
+            points += (4 - int(last5games[i][7])) / 5
+            score += int(last5games[i][8]) / 5
+            score -= int(last5games[i][9]) / 5
+
+        points += (5-n_games)*0.3
 
     else:
         points = 1.5
         score = 0
 
-    #print("Average score last 5: " + str(points))
-    #print("Average goal diff last 5: " + str(score))
+    ####################################################### CODE TO GET AVERAGE SCORE FROM LAST SEASONS #############################################################
 
     c.execute(
         "SELECT SEASONID, SERIE, COUNT(OUTCOME), SUM(4-OUTCOME) as POINTS FROM TEAMGAMES WHERE TEAM = ? and GAMEDATE < ? GROUP BY SEASONID, SERIE ORDER BY SEASONID",
@@ -327,11 +317,14 @@ def calculate_team_strength(team,gamedate):
             if years_ago == 0:
                 years_ago = 1
 
-            season_points += float(seasons[i][3]) * fakt / float(seasons[i][2]) / (years_ago)
-            sum += 1 / (years_ago)
+            season_points += float(seasons[i][3]) * fakt / (years_ago) * float(seasons[i][2])
+            sum += 1 / (years_ago) * float(seasons[i][2]) * float(seasons[i][2])
 
         season_points = season_points / sum
-        #print("Average point / game last seasons: " + str(season_points))
+
+
+    ####################################################### CODE TO GET SCORE BASED ON PLAYERS #############################################################
+
 
     c.execute("SELECT FORNAME, SURNAME, PERSONNR FROM lineups where gameid = ? and team = ?", [lineup[1], team])
     lineup_team = np.array(c.fetchall())
@@ -342,9 +335,13 @@ def calculate_team_strength(team,gamedate):
         n_players = 0
 
         for i in range(0, len(lineup_team)):
-            if get_player_score(lineup_team[i][0], lineup_team[i][1], lineup_team[i][2], gamedate) != 0:
-                player_score_sum += get_player_score(lineup_team[i][0], lineup_team[i][1], lineup_team[i][2], gamedate)
+            p_score = get_player_score(lineup_team[i][0], lineup_team[i][1], lineup_team[i][2], gamedate,c)
+            player_score_sum += p_score
+
+            if p_score != 0:
                 n_players+=1
+
+            #print([lineup_team[i][0],lineup_team[i][1],p_score])
 
 
     else:
@@ -352,17 +349,14 @@ def calculate_team_strength(team,gamedate):
 
     player_score_final = (player_score_sum / n_players)
 
-    final_team_score = points * 0.4 + season_points * 0.2 + player_score_final * 0.2
+    #print(player_score_sum)
 
-    c.close()
-    return final_team_score
+    final_team_score = points * 0.3 + season_points * 0.2 + player_score_final * 0.4
+
+    return [final_team_score, points, season_points, player_score_final]
 
 
-def get_player_score(forname, surname, personnr, gamedate):
-
-    # For other seasons add roster data
-    conn = sqlite3.connect('hockeystats.db')
-    c = conn.cursor()
+def get_player_score(forname, surname, personnr, gamedate,c):
 
     current_year = int(gamedate[0:4])
     if int(gamedate[5:7]) > 6:
@@ -373,6 +367,13 @@ def get_player_score(forname, surname, personnr, gamedate):
 
     c.execute("SELECT SEASONID, SUM(SCORE)/COUNT(SCORE), COUNT(SCORE) AS MATCHES FROM lineups WHERE FORNAME = ? and SURNAME = ? and PERSONNR = ? and GAMEDATE < ? GROUP BY SEASONID ORDER BY SEASONID DESC",[forname,surname,personnr,gamedate])
     scrs = c.fetchall()
+
+    #print(scrs)
+
+    #c.execute("SELECT SEASONID, SCORE, GOALS, ASSISTS FROM lineups WHERE FORNAME = ? and SURNAME = ? and PERSONNR = ? and GAMEDATE < ? ORDER BY SEASONID DESC",[forname, surname, personnr, gamedate])
+    #test = c.fetchall()
+
+    #print(test)
 
     lineup_score = 0
     total_weight = 0
@@ -389,7 +390,7 @@ def get_player_score(forname, surname, personnr, gamedate):
 
     #Calculate rosters score
 
-    c.execute("SELECT SEASONID, GAMES, PLUS, MINUS FROM ROSTERS WHERE FORNAME = ? and SURNAME = ? and PERSONNR = ?",[forname,surname,personnr])
+    c.execute("SELECT SEASONID, GAMES, PLUS, MINUS FROM ROSTERS WHERE FORNAME = ? and SURNAME = ? and PERSONNR = ? and SEASONID < ?",[forname,surname,personnr,current_year])
     scrs = c.fetchall()
 
     roster_score = 0
@@ -419,10 +420,11 @@ def get_player_score(forname, surname, personnr, gamedate):
                 roster_score += (plus - minus + 6) / scrs[i][1] * weight * 50
                 total_weight += weight
 
-
-        roster_score = roster_score / total_weight
+        if total_weight > 0:
+            roster_score = roster_score / total_weight
+        else:
+            roster_score = 0
 
     total_score = lineup_score * 0.7 + roster_score * 0.3
 
-    c.close()
     return total_score

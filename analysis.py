@@ -100,6 +100,12 @@ import numpy as np
 
 #TEST
 
-from calcFunctions import calculate_team_strength
+from calcFunctions import get_player_score
 
-print(calculate_team_strength("Linköping HC",'2018-09-20'))
+import sqlite3
+conn = sqlite3.connect('hockeystats.db')
+c = conn.cursor()
+
+test = get_player_score('Lukas', 'Bengtsson', '1994-04-14', '2018-09-22',c)
+
+print(test)
