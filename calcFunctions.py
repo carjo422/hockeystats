@@ -5,16 +5,23 @@ import sqlite3
 
 from functions import mean_list
 
-def create_game_rating(lineup,c,team):
+import sqlite3
+
+
+def create_game_rating(lineup,team):
+    conn = sqlite3.connect('hockeystats.db')
+    c = conn.cursor()
 
     output = []
 
-    #Get some additional information from stats
-
+    #Get some information from stats
     c.execute("SELECT * FROM stats where gameid = ?",[lineup[0][1]])
     stats = c.fetchall()
 
-    #print(stats)
+
+    #Transform data from stats
+
+    #Get home/away score
     if team == stats[0][4]:
         opponent = stats[0][5]
         homeaway = 1
@@ -30,128 +37,138 @@ def create_game_rating(lineup,c,team):
         shots1 = stats[0][9]
         shots2 = stats[0][8]
 
-    for i in range(0,len(lineup)):
 
-        # Some variables
-        gamedate = lineup[i][9]
-        seasonid = lineup[i][2]
-        gameid = lineup[i][1]
+
+    # Get date and id
+    gamedate = lineup[0][9]
+    seasonid = lineup[0][2]
+    gameid = lineup[0][1]
 
     # Get player line
 
-        if lineup[i][13] == 'Goalies':
-            line = 0
-        elif lineup[i][13] == '1st Line':
-            line = 1
-        elif lineup[i][13] == '2nd Line':
-            line = 2
-        elif lineup[i][13] == '3rd Line':
-            line = 3
-        elif lineup[i][13] == '4th Line':
-            line = 4
-        else:
-            line = 5
+    if lineup[0][13] == 'Goalies':
+        line = 0
+    elif lineup[0][13] == '1st Line':
+        line = 1
+    elif lineup[0][13] == '2nd Line':
+        line = 2
+    elif lineup[0][13] == '3rd Line':
+        line = 3
+    elif lineup[0][13] == '4th Line':
+        line = 4
+    else:
+        line = 5
 
     # Get player position
 
-        c.execute("SELECT position from rosters where SEASONID = ? and TEAM = ? and SERIE = ? and NUMBER = ?",[lineup[i][2],team,lineup[i][3],lineup[i][10]])
-        position = c.fetchall()
+    c.execute("SELECT position from rosters where SEASONID = ? and TEAM = ? and SERIE = ? and NUMBER = ?",[lineup[0][2],team,lineup[0][3],lineup[0][10]])
+    position = c.fetchall()
 
-        if len(position) > 0:
-            position = position[0][0]
-        else:
-            position = ""
+    if len(position) > 0:
+        position = position[0][0]
+    else:
+        position = ""
 
     # Get lineup information
 
-        currentserie = lineup[i][3]
-        goals = lineup[i][16]
-        PPgoals = lineup[i][17]
-        SHgoals = lineup[i][18]
-        assist = lineup[i][19]
-        plus = lineup[i][20]
-        minus = lineup[i][21]
-        penalty = lineup[i][22]
-        inPP = lineup[i][23]
-        inBP = lineup[i][24]
-        shots = lineup[i][25]
-        saves = lineup[i][26]
+    currentserie = lineup[0][3]
+    goals = lineup[0][16]
+    PPgoals = lineup[0][17]
+    SHgoals = lineup[0][18]
+    assist = lineup[0][19]
+    plus = lineup[0][20]
+    minus = lineup[0][21]
+    penalty = lineup[0][22]
+    inPP = lineup[0][23]
+    inBP = lineup[0][24]
+    shots = lineup[0][25]
+    saves = lineup[0][26]
 
-        if lineup[i][6] == lineup[i][8]:
-            comp = lineup[i][7]
-        else:
-            comp = lineup[i][6]
+    if lineup[0][6] == lineup[0][8]:
+        comp = lineup[0][7]
+    else:
+        comp = lineup[0][6]
 
     # How good is the competition
 
+    #Check if score is already in team score table
+    c.execute("SELECT SCORE FROM TEAMSCORE WHERE GAMEID = ? AND TEAM = ?", [gameid, comp])
+    cstat = c.fetchall()
+
+    if len(cstat) > 0:
+        compstat = cstat[0][0]
+    else:
         compstat = calculate_team_strength(comp,gamedate)
-
-        olddate = stats[0][3]
-        c.execute("SELECT SEASONID, SERIE, SUM(CASE WHEN OUTCOME = 1 THEN 3 WHEN OUTCOME = 2 THEN 2 WHEN OUTCOME = 3 THEN 1 ELSE 0 END) POINTS, COUNT(TEAM) as MATCHES FROM TEAMGAMES WHERE TEAM = ? AND SEASONID = ? AND GAMEDATE < ? AND GAMEDATE >= ? GROUP BY SEASONID, SERIE", [opponent, stats[0][0], stats[0][3], olddate])
-        form = c.fetchall()
-
-        score = 0
-        offScore = 0
-        defScore = 0
-
-        if "D" in position:
-
-            score += goals * 12 + PPgoals * 6 + SHgoals * 12 + assist * 6 + plus * 5 + minus * -8 + inPP * 5 + inBP * 5 - penalty * 4
-
-            if minus == 0:
-                if line == 1:
-                    score += 10
-                elif line == 2:
-                    score += 6
-                elif line in [3,4]:
-                    score +=3
-                else:
-                    score +=1
-
-            score += (shots * 2.6 + (shots - saves) * -20)/6
-
-        elif position == "GK":
-
-            score += assist * 10
-            score += plus * 5
-            score += minus *-5
-            score += shots*2.6 + (shots-saves)*-20
-            score -= penalty * 10
-
-        else:
-
-            score += goals * 12 + PPgoals * 6 + SHgoals * 12 + assist * 8 + plus * 6 + minus * -7 + inPP * 5 + inBP * 5 - penalty * 6
-
-            if minus == 0:
-                if line == 1:
-                    score += 6
-                elif line == 2:
-                    score += 2
-
-            score += (shots * 2.6 + (shots - saves) * -20) / 15
+        c.execute("INSERT INTO TEAMSCORE (GAMEID, GAMEDATE, TEAM, SCORE) VALUES (?,?,?,?)",[gameid, gamedate, comp, compstat])
+        conn.commit()
 
 
-        score *= ((compstat)/2+0.5)
+    #Calculate score for player
+
+    score = 0
+    offScore = 0
+    defScore = 0
+
+    if "D" in position:
+
+        score += goals * 12 + PPgoals * 6 + SHgoals * 12 + assist * 6 + plus * 5 + minus * -8 + inPP * 5 + inBP * 5 - penalty * 4
+
+        if minus == 0:
+            if line == 1:
+                score += 10
+            elif line == 2:
+                score += 6
+            elif line in [3,4]:
+                score +=3
+            else:
+                score +=1
+
+        score += (shots * 2.6 + (shots - saves) * -20)/6
+
+    elif position == "GK":
+
+        score += assist * 10
+        score += plus * 5
+        score += minus *-5
+        score += shots*2.6 + (shots-saves)*-20
+        score -= penalty * 10
+
+    else:
+
+        score += goals * 12 + PPgoals * 6 + SHgoals * 12 + assist * 8 + plus * 6 + minus * -7 + inPP * 5 + inBP * 5 - penalty * 6
+
+        if minus == 0:
+            if line == 1:
+                score += 6
+            elif line == 2:
+                score += 2
+
+        score += (shots * 2.6 + (shots - saves) * -20) / 15
 
 
-        if homeaway == 2:
-            score += 5
+    score *= ((compstat)/2+0.5)
 
-        if score < -10:
-            finalScore = 1
-        elif score >= -10 and score < 10:
-            finalScore = 2
-        elif score >= 10 and score < 25:
-            finalScore = 3
-        elif score >= 25 and score < 50:
-            finalScore = 4
-        elif score >= 50:
-            finalScore = 5
+
+    if homeaway == 2:
+        score += 5
+
+    if score < -10:
+        finalScore = 1
+    elif score >= -10 and score < 10:
+        finalScore = 2
+    elif score >= 10 and score < 25:
+        finalScore = 3
+    elif score >= 25 and score < 50:
+        finalScore = 4
+    elif score >= 50:
+        finalScore = 5
 
     offScore = finalScore #For later development
     defScore = finalScore #For later development
 
     playerScore = [score, finalScore, offScore, defScore]
+
+    c.close()
 
     return playerScore
 
@@ -241,11 +258,12 @@ def create_teamgames(seasonYear, serie):
 
 def calculate_team_strength(team,gamedate):
 
-    import sqlite3
+    #Import and establish database connection
     conn = sqlite3.connect('hockeystats.db')
     c = conn.cursor()
-    print([gamedate,team])
+
     c.execute("SELECT * from lineups where gamedate = ? and TEAM = ? ",[gamedate,team])
+
     lineup = c.fetchall()
     lineup = lineup[0]
 
@@ -270,8 +288,8 @@ def calculate_team_strength(team,gamedate):
         points = 1.5
         score = 0
 
-    print("Average score last 5: " + str(points))
-    print("Average goal diff last 5: " + str(score))
+    #print("Average score last 5: " + str(points))
+    #print("Average goal diff last 5: " + str(score))
 
     c.execute(
         "SELECT SEASONID, SERIE, COUNT(OUTCOME), SUM(4-OUTCOME) as POINTS FROM TEAMGAMES WHERE TEAM = ? and GAMEDATE < ? GROUP BY SEASONID, SERIE ORDER BY SEASONID",
@@ -313,11 +331,10 @@ def calculate_team_strength(team,gamedate):
             sum += 1 / (years_ago)
 
         season_points = season_points / sum
-        print("Average point / game last seasons: " + str(season_points))
+        #print("Average point / game last seasons: " + str(season_points))
 
     c.execute("SELECT FORNAME, SURNAME, PERSONNR FROM lineups where gameid = ? and team = ?", [lineup[1], team])
     lineup_team = np.array(c.fetchall())
-
 
     if len(lineup_team) > 0:
 
@@ -337,18 +354,19 @@ def calculate_team_strength(team,gamedate):
 
     final_team_score = points * 0.4 + season_points * 0.2 + player_score_final * 0.2
 
+    c.close()
     return final_team_score
 
 
 def get_player_score(forname, surname, personnr, gamedate):
 
     # For other seasons add roster data
-
-    import sqlite3
     conn = sqlite3.connect('hockeystats.db')
     c = conn.cursor()
 
     current_year = int(gamedate[0:4])
+    if int(gamedate[5:7]) > 6:
+        current_year+=1
 
 
     #Calculate lineup score
@@ -406,5 +424,5 @@ def get_player_score(forname, surname, personnr, gamedate):
 
     total_score = lineup_score * 0.7 + roster_score * 0.3
 
-
+    c.close()
     return total_score

@@ -1,11 +1,11 @@
-from official_roster import get_official_roster
-
 #def get_year_statistics(seasonID, season, serie):
 
 #test = get_official_roster(9006, 2018, 'SM Slutspel')
 
 import urllib.request as urllib
+
 from functions import get_td_content
+
 
 def get_year_statistics(id,seasonYear,serie):
 

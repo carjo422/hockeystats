@@ -1,13 +1,15 @@
-from official_roster import get_official_roster
 import datetime
-from get_year_statistics import get_year_statistics
-from calcFunctions import create_teamgames
-import urllib.request as urllib
-from functions import isnumber
-from functions import get_td_content
-from get_stats import get_stats
-
 import sqlite3
+import urllib.request as urllib
+
+from scfiles.get_stats import get_stats
+from scfiles.official_roster import get_official_roster
+
+from calcFunctions import create_teamgames
+from functions import get_td_content
+from functions import isnumber
+from scfiles.get_year_statistics import get_year_statistics
+
 conn = sqlite3.connect('hockeystats.db')
 c = conn.cursor()
 
@@ -161,18 +163,19 @@ def add_team_games(seasonID, seasonYear, serie):
     create_teamgames(seasonYear, serie)
 
 
-#c.execute("DELETE FROM rosters where seasonID = ? and serie = ?",['2019','SHL'])
-#c.execute("DELETE FROM schedule where seasonID = ? and serie = ?",['2019','SHL'])
-#c.execute("DELETE FROM teamgames where seasonID = ? and serie = ?",['2019','SHL'])
-#c.execute("DELETE FROM lineups where seasonID = ? and serie = ?",['2019','SHL'])
-#c.execute("DELETE FROM events where seasonID = ?",['2019'])
-#conn.commit()
-
-c.execute("UPDATE lineups SET GAMEDATE = SUBSTR(GAMEDATE,1,10)")
-c.execute("UPDATE teamgames SET GAMEDATE = SUBSTR(GAMEDATE,1,10)")
-c.execute("UPDATE stats SET GAMEDATE = SUBSTR(GAMEDATE,1,10)")
-c.execute("UPDATE schedule SET GAMEDATE = SUBSTR(GAMEDATE,1,10)")
+c.execute("DELETE FROM rosters where seasonID = ? and serie = ?",['2019','SHL'])
+c.execute("DELETE FROM schedule where seasonID = ? and serie = ?",['2019','SHL'])
+c.execute("DELETE FROM teamgames where seasonID = ? and serie = ?",['2019','SHL'])
+c.execute("DELETE FROM lineups where seasonID = ? and serie = ?",['2019','SHL'])
+c.execute("DELETE FROM events where seasonID = ?",['2019'])
+c.execute("DELETE FROM stats where seasonID = ?",['2019'])
 conn.commit()
+
+#c.execute("UPDATE lineups SET GAMEDATE = SUBSTR(GAMEDATE,1,10)")
+#c.execute("UPDATE teamgames SET GAMEDATE = SUBSTR(GAMEDATE,1,10)")
+#c.execute("UPDATE stats SET GAMEDATE = SUBSTR(GAMEDATE,1,10)")
+#c.execute("UPDATE schedule SET GAMEDATE = SUBSTR(GAMEDATE,1,10)")
+#conn.commit()
 
 #add_team_games(2892, 2013, "SHL")
 #add_team_games(3905, 2014, "SHL")
