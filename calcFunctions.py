@@ -16,7 +16,6 @@ def create_game_rating(lineup,team,c,conn):
     c.execute("SELECT * FROM stats where gameid = ?",[lineup[0][1]])
     stats = c.fetchall()
 
-
     #Transform data from stats
 
     #Get home/away score
@@ -44,15 +43,15 @@ def create_game_rating(lineup,team,c,conn):
 
     # Get player line
 
-    if lineup[0][13] == 'Goalies':
+    if lineup[0][14] == 'Goalies':
         line = 0
-    elif lineup[0][13] == '1st Line':
+    elif lineup[0][14] == '1st Line':
         line = 1
-    elif lineup[0][13] == '2nd Line':
+    elif lineup[0][14] == '2nd Line':
         line = 2
-    elif lineup[0][13] == '3rd Line':
+    elif lineup[0][14] == '3rd Line':
         line = 3
-    elif lineup[0][13] == '4th Line':
+    elif lineup[0][14] == '4th Line':
         line = 4
     else:
         line = 5
@@ -77,8 +76,6 @@ def create_game_rating(lineup,team,c,conn):
     plus = lineup[0][20]
     minus = lineup[0][21]
     penalty = lineup[0][22]
-    inPP = lineup[0][23]
-    inBP = lineup[0][24]
     shots = lineup[0][25]
     saves = lineup[0][26]
 
@@ -90,18 +87,9 @@ def create_game_rating(lineup,team,c,conn):
     # How good is the competition
 
     #Check if score is already in team score table
-    c.execute("SELECT SCORE FROM TEAMSCORE WHERE GAMEID = ? AND TEAM = ?", [gameid, comp])
-    cstat = c.fetchall()
-
-    if len(cstat) > 0:
-        compstat = cstat[0][0]
-    else:
-
-        [compstat, form_score, last_seasons_score, player_score] = calculate_team_strength(comp,gamedate,c)
-        c.execute("INSERT INTO TEAMSCORE (SEASONID, SERIE, GAMEID, GAMEDATE, TEAM, SCORE, FORM_SCORE, LAST_SEASONS_SCORE, PLAYER_SCORE) VALUES (?,?,?,?,?,?,?,?,?)",[stats[0][0], stats[0][1], gameid, gamedate, comp, compstat, form_score, last_seasons_score, player_score])
-        conn.commit()
-        print(compstat)
-
+    compstat = calculate_team_strength_simple(comp,gamedate,c)
+    c.execute("Update TEAMGAMES SET OPP_SCORE_SIMPLE = ? WHERE GAMEID = ? AND TEAM = ?",[compstat, lineup[0][1], lineup[0][8]])
+    conn.commit()
 
     #Calculate score for player
 
@@ -111,60 +99,72 @@ def create_game_rating(lineup,team,c,conn):
 
     if "D" in position:
 
-        score += goals * 12 + PPgoals * 6 + SHgoals * 12 + assist * 6 + plus * 5 + minus * -8 + inPP * 5 + inBP * 5 - penalty * 4
+        score += goals * 12 + PPgoals * 6 + SHgoals * 12 + assist * 8 + plus * 8 + minus * -8 - penalty * 2
+        offScore += goals * 12 + PPgoals * 6 + SHgoals * 12 + assist * 8 + plus * 8
 
         if minus == 0:
             if line == 1:
-                score += 10
+                score += 12
+                defScore +=12
             elif line == 2:
-                score += 6
+                score += 8
+                defScore += 8
             elif line in [3,4]:
-                score +=3
+                score +=5
+                defScore += 5
             else:
-                score +=1
+                score +=2
+                defScore += 2
 
-        score += (shots * 2.6 + (shots - saves) * -20)/6
+        score += (shots * 2.6 + (shots - saves) * -20) / 4
+        defScore += (shots * 2.6 + (shots - saves) * -20) / 4
 
     elif position == "GK":
 
         score += assist * 10
         score += plus * 5
         score += minus *-5
-        score += shots*2.6 + (shots-saves)*-20
+        score += shots*2.6 + (shots-saves)*-25
         score -= penalty * 10
 
     else:
 
-        score += goals * 12 + PPgoals * 6 + SHgoals * 12 + assist * 8 + plus * 6 + minus * -7 + inPP * 5 + inBP * 5 - penalty * 6
+        score += goals * 12 + PPgoals * 6 + SHgoals * 12 + assist * 8 + plus * 6 + minus * -7 - penalty * 3
+        offScore += goals * 12 + PPgoals * 6 + SHgoals * 12 + assist * 8 + plus * 6
 
         if minus == 0:
             if line == 1:
                 score += 6
+                defScore += 12
             elif line == 2:
                 score += 2
+                defScore += 8
+            else:
+                defScore += 4
 
         score += (shots * 2.6 + (shots - saves) * -20) / 15
+        defScore += (shots * 2.6 + (shots - saves) * -20) / 10
 
-
-    #score += (compstat-1)*5
-
+    if line == 1:
+        score += 3
+    elif line == 2:
+        score += 1
 
     if homeaway == 2:
-        score += 5
+        score += 5*((compstat-1)/4+1)
+
+    score *= (compstat / 5 + 0.5)
 
     if score < -10:
         finalScore = 1
     elif score >= -10 and score < 10:
         finalScore = 2
-    elif score >= 10 and score < 25:
+    elif score >= 10 and score < 27:
         finalScore = 3
-    elif score >= 25 and score < 50:
+    elif score >= 27 and score < 52:
         finalScore = 4
-    elif score >= 50:
+    elif score >= 52:
         finalScore = 5
-
-    offScore = finalScore #For later development
-    defScore = finalScore #For later development
 
     playerScore = [score, finalScore, offScore, defScore]
 
@@ -252,7 +252,6 @@ def calculate_team_strength(team,gamedate,c):
     ######################################################## CODE TO GET AVERAGE SCORE FROM LAST GAMES ##############################################################
 
     c.execute("SELECT * from lineups where gamedate = ? and TEAM = ? ",[gamedate,team])
-    #print([gamedate,team])
     lineup = c.fetchall()
     lineup = lineup[0]
 
@@ -336,20 +335,17 @@ def calculate_team_strength(team,gamedate,c):
 
         for i in range(0, len(lineup_team)):
             p_score = get_player_score(lineup_team[i][0], lineup_team[i][1], lineup_team[i][2], gamedate,c)
-            player_score_sum += p_score
+            player_score_sum += p_score[0][0]
 
             if p_score != 0:
                 n_players+=1
 
-            #print([lineup_team[i][0],lineup_team[i][1],p_score])
 
 
     else:
         player_score_final = -999
 
     player_score_final = (player_score_sum / n_players)
-
-    #print(player_score_sum)
 
     final_team_score = points * 0.3 + season_points * 0.2 + player_score_final * 0.4
 
@@ -367,13 +363,6 @@ def get_player_score(forname, surname, personnr, gamedate,c):
 
     c.execute("SELECT SEASONID, SUM(SCORE)/COUNT(SCORE), COUNT(SCORE) AS MATCHES FROM lineups WHERE FORNAME = ? and SURNAME = ? and PERSONNR = ? and GAMEDATE < ? GROUP BY SEASONID ORDER BY SEASONID DESC",[forname,surname,personnr,gamedate])
     scrs = c.fetchall()
-
-    #print(scrs)
-
-    #c.execute("SELECT SEASONID, SCORE, GOALS, ASSISTS FROM lineups WHERE FORNAME = ? and SURNAME = ? and PERSONNR = ? and GAMEDATE < ? ORDER BY SEASONID DESC",[forname, surname, personnr, gamedate])
-    #test = c.fetchall()
-
-    #print(test)
 
     lineup_score = 0
     total_weight = 0
@@ -427,4 +416,43 @@ def get_player_score(forname, surname, personnr, gamedate,c):
 
     total_score = lineup_score * 0.7 + roster_score * 0.3
 
-    return total_score
+    return [total_score, lineup_score, roster_score]
+
+
+
+def calculate_team_strength_simple(team,gamedate,c):
+
+    ######################################################## CODE TO GET AVERAGE SCORE FROM LAST GAMES ##############################################################
+
+    c.execute("SELECT * from lineups where gamedate = ? and TEAM = ? ",[gamedate,team])
+    #print([gamedate,team])
+    lineup = c.fetchall()
+    lineup = lineup[0]
+
+    currentserie=lineup[3]
+    seasonid=lineup[2]
+
+    c.execute("SELECT * FROM TEAMGAMES WHERE TEAM = ? and GAMEDATE < ? and SEASONID = ? ORDER BY GAMEDATE DESC", [team, gamedate, str(seasonid)])
+    last5games = np.array(c.fetchall())
+
+    n_games = min(len(last5games), 5)
+    points = 0
+    score = 0
+
+    if n_games > 0:
+
+        for i in range(0, n_games):
+            points += (4 - int(last5games[i][7])) / 5
+            score += int(last5games[i][8]) / 5
+            score -= int(last5games[i][9]) / 5
+
+        points += (5-n_games)*0.3
+
+    else:
+        points = 1.5
+        score = 0
+
+
+
+
+    return points*4/3+1

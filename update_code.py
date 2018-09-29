@@ -33,6 +33,7 @@ def re_score(seasonYear,serie):
                 lineup = c.fetchall()
 
                 score = create_game_rating(lineup, lineups[i][0], c,conn)
+                print(score)
 
                 if len(score) < 4:
                     score = ['0', '0', '0', '0']
@@ -48,7 +49,7 @@ def re_score(seasonYear,serie):
 
         c.close
 
-re_score(2016,'SHL')
+#re_score(2016,'SHL')
 #re_score(2017,'SHL')
 #re_score(2018,'SHL')
-#re_score(2019,'SHL')
+re_score(2019,'SHL')

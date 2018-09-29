@@ -21,8 +21,8 @@ t=0
 t_count = 0 # Counts number of update
 
 #Input variables on seasons
-seasonID = 7132
-seasonYear = 2017
+seasonID = 9171
+seasonYear = 2019
 serie = "SHL"
 
 
@@ -227,30 +227,12 @@ for j in range(0,len(gameVector)):
 
             c.execute("UPDATE lineups SET PERSONNR = ? WHERE SEASONID = ? and TEAM = ? and NUMBER = ? and FORNAME = ? and SURNAME = ?",[persnr, seasonYear, lineups[i][1], lineups[i][2], lineups[i][3], lineups[i][4]])
 
-            conn.commit()
-
-        print(str(stats[0]) + " rosters and lineups loaded")
-    else:
-        print("Game already loaded")
-
-
-########################################################################################################################
-##################    Get game specific statistics (Events, stats, refs lineups extra)    ##############################
-########################################################################################################################
-
-for j in range(0,len(gameVector)):
-
-    # Check if game already has been updated, then skip update
-
-    c.execute("SELECT * FROM events where GAMEID = ?", [gameVector[j][0]])
-    check = c.fetchall()
-
-    if len(check) == 0:
+        conn.commit()
 
         # Get events data from each game
-        events = get_actions(gameVector[j][0],audVector[j][0],venueVector[j][0], seasonYear, stats[2], stats[3], c)
+        events = get_actions(gameVector[j][0], audVector[j][0], venueVector[j][0], seasonYear, stats[2], stats[3],c)
 
-        #Create event table
+        # Create event table
         for i in range(0, len(events)):
             c.execute(
                 "SELECT ID FROM events where GAMEID = ? and TIME = ? and EVENT = ? and TEAM = ? and NUMBER = ? and FORNAME = ? and SURNAME = ?",
@@ -266,7 +248,9 @@ for j in range(0,len(gameVector)):
 
             if len(hits) == 0:
 
-                c.execute("""SELECT PERSONNR FROM rosters WHERE SEASONID = ? and TEAM = ? and NUMBER = ? and FORNAME = ? AND SURNAME = ? """, (seasonYear, events[i][4], events[i][5], events[i][7], events[i][6]))
+                c.execute(
+                    """SELECT PERSONNR FROM rosters WHERE SEASONID = ? and TEAM = ? and NUMBER = ? and FORNAME = ? AND SURNAME = ? """,
+                    (seasonYear, events[i][4], events[i][5], events[i][7], events[i][6]))
                 personnr = c.fetchall()
 
                 if personnr == []:
@@ -274,20 +258,23 @@ for j in range(0,len(gameVector)):
                 else:
                     pnr = personnr[0][0]
 
-
                 c.execute("""INSERT INTO
                                 events (
                                     ID,GAMEID,SEASONID,AUDIENCE,VENUE,PERIOD,TIME,EVENT,TEAM,NUMBER,PERSONNR,FORNAME,SURNAME,EXTRA1,EXTRA2)
                                 VALUES
                                     (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
-                          (id,events[i][0],events[i][12],events[i][10],events[i][11], events[i][1], events[i][2], events[i][3], events[i][4], events[i][5],pnr, events[i][7],events[i][6],events[i][8],events[i][9]))
+                          (
+                          id, events[i][0], events[i][12], events[i][10], events[i][11], events[i][1], events[i][2],
+                          events[i][3], events[i][4], events[i][5], pnr, events[i][7], events[i][6], events[i][8],
+                          events[i][9]))
 
             else:
                 pass
 
         conn.commit()
 
-        #Create ref table
+
+        # Create ref table
         for i in range(0, len(events)):
             c.execute(
                 "SELECT GAMEID as GAMEID FROM refs where GAMEID = ?",
@@ -301,12 +288,16 @@ for j in range(0,len(gameVector)):
                                     GAMEID,SEASONID,HOMETEAM,AWAYTEAM,REF1,REF2,LINE1,LINE2)
                                 VALUES
                                     (?,?,?,?,?,?,?,?)""",
-                          (stats[0],seasonYear,refs[0],refs[1],stats[2],stats[3],lines[0],lines[1]))
+                          (stats[0], seasonYear, refs[0], refs[1], stats[2], stats[3], lines[0], lines[1]))
 
             else:
                 pass
 
         conn.commit()
+
+
+        print(str(stats[0]) + " rosters and lineups loaded")
+
 
 
         #Update lineups with stats
@@ -344,7 +335,7 @@ for j in range(0,len(gameVector)):
             if plus == None:
                 plus = 0
 
-            c.execute("SELECT SUM(CASE WHEN EVENT = ? then 1 else 0 end) as X FROM events where GAMEID = ? and TEAM = ? and NUMBER = ?",['-1', gameVector[j][0], lineups[i][0], lineups[i][1]])
+            c.execute("SELECT SUM(CASE WHEN EVENT = ? then 1 else 0 end) as X FROM events where GAMEID = ? and TEAM = ? and NUMBER = ? and (extra = ? or extra = ?)",['-1', gameVector[j][0], lineups[i][0], lineups[i][1]], '','PP')
             minus = c.fetchall()[0][0]
 
             if minus == None:
@@ -432,24 +423,24 @@ for j in range(0,len(gameVector)):
             conn.commit()
 
 
-        #Create teamgames table
+            #Create teamgames table
 
-        create_teamgames(seasonYear, serie)
+            create_teamgames(seasonYear, serie, c)
 
-        #Standings table
+            #Standings table
 
-        #c.execute("""SELECT TEAM, COUNT(TEAM) as MATCHES, SUM(CASE WHEN OUTCOME = 1 then 1 else 0 end) as WINS, SUM(CASE WHEN OUTCOME = 2 then 1 else 0 end) as OT_WINS, SUM(CASE WHEN OUTCOME = 3 then 1 else 0 end) as OT_LOSS,
-        #             SUM(CASE WHEN OUTCOME = 4 then 1 else 0 end) as LOSS,  SUM(CASE WHEN OUTCOME = 1 then 3 WHEN OUTCOME = 2 then 2 WHEN OUTCOME = 1 then 1 else 0 end) as POINTS, SUM(SCORE1) as G, SUM(SCORE2) as C,
-        #             SUM(SCORE1)-SUM(SCORE2) as D FROM TEAMGAMES WHERE SEASONID = ? AND SERIE = ? GROUP BY TEAM""",[str(seasonYear),serie])
-        #
-        #standings = c.fetchall()
-        #
-        #standings = np.array(standings)
-        #
-        #
-        #np.sort(standings, axis=0)
+            #c.execute("""SELECT TEAM, COUNT(TEAM) as MATCHES, SUM(CASE WHEN OUTCOME = 1 then 1 else 0 end) as WINS, SUM(CASE WHEN OUTCOME = 2 then 1 else 0 end) as OT_WINS, SUM(CASE WHEN OUTCOME = 3 then 1 else 0 end) as OT_LOSS,
+            #             SUM(CASE WHEN OUTCOME = 4 then 1 else 0 end) as LOSS,  SUM(CASE WHEN OUTCOME = 1 then 3 WHEN OUTCOME = 2 then 2 WHEN OUTCOME = 1 then 1 else 0 end) as POINTS, SUM(SCORE1) as G, SUM(SCORE2) as C,
+            #             SUM(SCORE1)-SUM(SCORE2) as D FROM TEAMGAMES WHERE SEASONID = ? AND SERIE = ? GROUP BY TEAM""",[str(seasonYear),serie])
+            #
+            #standings = c.fetchall()
+            #
+            #standings = np.array(standings)
+            #
+            #
+            #np.sort(standings, axis=0)
 
-        #print(standings)
+            #print(standings)
 
         print(str(stats[0]) + " stats, events loaded")
     else:
@@ -484,7 +475,7 @@ for j in range(0, len(gameVector)):
 
     print("Score updated")
 
-    conn.commit
+    conn.commit()
 
 c.close
 

@@ -106,6 +106,11 @@ import sqlite3
 conn = sqlite3.connect('hockeystats.db')
 c = conn.cursor()
 
-test = get_player_score('Lukas', 'Bengtsson', '1994-04-14', '2018-09-22',c)
+c.execute("SELECT FORNAME, SURNAME, PERSONNR, GAMEDATE FROM lineups where GAMEDATE = ?",['2018-09-29'])
+testLine = c.fetchall()
 
-print(test)
+for i in range(0,len(testLine)):
+
+        test = get_player_score(testLine[i][0], testLine[i][1], testLine[i][2], testLine[i][3],c)
+
+        print(testLine[i][0], testLine[i][1], test)
