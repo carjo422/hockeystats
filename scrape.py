@@ -21,8 +21,8 @@ t=0
 t_count = 0 # Counts number of update
 
 #Input variables on seasons
-seasonID = 9171
-seasonYear = 2019
+seasonID = 6052
+seasonYear = 2016
 serie = "SHL"
 
 
@@ -335,7 +335,7 @@ for j in range(0,len(gameVector)):
             if plus == None:
                 plus = 0
 
-            c.execute("SELECT SUM(CASE WHEN EVENT = ? then 1 else 0 end) as X FROM events where GAMEID = ? and TEAM = ? and NUMBER = ? and (extra = ? or extra = ?)",['-1', gameVector[j][0], lineups[i][0], lineups[i][1]], '','PP')
+            c.execute("SELECT SUM(CASE WHEN EVENT = ? then 1 else 0 end) as X FROM events where GAMEID = ? and TEAM = ? and NUMBER = ? and (extra1 = ? or extra1 = ?)",['-1', gameVector[j][0], lineups[i][0], lineups[i][1], '','PP'])
             minus = c.fetchall()[0][0]
 
             if minus == None:

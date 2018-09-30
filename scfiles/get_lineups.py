@@ -20,7 +20,8 @@ def get_lineups(id, audience, venue, season, team1, team2):
     output = []
     line = ""
     team = team1
-    chng = 0
+    chng1 = 0
+    chng2 = 0
 
     for j in range(1, len(page_source) - 10):
 
@@ -41,12 +42,15 @@ def get_lineups(id, audience, venue, season, team1, team2):
             line = "2nd Line"
         elif page_source[j:j + 8] == "3rd Line":
             line = "3rd Line"
+
+            chng1 += 1
+            if chng1 == 2: team = team2
+
         elif page_source[j:j + 8] == "4th Line":
             line = "4th Line"
 
-            chng +=1
-            if chng == 2:
-                team = team2
+            chng2 +=1
+            if chng2 == 2: team = team2
 
         elif page_source[j:j+5] == "Extra":
             line = "Extra players"

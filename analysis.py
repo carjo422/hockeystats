@@ -114,3 +114,7 @@ for i in range(0,len(testLine)):
         test = get_player_score(testLine[i][0], testLine[i][1], testLine[i][2], testLine[i][3],c)
 
         print(testLine[i][0], testLine[i][1], test)
+
+c.execute("SELECT FORNAME, SURNAME, PERSONNR, SUM(SCORE)/COUNT(SCORE) as SCORE from lineups group by FORNAME, SURNAME, PERSONNR order by SCORE DESC")
+test = c.fetchall()
+print(test)
