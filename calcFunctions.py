@@ -335,7 +335,7 @@ def calculate_team_strength(team,gamedate,c):
 
         for i in range(0, len(lineup_team)):
             p_score = get_player_score(lineup_team[i][0], lineup_team[i][1], lineup_team[i][2], gamedate,c)
-            player_score_sum += p_score[0][0]
+            player_score_sum += p_score[0]
 
             if p_score != 0:
                 n_players+=1
@@ -404,9 +404,10 @@ def get_player_score(forname, surname, personnr, gamedate,c):
                     minus = 0
                 else:
                     minus = int(scrs[i][3])
+
             if scrs[i][1] != None:
                 weight = scrs[i][1] / (current_year - scrs[i][0] + 1)
-                roster_score += (plus - minus + 6) / scrs[i][1] * weight * 50
+                roster_score += (plus - minus + scrs[i][1] * 0.25) / scrs[i][1] * weight * 50
                 total_weight += weight
 
         if total_weight > 0:
@@ -414,7 +415,14 @@ def get_player_score(forname, surname, personnr, gamedate,c):
         else:
             roster_score = 0
 
-    total_score = lineup_score * 0.7 + roster_score * 0.3
+
+    if roster_score != 0:
+        total_score = lineup_score * 0.7 + roster_score * 0.3
+    else:
+        total_score = lineup_score
+
+
+    #print(forname,surname,total_score, lineup_score, roster_score)
 
     return [total_score, lineup_score, roster_score]
 

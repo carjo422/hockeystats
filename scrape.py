@@ -14,6 +14,7 @@ from scfiles.get_refs import get_refs
 from scfiles.get_stats import get_stats
 from scfiles.get_year_statistics import get_year_statistics
 from scfiles.official_roster import get_official_roster
+from calcFunctions import calculate_team_strength
 
 
 #To get feedback on how many games to update
@@ -21,8 +22,8 @@ t=0
 t_count = 0 # Counts number of update
 
 #Input variables on seasons
-seasonID = 6052
-seasonYear = 2016
+seasonID = 9171
+seasonYear = 2019
 serie = "SHL"
 
 
@@ -456,7 +457,7 @@ for j in range(0, len(gameVector)):
 
     # Add score to lineups
 
-    c.execute("SELECT TEAM, NUMBER, FORNAME, SURNAME, GAMEDATE FROM lineups where GAMEID = ?", [gameVector[j][0]])
+    c.execute("SELECT TEAM, NUMBER, FORNAME, SURNAME, GAMEDATE, HOMETEAM, AWAYTEAM FROM lineups where GAMEID = ?", [gameVector[j][0]])
     lineups = c.fetchall()
 
     for i in range(0, len(lineups)):
@@ -472,6 +473,17 @@ for j in range(0, len(gameVector)):
         c.execute(
             "UPDATE lineups SET SCORE = ?, FINALSCORE = ?, OFFSCORE = ?, DEFSCORE = ? WHERE GAMEID = ? and TEAM = ? and NUMBER = ?",
             [score[0], score[1], score[2], score[3], gameVector[j][0], lineups[i][0], lineups[i][1]])
+
+
+    #Calculate team strenght
+
+    if len(lineups) > 0:
+
+        team_strenght = calculate_team_strength(lineups[0][5], lineups[0][4], c)
+        print(lineups[0][5], lineups[0][4], team_strenght)
+
+        team_strenght = calculate_team_strength(lineups[0][6], lineups[0][4], c)
+        print(lineups[0][6],lineups[0][4],team_strenght)
 
     print("Score updated")
 
