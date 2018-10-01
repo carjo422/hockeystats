@@ -257,6 +257,7 @@ def calculate_team_strength(team,gamedate,c):
 
     currentserie=lineup[3]
     seasonid=lineup[2]
+    gameid = lineup[1]
 
     c.execute("SELECT * FROM TEAMGAMES WHERE TEAM = ? and GAMEDATE < ? and SEASONID = ? ORDER BY GAMEDATE DESC", [team, gamedate, str(seasonid)])
     last5games = np.array(c.fetchall())
@@ -334,7 +335,7 @@ def calculate_team_strength(team,gamedate,c):
         n_players = 0
 
         for i in range(0, len(lineup_team)):
-            p_score = get_player_score(lineup_team[i][0], lineup_team[i][1], lineup_team[i][2], gamedate,c)
+            p_score = get_player_score(lineup_team[i][0], lineup_team[i][1], lineup_team[i][2], gamedate, gameid, c)
             player_score_sum += p_score[0]
 
             if p_score != 0:
@@ -352,7 +353,7 @@ def calculate_team_strength(team,gamedate,c):
     return [final_team_score, points, season_points, player_score_final]
 
 
-def get_player_score(forname, surname, personnr, gamedate,c):
+def get_player_score(forname, surname, personnr, gamedate, gameid, c):
 
     current_year = int(gamedate[0:4])
     if int(gamedate[5:7]) > 6:
@@ -361,8 +362,10 @@ def get_player_score(forname, surname, personnr, gamedate,c):
 
     #Calculate lineup score
 
-    c.execute("SELECT SEASONID, SUM(SCORE)/COUNT(SCORE), COUNT(SCORE) AS MATCHES FROM lineups WHERE FORNAME = ? and SURNAME = ? and PERSONNR = ? and GAMEDATE < ? GROUP BY SEASONID ORDER BY SEASONID DESC",[forname,surname,personnr,gamedate])
+    c.execute("SELECT SEASONID, SUM(SCORE)/COUNT(SCORE), COUNT(SCORE) AS MATCHES, SERIE FROM lineups WHERE FORNAME = ? and SURNAME = ? and PERSONNR = ? and GAMEDATE < ? GROUP BY SEASONID, SERIE ORDER BY SEASONID DESC",[forname,surname,personnr,gamedate])
     scrs = c.fetchall()
+
+    lineup_years = []
 
     lineup_score = 0
     total_weight = 0
@@ -372,14 +375,23 @@ def get_player_score(forname, surname, personnr, gamedate,c):
         for i in range(0,len(scrs)):
             weight = scrs[i][2]/(current_year-scrs[i][0]+1)
             lineup_score += scrs[i][1]*weight
+
+            if scrs[i][3] == 'HA':
+                lineup_score /= 2
+
             total_weight += weight
 
+            lineup_years.append(scrs[i][0])
+
         lineup_score = lineup_score/total_weight
+
+    # Total weight on lineup score
+    TWL = total_weight
 
 
     #Calculate rosters score
 
-    c.execute("SELECT SEASONID, GAMES, PLUS, MINUS FROM ROSTERS WHERE FORNAME = ? and SURNAME = ? and PERSONNR = ? and SEASONID < ?",[forname,surname,personnr,current_year])
+    c.execute("SELECT SEASONID, GAMES, PLUS, MINUS, SERIE FROM ROSTERS WHERE FORNAME = ? and SURNAME = ? and PERSONNR = ? and SEASONID < ?",[forname,surname,personnr,current_year])
     scrs = c.fetchall()
 
     roster_score = 0
@@ -387,28 +399,34 @@ def get_player_score(forname, surname, personnr, gamedate,c):
 
     if len(scrs) > 0:
 
-        for i in range(0, len(scrs)):
+        for i in range(0, min(len(scrs),4)):
 
-            if scrs[i][2] == " ":
-                plus = 0
-            else:
-                if scrs[i][2] == None:
+            divFact = 1
+            if scrs[i][4] == "HA":
+                divFact = 0.4
+
+            if scrs[i][0] not in lineup_years:
+
+                if scrs[i][2] == " ":
                     plus = 0
                 else:
-                    plus = int(scrs[i][2])
+                    if scrs[i][2] == None:
+                        plus = 0
+                    else:
+                        plus = int(scrs[i][2])
 
-            if scrs[i][3] == " ":
-                minus = 0
-            else:
-                if scrs[i][3] == None:
+                if scrs[i][3] == " ":
                     minus = 0
                 else:
-                    minus = int(scrs[i][3])
+                    if scrs[i][3] == None:
+                        minus = 0
+                    else:
+                        minus = int(scrs[i][3])
 
-            if scrs[i][1] != None:
-                weight = scrs[i][1] / (current_year - scrs[i][0] + 1)
-                roster_score += (plus - minus + scrs[i][1] * 0.25) / scrs[i][1] * weight * 50
-                total_weight += weight
+                if scrs[i][1] != None:
+                    weight = scrs[i][1] / (current_year - scrs[i][0] + 1)
+                    roster_score += (plus - minus + scrs[i][1] * 0.25) / scrs[i][1] * weight * 50 * divFact
+                    total_weight += weight
 
         if total_weight > 0:
             roster_score = roster_score / total_weight
@@ -416,13 +434,34 @@ def get_player_score(forname, surname, personnr, gamedate,c):
             roster_score = 0
 
 
-    if roster_score != 0:
-        total_score = lineup_score * 0.7 + roster_score * 0.3
+
+    #Total weight on roster score
+    TWR = total_weight
+
+    total_score = (roster_score * TWR + lineup_score * TWL*1.25)
+
+    if (TWR+TWL) != 0:
+        total_score /= (TWR+TWL)
+
+    if (TWR+TWL) < 20:
+        total_score = ((TWR+TWL)/20)**(1/2)*total_score + (1-((TWR+TWL)/20)**(1/2))*6
+
+    #Get team, season, serie
+
+    c.execute("SELECT SEASONID, SERIE, TEAM FROM LINEUPS WHERE FORNAME = ? AND SURNAME = ? AND PERSONNR = ? AND GAMEDATE = ?",[forname, surname, personnr, gamedate])
+    sst = c.fetchall()
+
+    seasonyear = sst[0][0]
+    serie = sst[0][1]
+    team = sst[0][2]
+
+    c.execute("SELECT * FROM TEAM_SCORE_BUILD WHERE FORNAME = ? AND SURNAME = ? AND PERSONNR = ? AND GAMEDATE = ?",[forname, surname, personnr, gamedate])
+    chk = c.fetchall()
+
+    if len(chk) == 0:
+        c.execute("INSERT INTO TEAM_SCORE_BUILD (SEASONID, SERIE, PERSONNR, TEAM, GAMEID, GAMEDATE, TEAM_PLAYER_SCORE, FORNAME, SURNAME, PLAYER_SCORE, ROSTER_SCORE, LINEUP_SCORE, TWL, TWR) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",[seasonyear, serie, personnr, team, gameid, gamedate, 0, forname, surname, total_score, roster_score, lineup_score, TWL, TWR])
     else:
-        total_score = lineup_score
-
-
-    #print(forname,surname,total_score, lineup_score, roster_score)
+        c.execute("UPDATE TEAM_SCORE_BUILD SET PLAYER_SCORE = ?, ROSTER_SCORE = ?, TWR = ?, TWL = ?, LINEUP_SCORE = ? WHERE FORNAME = ? AND SURNAME = ? AND PERSONNR = ? AND GAMEDATE = ?",[total_score, roster_score, TWR, TWL, lineup_score, forname, surname, personnr, gamedate])
 
     return [total_score, lineup_score, roster_score]
 

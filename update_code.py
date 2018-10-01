@@ -3,13 +3,11 @@ conn = sqlite3.connect('hockeystats.db')
 c = conn.cursor()
 
 from calcFunctions import create_game_rating
+from calcFunctions import calculate_team_strength
 
 #Update score for games
 
 def re_score(seasonYear,serie):
-
-    c.execute("DELETE FROM teamscore where SEASONID = ? AND SERIE = ?", [seasonYear, serie])
-    conn.commit()
 
     c.execute("SELECT GAMEID from schedule where SEASONID = ? and SERIE = ?", [seasonYear, serie])
     gameVector = c.fetchall()
@@ -22,6 +20,48 @@ def re_score(seasonYear,serie):
 
         for j in range(0, n):
 
+            c.execute("DELETE FROM teamscore where gameid = ?", [gameVector[j][0]])
+            c.execute("DELETE FROM team_score_build where gameid = ?", [gameVector[j][0]])
+            conn.commit()
+
+            c.execute("SELECT TEAM, GAMEDATE FROM TEAMGAMES WHERE GAMEID = ?", [gameVector[j][0]])
+            tgt = c.fetchall()
+
+
+            [final_team_score, points, season_points, player_score_final] = calculate_team_strength(tgt[0][0],tgt[0][1],c)
+
+            c.execute("SELECT * FROM TEAMSCORE WHERE GAMEID = ? AND TEAM = ?",[gameVector[j][0],tgt[0][0]])
+            ts = c.fetchall()
+
+            if len(ts)>0:
+                c.execute("UPDATE TEAMSCORE SET SCORE, FORM_SCORE = ?, LAST_SEASONS_SCORE = ?, PLAYER_SCORE = ? WHERE GAMEID = ? AND TEAM = ?",[final_team_score, points, season_points, player_score_final, gameVector[j][0],tgt[0][0]])
+            else:
+                c.execute("INSERT INTO TEAMSCORE (SEASONID, SERIE, GAMEID, GAMEDATE, TEAM, SCORE, FORM_SCORE, LAST_SEASONS_SCORE, PLAYER_SCORE) VALUES (?,?,?,?,?,?,?,?,?)",[seasonYear, serie, gameVector[j][0], tgt[0][1], tgt[0][0], final_team_score, points, season_points, player_score_final])
+
+
+            [final_team_score, points, season_points, player_score_final] = calculate_team_strength(tgt[1][0],tgt[1][1], c)
+
+            c.execute("SELECT * FROM TEAMSCORE WHERE GAMEID = ? AND TEAM = ?", [gameVector[j][0], tgt[1][0]])
+            ts = c.fetchall()
+
+            if len(ts) > 0:
+                c.execute(
+                    "UPDATE TEAMSCORE SET SCORE, FORM_SCORE = ?, LAST_SEASONS_SCORE = ?, PLAYER_SCORE = ? WHERE GAMEID = ? AND TEAM = ?",
+                    [final_team_score, points, season_points, player_score_final, gameVector[j][0], tgt[1][0]])
+            else:
+                c.execute(
+                    "INSERT INTO TEAMSCORE (SEASONID, SERIE, GAMEID, GAMEDATE, TEAM, SCORE, FORM_SCORE, LAST_SEASONS_SCORE, PLAYER_SCORE) VALUES (?,?,?,?,?,?,?,?,?)",
+                    [seasonYear, serie, gameVector[j][0], tgt[1][1], tgt[1][0], final_team_score, points, season_points,
+                     player_score_final])
+
+            conn.commit()
+
+
+            [final_team_score, points, season_points, player_score_final] = calculate_team_strength(tgt[1][0],tgt[1][1], c)
+
+
+
+
             # Add score to lineups
 
             c.execute("SELECT TEAM, NUMBER, FORNAME, SURNAME, GAMEDATE FROM lineups where GAMEID = ?", [gameVector[j][0]])
@@ -33,7 +73,7 @@ def re_score(seasonYear,serie):
                 lineup = c.fetchall()
 
                 score = create_game_rating(lineup, lineups[i][0], c,conn)
-                print(score)
+                #print(score)
 
                 if len(score) < 4:
                     score = ['0', '0', '0', '0']
@@ -42,6 +82,7 @@ def re_score(seasonYear,serie):
                     "UPDATE lineups SET SCORE = ?, FINALSCORE = ?, OFFSCORE = ?, DEFSCORE = ? WHERE GAMEID = ? and TEAM = ? and NUMBER = ?",
                     [score[0], score[1], score[2], score[3], gameVector[j][0], lineups[i][0], lineups[i][1]])
 
+
             t+=1
             print(str(seasonYear) + " " + str(t) + "/" + str(n) + " scores updated")
 
@@ -49,7 +90,7 @@ def re_score(seasonYear,serie):
 
         c.close
 
-#re_score(2016,'SHL')
-#re_score(2017,'SHL')
-#re_score(2018,'SHL')
+re_score(2016,'SHL')
+re_score(2017,'SHL')
+re_score(2018,'SHL')
 re_score(2019,'SHL')
