@@ -110,41 +110,6 @@ venueVector = c.fetchall()
 
 conn.commit()
 
-########################################################################################################################
-##########################################    Get aggregated statistics    #############################################
-########################################################################################################################
-
-#Get the seasons roster
-rosters = get_official_roster(seasonID,seasonYear,serie)
-
-# Create roster table in database
-for i in range(0, len(rosters)):
-    c.execute(
-        "SELECT PERSONNR FROM rosters where SEASONID = ? and TEAM = ? and PERSONNR = ?",
-        (seasonYear, rosters[i][1], rosters[i][6]))
-    hits = c.fetchall()
-
-    if len(hits) == 0:
-
-        c.execute("""INSERT INTO
-                            rosters (
-                                SEASONID,TEAM,SERIE,NUMBER,SURNAME,FORNAME,PERSONNR,POSITION,HANDLE,LENGHT,WEIGHT,LAST_UPDATE)
-                            VALUES
-                                (?,?,?,?,?,?,?,?,?,?,?,?)""",
-                  (rosters[i][0], rosters[i][1], rosters[i][2], rosters[i][3], rosters[i][4], rosters[i][5],
-                   rosters[i][6], rosters[i][7], rosters[i][8], rosters[i][9], rosters[i][10],
-                   str(datetime.datetime.now())[0:10]))
-
-    else:
-        pass
-
-conn.commit()
-
-
-#Add statistics to roster
-get_year_statistics(seasonID, seasonYear, serie)
-
-
 
 ########################################################################################################################
 ################################    Get game specific statistics (Lineups)    ##########################################
@@ -297,7 +262,7 @@ for j in range(0,len(gameVector)):
         conn.commit()
 
 
-        print(str(stats[0]) + " rosters and lineups loaded")
+        print(str(stats[0]) + " lineups loaded")
 
 
 
@@ -479,11 +444,29 @@ for j in range(0, len(gameVector)):
 
     if len(lineups) > 0:
 
-        team_strenght = calculate_team_strength(lineups[0][5], lineups[0][4], c)
-        print(lineups[0][5], lineups[0][4], team_strenght)
+        # Check score home team
 
-        team_strenght = calculate_team_strength(lineups[0][6], lineups[0][4], c)
-        print(lineups[0][6],lineups[0][4],team_strenght)
+        [team_strenght, form_score, last_seasons_score, player_score] = calculate_team_strength(lineups[0][5], lineups[0][4], c)
+
+        c.execute("SELECT * FROM TEAMSCORE WHERE GAMEDATE = ? AND TEAM = ?", [lineups[0][4],lineups[0][5]])
+        chk = c.fetchall()
+
+        if len(chk) == 0:
+            c.execute("INSERT INTO TEAMSCORE (SEASONID, SERIE, GAMEID, GAMEDATE, TEAM, SCORE, FORM_SCORE, LAST_SEASONS_SCORE, PLAYER_SCORE) VALUES (?,?,?,?,?,?,?,?,?)",
+                      [seasonYear, serie, gameVector[j][0],lineups[0][4],lineups[0][5],team_strenght,form_score, last_seasons_score, player_score])
+
+        #Check score away team
+
+        [team_strenght, form_score, last_seasons_score, player_score] = calculate_team_strength(lineups[0][6], lineups[0][4], c)
+
+        c.execute("SELECT * FROM TEAMSCORE WHERE GAMEDATE = ? AND TEAM = ?", [lineups[0][4], lineups[0][6]])
+        chk = c.fetchall()
+
+        if len(chk) == 0:
+            c.execute(
+                "INSERT INTO TEAMSCORE (SEASONID, SERIE, GAMEID, GAMEDATE, TEAM, SCORE, FORM_SCORE, LAST_SEASONS_SCORE, PLAYER_SCORE) VALUES (?,?,?,?,?,?,?,?,?)",
+                [seasonYear, serie, gameVector[j][0], lineups[0][4], lineups[0][6], team_strenght, form_score,
+                 last_seasons_score, player_score])
 
     print("Score updated")
 
