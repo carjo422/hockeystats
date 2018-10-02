@@ -63,12 +63,19 @@ def get_player_form(team,seasonYear,gamedate,c):
     lastgame = gdt[0][0]
 
     c.execute("SELECT FORNAME, SURNAME, SUM(SCORE)/COUNT(SCORE) AS SCORE, SUM(OFFSCORE)/COUNT(OFFSCORE) AS OFFSCORE, SUM(DEFSCORE)/COUNT(DEFSCORE) AS DEFSCORE, SUM(GOALS) as GOALS, SUM(ASSISTS) as ASSISTS, COUNT(GAMEID) as GAMES FROM LINEUPS WHERE TEAM = ? and SEASONID = ? AND GAMEDATE < ? GROUP BY FORNAME, SURNAME, PERSONNR ORDER BY SCORE DESC",[team,seasonYear,gamedate])
-    fss = np.array(c.fetchall())
+    players = np.array(c.fetchall())
 
     c.execute("SELECT FORNAME, SURNAME, GOALS, ASSISTS, PLUS, MINUS FROM LINEUPS WHERE TEAM = ? and SEASONID = ? and GAMEID = ? ORDER BY GAMEDATE DESC",[team, seasonYear, lastgame])
-    lgs = np.array(c.fetchall())
+    players1 = np.array(c.fetchall())
 
-    return [fss, lgs]
+    return [players, players1]
+
+def get_stats(team, seasonYear, gamedate, c):
+
+    c.execute("SELECT * FROM teamgames where TEAM = ? and gamedate = ?", [team, gamedate])
+    stats1 = c.fetchall()
+
+    return stats1[0]
 
 
 
@@ -128,25 +135,35 @@ def getOdds55(offForm1, defForm1, offForm2, defForm2):
 
 
 
-def get_offence_info(team, offForm, goals5, goals3, goals1, fss, lgs):
+def get_offence_info(team, offForm, goals5, goals3, goals1, players, players1, stats1):
 
-    line1=""
-    line2=""
+    line1 = ""
+    line2 = ""
+    line3 = ""
+    line4 = ""
+    line5 = ""
+    line6 = ""
+    line7 = ""
+    line8 = ""
 
-    print(lgs)
+    last_opponent = stats1[6]
+    if stats1[7] in [1,2]:
+        last_outcome = "Vinst"
+    else:
+        last_outcome = "Förlust"
 
     if offForm > 3.5:
         line1 = team + " har öst in mål senaste matcherna."
         line1 = team + " har bra fart på målskyttet."
 
         if goals1 == 0:
-            line2 = "Senast blev man dock nollade mot okänd motståndare"
+            line2 = "Senast blev man dock nollade mot " + last_opponent
         elif goals1 == 1:
-            line2 = "Dock bara ett mål senast mot okänd motståndare"
+            line2 = "Dock bara ett mål senast mot " + last_opponent
         elif goals1 > 1 and goals1 < 5:
-            line2 = str(goals1) + " mål senast mot okänd motståndare"
+            line2 = str(goals1) + " mål senast mot " + last_opponent
         else:
-            line2 = "Hela " + str(goals1) + " mål senast mot okänd motståndare"
+            line2 = "Hela " + str(goals1) + " mål senast mot " + last_opponent
 
 
     elif offForm > 3:
@@ -154,26 +171,26 @@ def get_offence_info(team, offForm, goals5, goals3, goals1, fss, lgs):
         line1 = team + " har bra fart på målskyttet."
 
         if goals1 == 0:
-            line2 = "Senast blev man dock nollade mot okänd motståndare"
+            line2 = "Senast blev man dock nollade " + last_opponent
         elif goals1 == 1:
-            line2 = "Dock bara ett mål senast mot okänd motståndare"
+            line2 = "Dock bara ett mål senast " + last_opponent
         elif goals1 > 1 and goals1 < 5:
-            line2 = str(goals1) + " mål senast mot okänd motståndare"
+            line2 = str(goals1) + " mål senast " + last_opponent
         else:
-            line2 = "Hela " + str(goals1) + " mål senast mot okänd motståndare"
+            line2 = "Hela " + str(goals1) + " mål senast " + last_opponent
 
 
     elif offForm > 2.5:
         line1 = "Offensiven ser hyfsad ut för " + team + ""
 
         if goals1 == 0:
-            line2 = "Nollade senast mot okänd motståndare."
+            line2 = "Nollade senast " + last_opponent
         elif goals1 == 1:
-            line2 = "Bara ett mål senast mot okänd motståndare."
+            line2 = "Bara ett mål senast " + last_opponent
         elif goals1 > 1 and goals1 < 5:
-            line2 = str(goals1) + " mål senast mot okänd motståndare"
+            line2 = str(goals1) + " mål senast " + last_opponent
         else:
-            line2 = "Hela " + str(goals1) + " mål senast mot okänd motståndare"
+            line2 = "Hela " + str(goals1) + " mål senast " + last_opponent
 
 
     elif offForm > 2.0:
@@ -181,11 +198,11 @@ def get_offence_info(team, offForm, goals5, goals3, goals1, fss, lgs):
         line1 = team + " har inte fått offensiven att fungera."
 
         if goals1 == 0:
-            line2 = "Nollade senast mot okänd motståndare."
+            line2 = "Nollade senast " + last_opponent
         elif goals1 == 1:
-            line2 = "Bara ett mål senast mot okänd motståndare."
+            line2 = "Bara ett mål senast " + last_opponent
         elif goals1 > 2:
-            line2 = str(goals1) + " mål senast mot okänd motståndare var dock ett steg i rätt riktning."
+            line2 = "" + str(goals1) + " mål senast " + last_opponent + " var dock ett steg i rätt riktning."
         else:
             line2 = ""
 

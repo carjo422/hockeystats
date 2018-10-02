@@ -8,6 +8,7 @@ from pre_match_functions import getOdds55
 from pre_match_functions import get_player_form
 from pre_match_functions import get_team_schedule
 from pre_match_functions import get_offence_info
+from pre_match_functions import get_stats
 from calcFunctions import calculate_team_strength
 
 def create_pre_match_analysis(gamedate, serie, hometeam, awayteam):
@@ -19,7 +20,6 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam):
 
     [form, offForm1, defForm1, points5, hgoals5, conc5, points3, hgoals3, hgoals1, points1, hgoals1, conc1] = get_form(hometeam,seasonYear,gamedate,c)
     [form, offForm2, defForm2, points5, agoals5, conc5, points3, agoals3, agoals1, points1, agoals1, conc1] = get_form(awayteam, seasonYear,gamedate,c)
-
 
 
 
@@ -37,10 +37,14 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam):
     [odds1, oddsX, odds2] = getOdds1X2(home_score,away_score)
     [prob4, prob5, prob6] = getOdds55(offForm1, defForm1, offForm2, defForm2)
 
-    [fss, lgs] = (get_player_form(hometeam, seasonYear, gamedate, c))
+    hstats1 = get_stats(hometeam, seasonYear, gamedate_pre_h, c)
+    astats1  = get_stats(hometeam, seasonYear, gamedate_pre_h, c)
+
+    [hplayers, hplayers1] = get_player_form(hometeam, seasonYear, gamedate, c)
+    [aplayers, aplayers1] = get_player_form(awayteam, seasonYear, gamedate, c)
 
     # Offence
-    off_info = get_offence_info(hometeam, offForm1, hgoals5, hgoals3, hgoals1, fss, lgs)
+    off_info = get_offence_info(hometeam, offForm1, hgoals5, hgoals3, hgoals1, hplayers, hplayers1, hstats1)
     # Defence
     # Goalie
     # Powerplay
