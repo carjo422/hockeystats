@@ -57,10 +57,20 @@ def get_form(team,seasonYear,gamedate,c):
     return [form, offForm, defForm, points5, goals5, conc5, points3, goals3, conc3, points1, goals1, conc1]
 
 def get_player_form(team,seasonYear,gamedate,c):
-    c.execute("SELECT FORNAME, SURNAME, SUM(SCORE)/COUNT(SCORE) AS SCORE, SUM(OFFSCORE)/COUNT(OFFSCORE) AS OFFSCORE, SUM(DEFSCORE)/COUNT(DEFSCORE) AS DEFSCORE, SUM(GOALS) as GOALS, SUM(ASSISTS) as ASSISTS, COUNT(GAMEID) as GAMES FROM LINEUPS WHERE TEAM = ? and SEASONID = ? AND GAMEDATE < ? GROUP BY FORNAME, SURNAME, PERSONNR ORDER BY SCORE DESC",[team,seasonYear,gamedate])
-    ln = np.array(c.fetchall())
 
-    return ln
+    c.execute("SELECT GAMEID FROM TEAMGAMES WHERE TEAM = ? AND SEASONID = ? ORDER BY GAMEDATE",[team, seasonYear])
+    gdt = c.fetchall()
+    lastgame = gdt[0][0]
+
+    c.execute("SELECT FORNAME, SURNAME, SUM(SCORE)/COUNT(SCORE) AS SCORE, SUM(OFFSCORE)/COUNT(OFFSCORE) AS OFFSCORE, SUM(DEFSCORE)/COUNT(DEFSCORE) AS DEFSCORE, SUM(GOALS) as GOALS, SUM(ASSISTS) as ASSISTS, COUNT(GAMEID) as GAMES FROM LINEUPS WHERE TEAM = ? and SEASONID = ? AND GAMEDATE < ? GROUP BY FORNAME, SURNAME, PERSONNR ORDER BY SCORE DESC",[team,seasonYear,gamedate])
+    fss = np.array(c.fetchall())
+
+    c.execute("SELECT FORNAME, SURNAME, GOALS, ASSISTS, PLUS, MINUS FROM LINEUPS WHERE TEAM = ? and SEASONID = ? and GAMEID = ? ORDER BY GAMEDATE DESC",[team, seasonYear, lastgame])
+    lgs = np.array(c.fetchall())
+
+    return [fss, lgs]
+
+
 
 def get_team_schedule(team, seasonYear, gamedate, c):
     c.execute("SELECT GAMEDATE FROM TEAMGAMES WHERE TEAM = ? AND GAMEDATE < ? AND SEASONID = ?", [team, gamedate, seasonYear])
@@ -78,6 +88,7 @@ def get_team_schedule(team, seasonYear, gamedate, c):
     return schedule
 
 def getOdds1X2(homeScore,awayScore):
+
     vect1 = [0.21, 0.245, 0.305, 0.365, 0.425, 0.485, 0.545, 0.635, 0.705, 0.77, 0.85]
     vect2 = [0.7, 0.65, 0.55, 0.44, 0.35, 0.28, 0.22, 0.15, 0.12, 0.10, 0.06]
     vectX = [0.09, 0.105, 0.145, 0.195, 0.225, 0.235, 0.235, 0.215, 0.175, 0.13, 0.09]
@@ -103,6 +114,8 @@ def getOdds1X2(homeScore,awayScore):
 
     return [odds1, oddsX, odds2]
 
+
+
 def getOdds55(offForm1, defForm1, offForm2, defForm2):
 
     exp_score = offForm1/2 + offForm2/2 + defForm1/2 + defForm2/2
@@ -113,10 +126,14 @@ def getOdds55(offForm1, defForm1, offForm2, defForm2):
 
     return [prob4, prob5, prob6]
 
-def get_offence_info(team, offForm, goals5, goals3, goals1):
+
+
+def get_offence_info(team, offForm, goals5, goals3, goals1, fss, lgs):
 
     line1=""
     line2=""
+
+    print(lgs)
 
     if offForm > 3.5:
         line1 = team + " har öst in mål senaste matcherna."

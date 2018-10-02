@@ -18,15 +18,9 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam):
 
 
     [form, offForm1, defForm1, points5, hgoals5, conc5, points3, hgoals3, hgoals1, points1, hgoals1, conc1] = get_form(hometeam,seasonYear,gamedate,c)
-    print(hgoals1)
-    [form, offForm2, defForm2, points5, agoals5, conc5, points3, agoals3, hgoals1, points1, agoals1, conc1] = get_form(awayteam, seasonYear,gamedate,c)
-    #Offence
-    off_info = get_offence_info(hometeam, offForm1, hgoals5, hgoals3, hgoals1)
-    #Defence
-    #Goalie
-    #Powerplay
-    #Boxplay
-    #Overall
+    [form, offForm2, defForm2, points5, agoals5, conc5, points3, agoals3, agoals1, points1, agoals1, conc1] = get_form(awayteam, seasonYear,gamedate,c)
+
+
 
 
     c.execute("SELECT gamedate from teamgames where team = ? order by gamedate DESC",[hometeam])
@@ -41,11 +35,17 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam):
     [away_score, away_points, away_season_points, away_player_score_final] = calculate_team_strength(awayteam, gamedate_pre_a, c)
 
     [odds1, oddsX, odds2] = getOdds1X2(home_score,away_score)
-
     [prob4, prob5, prob6] = getOdds55(offForm1, defForm1, offForm2, defForm2)
 
+    [fss, lgs] = (get_player_form(hometeam, seasonYear, gamedate, c))
 
-    get_player_form(hometeam, seasonYear, gamedate, c)
+    # Offence
+    off_info = get_offence_info(hometeam, offForm1, hgoals5, hgoals3, hgoals1, fss, lgs)
+    # Defence
+    # Goalie
+    # Powerplay
+    # Boxplay
+    # Overall
 
     #Goal scorers
     #Målvakt
@@ -56,11 +56,6 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam):
 
     schedule_home = (get_team_schedule(hometeam, seasonYear, gamedate, c))
     schedule_away = (get_team_schedule(awayteam, seasonYear, gamedate, c))
-
-
-
-
-
 
 
 
