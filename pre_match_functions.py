@@ -203,8 +203,8 @@ def getOdds55(offForm1, defForm1, offForm2, defForm2):
     exp_score = offForm1/2 + offForm2/2 + defForm1/2 + defForm2/2
 
     prob4 = poisson.cdf(4, exp_score)
-    prob5 = poisson.cdf(4, exp_score)
-    prob6 = poisson.cdf(4, exp_score)
+    prob5 = poisson.cdf(5, exp_score)
+    prob6 = poisson.cdf(6, exp_score)
 
     return [prob4, prob5, prob6]
 
@@ -476,33 +476,46 @@ def get_defence_info(team, opp, defStrenght, con1, players, players1, players5, 
 
     #LINE 0
 
-    if con_p == 14:
-        line[0] = team + " har släppt in minst mål i SHL, " + str(average_conceded) + " mål per match. "
-    elif con_p == 13:
-        line[0] = team + " har släppt in näst minst mål i SHL, " + str(average_conceded) + " mål per match. "
-    elif con_p == 2:
-        line[0] = team + " har släppt in näst mest mål i SHL, " + str(average_conceded) + " mål per match. "
-    elif con_p == 1:
-        line[0] = team + " har släppt in mest mål i SHL, " + str(average_conceded) + " mål per match. "
+    if defStrenght < 10:
+        line[0] = "En av ligans sämsta försvarsspel. "
+    elif defStrenght < 14:
+        line[0] = "Mediokert försvarsspel, håller i dagsläget inte för mer än undre halvan av tabellen. "
+    elif defStrenght < 17:
+        line[0] = "Hyfsat försvarsspel men inte ett av ligans bättre. "
+    elif defStrenght < 20:
+        line[0] = "Ett av ligans starkaste försvarsspel. "
     else:
-        line[0] = team + " har släppt in " + str(average_conceded) + " mål per match under säsongen. "
+        line[0] = "Ett av ligans absolut starkaste försvarsspel. "
+
+    #LINE 1
+
+    if con_p == 14:
+        line[1] = team + " har släppt in minst mål i SHL, hittills snittar man " + str(average_conceded) + " mål per match. "
+    elif con_p == 13:
+        line[1] = team + " har släppt in näst minst mål i SHL, hittills snittar man " + str(average_conceded) + " mål per match. "
+    elif con_p == 2:
+        line[1] = team + " har släppt in näst mest mål i SHL, hittills snittar man " + str(average_conceded) + " mål per match. "
+    elif con_p == 1:
+        line[1] = team + " har släppt in mest mål i SHL, hittills snittar man " + str(average_conceded) + " mål per match. "
+    else:
+        line[1] = team + " har släppt in " + str(average_conceded) + " mål per match under säsongen. "
 
     #LINE 1
 
     if con_p > 10:
         if con1 == 0:
-            line[1] = "Treden ser fortsatt god ut och man höll nollan senast mot " + last_opponent + ". "
+            line[2] = "Treden ser fortsatt god ut och man höll nollan senast mot " + last_opponent + ". "
         elif con1 == 1:
-            line[1] = "Släppte in 1 mål senast i " + stats1[8] + "-" + stats1[9] + " " + last_outcome + " mot " + last_opponent + ". "
+            line[2] = "Släppte in 1 mål senast i " + stats1[8] + "-" + stats1[9] + " " + last_outcome + " mot " + last_opponent + ". "
         elif con1 > 4:
-            line[1] = "Dock hela " + str(con1) + " mål i baken senast i " + stats1[8] + "-" + stats1[9] + " " + last_outcome + " mot " + last_opponent + ". "
+            line[2] = "Dock hela " + str(con1) + " mål i baken senast i " + stats1[8] + "-" + stats1[9] + " " + last_outcome + " mot " + last_opponent + ". "
     elif con_p < 5:
         if con1 == 0:
-            line[1] = stats1[8] + "-" + stats1[9] + " " + last_outcome + " mot " + last_opponent + " senast var därför en välkommen nolla i den annars ganska dystra statistiken. "
+            line[2] = stats1[8] + "-" + stats1[9] + " " + last_outcome + " mot " + last_opponent + " senast var därför en välkommen nolla i den annars ganska dystra statistiken. "
         elif con1 == 1:
-            line[1] = "Bättre senast i " + stats1[8] + "-" + stats1[9] + " " + last_outcome + " mot " + last_opponent + ". "
+            line[2] = "Bättre senast i " + stats1[8] + "-" + stats1[9] + " " + last_outcome + " mot " + last_opponent + ". "
         elif con1 > 4:
-            line[1] = "Trenden ser fortsatt mindre bra ut och man släppte in hela " + str(con1) + " mål senast mot " + last_opponent + ". "
+            line[2] = "Trenden ser fortsatt mindre bra ut och man släppte in hela " + str(con1) + " mål senast mot " + last_opponent + ". "
 
 
     line[2] = "Laget drar på sig " + str(average_penalty) + " utvisningsminuter per match vilket är "
@@ -514,22 +527,22 @@ def get_defence_info(team, opp, defStrenght, con1, players, players1, players5, 
     #LINE 2
 
     if penalty_p == 1:
-        line[2] += "mest i ligan. "
+        line[3] += "mest i ligan. "
         penalty_status = 2
     elif penalty_p in [2,3]:
-        line[2] += "bland de högre siffrorna i ligan. "
+        line[3] += "bland de högre siffrorna i ligan. "
         penalty_status = 2
     elif penalty_p < 7:
-        line[2] += "över snittet i ligan"
+        line[3] += "över snittet i ligan"
         penalty_status = 1
     elif penalty_p > 7 and penalty_p < 13:
-        line[2] += "under snittet i ligan. "
+        line[3] += "under snittet i ligan. "
         penalty_status = 0
     elif penalty_p == len(penalty_table)-1:
-        line[2] += "näst minst i serien. "
+        line[3] += "näst minst i serien. "
         penalty_status = 0
     elif penalty_p == len(penalty_table):
-        line[2] += "minst i serien. "
+        line[3] += "minst i serien. "
         penalty_status = 0
 
 
@@ -537,19 +550,19 @@ def get_defence_info(team, opp, defStrenght, con1, players, players1, players5, 
 
     if penalty_status == "2":
         if opp_pp_p in [1, 2]:
-            line[3] = "Detta kan bli ett stort problem då " + opp + " har ett av ligans bästa powerplay. "
+            line[4] = "Detta kan bli ett stort problem då " + opp + " har ett av ligans bästa powerplay. "
         elif opp_pp_p > 0.18 or opp_pp_p in [3, 4]:
-            line[3] = "Utvisningar kan bli kostsamt mot " + opp + " som har ett av ligans bästa powerplay. "
+            line[4] = "Utvisningar kan bli kostsamt mot " + opp + " som har ett av ligans bästa powerplay. "
 
     if penalty_status == "1":
         if opp_pp_p in [1, 2, 3, 4] or opp_pp_p > 0.18:
-            line[3] = "Utvisningar kan bli avgörande mot " + opp + " som har ett av ligans bästa powerplay. "
+            line[4] = "Utvisningar kan bli avgörande mot " + opp + " som har ett av ligans bästa powerplay. "
 
     if penalty_status == "0":
         if opp_pp_p in [1, 2, 3, 4]:
-            line[3] = "Detta kan vara en stor fördel mot " + opp + " som har ett av ligans bästa powerplay. "
+            line[4] = "Detta kan vara en stor fördel mot " + opp + " som har ett av ligans bästa powerplay. "
         elif opp_pp_p > 0.18:
-            line[3] = "En fördel då utvisningar kommer bli kostsamt mot Powerplay-starka " + opp + ". "
+            line[4] = "En fördel då utvisningar kommer bli kostsamt mot Powerplay-starka " + opp + ". "
 
     print(opp_pp_n, opp_pp_p)
 

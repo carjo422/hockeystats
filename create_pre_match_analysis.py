@@ -75,6 +75,8 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam):
     schedule_home = (get_team_schedule(hometeam, seasonYear, gamedate, c))
     schedule_away = (get_team_schedule(awayteam, seasonYear, gamedate, c))
 
+    print([odds1, oddsX, odds2])
+    print([prob4, prob5, prob6])
 
 
 
@@ -83,9 +85,10 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam):
 
 
 
-create_pre_match_analysis('2018-10-02','SHL','Linköping HC','Brynäs IF')
-create_pre_match_analysis('2018-10-02','SHL','Skellefteå AIK','Växjö Lakers HC')
-create_pre_match_analysis('2018-10-02','SHL','IF Malmö Redhawks','Frölunda HC')
+
+create_pre_match_analysis('2018-10-04','SHL','Linköping HC','Mora IK')
+#create_pre_match_analysis('2018-10-02','SHL','Skellefteå AIK','Växjö Lakers HC')
+#create_pre_match_analysis('2018-10-02','SHL','IF Malmö Redhawks','Frölunda HC')
 
 if 1 == 2:
 
