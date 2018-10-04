@@ -3,25 +3,32 @@ conn = sqlite3.connect('hockeystats.db')
 c = conn.cursor()
 
 from pre_match_functions import get_form
+from pre_match_functions import get_strength
 from pre_match_functions import getOdds1X2
 from pre_match_functions import getOdds55
 from pre_match_functions import get_player_form
 from pre_match_functions import get_team_schedule
 from pre_match_functions import get_offence_info
+from pre_match_functions import get_defence_info
 from pre_match_functions import get_stats
+from pre_match_functions import create_tables
 from calcFunctions import calculate_team_strength
 
 def create_pre_match_analysis(gamedate, serie, hometeam, awayteam):
+
+
 
     seasonYear = int(gamedate[0:4])
     if int(gamedate[5:7]) > 6:
         seasonYear += 1
 
+    [strength1, offStrength1, defStrength1] = get_strength(hometeam, seasonYear, gamedate, c)
+    [strenght2, offStrength2, defStrength2] = get_strength(awayteam, seasonYear, gamedate,c)
 
-    [form, offForm1, defForm1, points5, hgoals5, conc5, points3, hgoals3, hgoals1, points1, hgoals1, conc1] = get_form(hometeam,seasonYear,gamedate,c)
-    [form, offForm2, defForm2, points5, agoals5, conc5, points3, agoals3, agoals1, points1, agoals1, conc1] = get_form(awayteam, seasonYear,gamedate,c)
 
 
+    [form, offForm1, defForm1, hpoints5, hgoals5, conc5, hpoints3, hgoals3, hgoals1, hpoints1, hgoals1, hconc1 ,h_n_matches5] = get_form(hometeam,seasonYear,gamedate,c)
+    [form, offForm2, defForm2, apoints5, agoals5, conc5, apoints3, agoals3, agoals1, apoints1, agoals1, aconc1 ,a_n_matches5] = get_form(awayteam, seasonYear,gamedate,c)
 
     c.execute("SELECT gamedate from teamgames where team = ? order by gamedate DESC",[hometeam])
     htd = c.fetchall()
@@ -40,11 +47,18 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam):
     hstats1 = get_stats(hometeam, seasonYear, gamedate_pre_h, c)
     astats1  = get_stats(hometeam, seasonYear, gamedate_pre_h, c)
 
-    [hplayers, hplayers1] = get_player_form(hometeam, seasonYear, gamedate, c)
-    [aplayers, aplayers1] = get_player_form(awayteam, seasonYear, gamedate, c)
+    [hplayers, hplayers1, hplayers5] = get_player_form(hometeam, seasonYear, gamedate, c)
+    [aplayers, aplayers1, aplayers5] = get_player_form(awayteam, seasonYear, gamedate, c)
+
+    [full_table, home_table, away_table, score_table, con_table, shots_table, penalty_table, pp_table, pp_percent_table] = create_tables(seasonYear, serie, c)
 
     # Offence
-    off_info = get_offence_info(hometeam, offForm1, hgoals5, hgoals3, hgoals1, hplayers, hplayers1, hstats1)
+    off_info = get_offence_info(hometeam, offForm1, offStrength1, hgoals5, hgoals3, hgoals1, hplayers, hplayers1, hplayers5, hstats1, h_n_matches5, score_table, shots_table, pp_table, pp_percent_table)
+    off_info = get_offence_info(awayteam, offForm2, offStrength2, agoals5, agoals3, agoals1, aplayers, aplayers1, aplayers5, astats1, a_n_matches5, score_table, shots_table, pp_table, pp_percent_table)
+
+    def_info = get_defence_info(hometeam, awayteam, defStrength1, hconc1, hplayers, hplayers1, hplayers5, hstats1, h_n_matches5, con_table, penalty_table, pp_percent_table)
+    def_info = get_defence_info(awayteam, hometeam, defStrength2, aconc1, aplayers, aplayers1, aplayers5, astats1, a_n_matches5, con_table, penalty_table, pp_percent_table)
+
     # Defence
     # Goalie
     # Powerplay

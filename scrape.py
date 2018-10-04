@@ -393,21 +393,6 @@ for j in range(0,len(gameVector)):
 
             create_teamgames(seasonYear, serie, c)
 
-            #Standings table
-
-            #c.execute("""SELECT TEAM, COUNT(TEAM) as MATCHES, SUM(CASE WHEN OUTCOME = 1 then 1 else 0 end) as WINS, SUM(CASE WHEN OUTCOME = 2 then 1 else 0 end) as OT_WINS, SUM(CASE WHEN OUTCOME = 3 then 1 else 0 end) as OT_LOSS,
-            #             SUM(CASE WHEN OUTCOME = 4 then 1 else 0 end) as LOSS,  SUM(CASE WHEN OUTCOME = 1 then 3 WHEN OUTCOME = 2 then 2 WHEN OUTCOME = 1 then 1 else 0 end) as POINTS, SUM(SCORE1) as G, SUM(SCORE2) as C,
-            #             SUM(SCORE1)-SUM(SCORE2) as D FROM TEAMGAMES WHERE SEASONID = ? AND SERIE = ? GROUP BY TEAM""",[str(seasonYear),serie])
-            #
-            #standings = c.fetchall()
-            #
-            #standings = np.array(standings)
-            #
-            #
-            #np.sort(standings, axis=0)
-
-            #print(standings)
-
         print(str(stats[0]) + " stats, events loaded")
     else:
         print("Game already loaded")
