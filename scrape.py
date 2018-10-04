@@ -25,7 +25,7 @@ t_count = 0 # Counts number of update
 seasonID = 9171
 seasonYear = 2019
 serie = "SHL"
-
+score_update = "New" #New if only fill with new scores
 
 #Vectors to scrape in first step
 gameVector = []
@@ -142,16 +142,16 @@ for j in range(0,len(gameVector)):
                             stats (
                                 SEASONID,SERIE,GAMEID,GAMEDATE,HOMETEAM,AWAYTEAM,HOMESCORE,AWAYSCORE,HOMESHOTS,AWAYSHOTS,HOMESAVES,AWAYSAVES,HOMEPENALTY,AWAYPENALTY,HSCORE1,HSCORE2,HSCORE3,HSCORE4,ASCORE1,ASCORE2,ASCORE3,ASCORE4,
                                 HSHOTS1,HSHOTS2,HSHOTS3,HSHOTS4,ASHOTS1,ASHOTS2,ASHOTS3,ASHOTS4,HSAVES1,HSAVES2,HSAVES3,HSAVES4,ASAVES1,ASAVES2,ASAVES3,ASAVES4,HPENALTY1,HPENALTY2,HPENALTY3,HPENALTY4,APENALTY1,APENALTY2,APENALTY3,
-                                APENALTY4)
+                                APENALTY4, HOMEPP, AWAYPP)
                             VALUES
-                                (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                                (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                       (seasonYear, serie, stats[0], stats[1][0:10], stats[2], stats[3], stats[4], stats[5], stats[6],
                        stats[7], stats[8], stats[9], stats[10], stats[11], stats[12], stats[13], stats[14], stats[15],
                        stats[16], stats[17], stats[18], stats[19], stats[20],
                        stats[21], stats[22], stats[23], stats[24], stats[25], stats[26], stats[27], stats[28],
                        stats[29], stats[30], stats[31], stats[32], stats[33], stats[34], stats[35], stats[36],
                        stats[37], stats[38], stats[39], stats[40],
-                       stats[41], stats[42], stats[43]))
+                       stats[41], stats[42], stats[43], stats[44], stats[45]))
 
         else:
             pass
@@ -407,57 +407,69 @@ for j in range(0,len(gameVector)):
 
 for j in range(0, len(gameVector)):
 
-    # Add score to lineups
-
-    c.execute("SELECT TEAM, NUMBER, FORNAME, SURNAME, GAMEDATE, HOMETEAM, AWAYTEAM FROM lineups where GAMEID = ?", [gameVector[j][0]])
-    lineups = c.fetchall()
-
-    for i in range(0, len(lineups)):
-
-        c.execute("SELECT * from lineups where GAMEID = ? and TEAM = ? and NUMBER = ?",[gameVector[j][0], lineups[i][0], lineups[i][1]])
-        lineup = c.fetchall()
-
-        score = create_game_rating(lineup, lineups[i][0], c,conn)
-
-        if len(score) < 4:
-            score = ['0', '0', '0', '0']
-
-        c.execute(
-            "UPDATE lineups SET SCORE = ?, FINALSCORE = ?, OFFSCORE = ?, DEFSCORE = ? WHERE GAMEID = ? and TEAM = ? and NUMBER = ?",
-            [score[0], score[1], score[2], score[3], gameVector[j][0], lineups[i][0], lineups[i][1]])
+    c.execute("SELECT GAMEID FROM TEAMSCORE WHERE GAMEID = ?", [gameVector[j][0]])
+    check = c.fetchall()
 
 
-    #Calculate team strenght
+    if score_update == "Full" or len(check) == 0:
 
-    if len(lineups) > 0:
+        # Add score to lineups
 
-        # Check score home team
+        c.execute("SELECT TEAM, NUMBER, FORNAME, SURNAME, GAMEDATE, HOMETEAM, AWAYTEAM FROM lineups where GAMEID = ?", [gameVector[j][0]])
+        lineups = c.fetchall()
 
-        [team_strenght, form_score, last_seasons_score, player_score] = calculate_team_strength(lineups[0][5], lineups[0][4], c)
+        for i in range(0, len(lineups)):
 
-        c.execute("SELECT * FROM TEAMSCORE WHERE GAMEDATE = ? AND TEAM = ?", [lineups[0][4],lineups[0][5]])
-        chk = c.fetchall()
+            c.execute("SELECT * from lineups where GAMEID = ? and TEAM = ? and NUMBER = ?",[gameVector[j][0], lineups[i][0], lineups[i][1]])
+            lineup = c.fetchall()
 
-        if len(chk) == 0:
-            c.execute("INSERT INTO TEAMSCORE (SEASONID, SERIE, GAMEID, GAMEDATE, TEAM, SCORE, FORM_SCORE, LAST_SEASONS_SCORE, PLAYER_SCORE) VALUES (?,?,?,?,?,?,?,?,?)",
-                      [seasonYear, serie, gameVector[j][0],lineups[0][4],lineups[0][5],team_strenght,form_score, last_seasons_score, player_score])
+            score = create_game_rating(lineup, lineups[i][0], c,conn)
 
-        #Check score away team
+            if len(score) < 4:
+                score = ['0', '0', '0', '0']
 
-        [team_strenght, form_score, last_seasons_score, player_score] = calculate_team_strength(lineups[0][6], lineups[0][4], c)
-
-        c.execute("SELECT * FROM TEAMSCORE WHERE GAMEDATE = ? AND TEAM = ?", [lineups[0][4], lineups[0][6]])
-        chk = c.fetchall()
-
-        if len(chk) == 0:
             c.execute(
-                "INSERT INTO TEAMSCORE (SEASONID, SERIE, GAMEID, GAMEDATE, TEAM, SCORE, FORM_SCORE, LAST_SEASONS_SCORE, PLAYER_SCORE) VALUES (?,?,?,?,?,?,?,?,?)",
-                [seasonYear, serie, gameVector[j][0], lineups[0][4], lineups[0][6], team_strenght, form_score,
-                 last_seasons_score, player_score])
+                "UPDATE lineups SET SCORE = ?, FINALSCORE = ?, OFFSCORE = ?, DEFSCORE = ? WHERE GAMEID = ? and TEAM = ? and NUMBER = ?",
+                [score[0], score[1], score[2], score[3], gameVector[j][0], lineups[i][0], lineups[i][1]])
 
-    print("Score updated")
 
-    conn.commit()
+        #Calculate team strenght
+
+        if len(lineups) > 0:
+
+            # Check score home team
+
+            [team_strenght, form_score, last_seasons_score, player_score] = calculate_team_strength(lineups[0][5], lineups[0][4], c)
+
+            c.execute("SELECT * FROM TEAMSCORE WHERE GAMEDATE = ? AND TEAM = ?", [lineups[0][4],lineups[0][5]])
+            chk = c.fetchall()
+
+            if len(chk) == 0:
+                c.execute("INSERT INTO TEAMSCORE (SEASONID, SERIE, GAMEID, GAMEDATE, TEAM, SCORE, FORM_SCORE, LAST_SEASONS_SCORE, PLAYER_SCORE) VALUES (?,?,?,?,?,?,?,?,?)",
+                          [seasonYear, serie, gameVector[j][0],lineups[0][4],lineups[0][5],team_strenght,form_score, last_seasons_score, player_score])
+            else:
+                c.execute("UPDATE TEAMSCORE SET SCORE = ?, FORM_SCORE = ?, LAST_SEASONS_SCORE = ?, PLAYER_SCORE = ? WHERE SEASONID = ? AND SERIE = ? AND GAMEID = ? AND TEAM = ?",[team_strenght,form_score, last_seasons_score, player_score, seasonYear, serie, gameVector[j][0],lineups[0][5]])
+
+            #Check score away team
+
+            [team_strenght, form_score, last_seasons_score, player_score] = calculate_team_strength(lineups[0][6], lineups[0][4], c)
+
+            c.execute("SELECT * FROM TEAMSCORE WHERE GAMEDATE = ? AND TEAM = ?", [lineups[0][4], lineups[0][6]])
+            chk = c.fetchall()
+
+            if len(chk) == 0:
+                c.execute(
+                    "INSERT INTO TEAMSCORE (SEASONID, SERIE, GAMEID, GAMEDATE, TEAM, SCORE, FORM_SCORE, LAST_SEASONS_SCORE, PLAYER_SCORE) VALUES (?,?,?,?,?,?,?,?,?)",
+                    [seasonYear, serie, gameVector[j][0], lineups[0][4], lineups[0][6], team_strenght, form_score,last_seasons_score, player_score])
+            else:
+                c.execute(
+                    "UPDATE TEAMSCORE SET SCORE = ?, FORM_SCORE = ?, LAST_SEASONS_SCORE = ?, PLAYER_SCORE = ? WHERE SEASONID = ? AND SERIE = ? AND GAMEID = ? AND TEAM = ?",
+                    [team_strenght, form_score, last_seasons_score, player_score, seasonYear, serie, gameVector[j][0],
+                     lineups[0][6]])
+
+        print("Score updated")
+
+        conn.commit()
 
 c.close
 

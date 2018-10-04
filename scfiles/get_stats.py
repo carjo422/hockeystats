@@ -211,6 +211,12 @@ def get_stats(id, gamedate):
     output.append(ap3penalty)
     output.append(ap4penalty)
 
+    home_pp = pct_vect[4]
+    away_pp = pct_vect[5]
+
+    output.append(home_pp)
+    output.append(away_pp)
+
     return output
 
 

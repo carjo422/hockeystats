@@ -195,3 +195,35 @@ def transform_date(date,n):
 
     return(new_date)
 
+def get_short_team_name(team):
+
+    if team == "IF Malmö Redhawks":
+        output = ("Malmö")
+    elif team == "Frölunda HC":
+        output = ("Frölunda")
+    elif team == "Skellefteå AIK":
+        output = ("Skellefteå")
+    elif team == "Växjö Lakers HC":
+        output = ("Växjö")
+    elif team == "HV 71":
+        output = ("HV 71")
+    elif team == "Rögle BK":
+        output = ("Rögle")
+    elif team == "Brynäs IF":
+        output = ("Brynäs")
+    elif team == "Timrå IK":
+        output = ("Timrå")
+    elif team == "Luleå HF":
+        output = ("Luleå")
+    elif team == "Linköping HC":
+        output = ("Linköping")
+    elif team == "Mora IK":
+        output = ("Mora")
+    elif team == "Örebro HK":
+        output = ("Örebro")
+    elif team == "Djurgårdens IF":
+        output = ("Djurgården")
+    elif team == "Färjestad BK":
+        output = ("Färjestad")
+
+    return output
