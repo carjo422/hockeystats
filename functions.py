@@ -1,4 +1,20 @@
 import datetime, calendar
+from datetime import date
+
+def date_diff(date1,date2):
+
+    y1 = int(date1[0:4])
+    m1 = int(date1[5:7])
+    d1 = int(date1[8:10])
+
+    y2 = int(date2[0:4])
+    m2 = int(date2[5:7])
+    d2 = int(date2[8:10])
+
+    dtdiff = date(y1,m1,d1)-date(y2,m2,d2)
+
+    return dtdiff.days
+
 
 def mean_list(list,n):
     sum=0
