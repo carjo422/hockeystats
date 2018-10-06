@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="34d2bf4b-fd4c-4039-8ec7-45fbb538b0f4" name="Default" comment="">
+    <list default="true" id="34d2bf4b-fd4c-4039-8ec7-45fbb538b0f4" name="Default" comment="dont fuck up">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/create_pre_match_analysis.py" afterPath="$PROJECT_DIR$/create_pre_match_analysis.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/create_pre_match_tables.py" afterPath="$PROJECT_DIR$/create_pre_match_tables.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/functions.py" afterPath="$PROJECT_DIR$/functions.py" />
     </list>
     <ignored path="hockeystats.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -28,7 +28,7 @@
       <file leaf-file-name="functions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/functions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2433">
+            <state relative-caret-position="210">
               <caret line="15" column="22" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="22" />
               <folding>
                 <element signature="e#0#25#0" expanded="true" />
@@ -40,7 +40,7 @@
       <file leaf-file-name="scrape.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scrape.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
+            <state relative-caret-position="6375">
               <caret line="441" column="19" selection-start-line="441" selection-start-column="13" selection-end-line="441" selection-end-column="19" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
@@ -52,8 +52,8 @@
       <file leaf-file-name="create_pre_match_tables.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/create_pre_match_tables.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="462">
-              <caret line="33" column="33" selection-start-line="33" selection-start-column="33" selection-end-line="33" selection-end-column="33" />
+            <state relative-caret-position="279">
+              <caret line="287" column="25" selection-start-line="287" selection-start-column="25" selection-end-line="287" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -62,7 +62,7 @@
       <file leaf-file-name="calcFunctions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/calcFunctions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="284">
+            <state relative-caret-position="3630">
               <caret line="249" column="22" selection-start-line="249" selection-start-column="4" selection-end-line="249" selection-end-column="22" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -86,8 +86,8 @@
       <file leaf-file-name="create_pre_match_analysis.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/create_pre_match_analysis.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="284">
-              <caret line="23" column="33" selection-start-line="23" selection-start-column="29" selection-end-line="23" selection-end-column="33" />
+            <state relative-caret-position="300">
+              <caret line="20" column="72" selection-start-line="20" selection-start-column="72" selection-end-line="20" selection-end-column="72" />
               <folding />
             </state>
           </provider>
@@ -96,7 +96,7 @@
       <file leaf-file-name="pre_match_functions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pre_match_functions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-7639">
+            <state relative-caret-position="165">
               <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -170,8 +170,8 @@
         <option value="$PROJECT_DIR$/scrape.py" />
         <option value="$PROJECT_DIR$/adhoc/delete_game.py" />
         <option value="$PROJECT_DIR$/adhoc/create_pre_match_tables.py" />
-        <option value="$PROJECT_DIR$/create_pre_match_analysis.py" />
         <option value="$PROJECT_DIR$/functions.py" />
+        <option value="$PROJECT_DIR$/create_pre_match_analysis.py" />
         <option value="$PROJECT_DIR$/create_pre_match_tables.py" />
       </list>
     </option>
@@ -206,8 +206,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -697,11 +697,18 @@
       <option name="project" value="LOCAL" />
       <updated>1538690261891</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="dont fuck up">
+      <created>1538747469598</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1538747469598</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="2560" height="1338" extended-state="6" />
+    <frame x="0" y="23" width="2560" height="1338" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.107522644" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -709,7 +716,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901296" sideWeight="0.19905214" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901296" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32868853" sideWeight="0.49605057" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24549918" sideWeight="0.80094784" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24590164" sideWeight="0.80094784" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24970461" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -1087,7 +1094,44 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="300">
           <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="15" column="22" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="22" />
+          <folding>
+            <element signature="e#0#25#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scrape.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6375">
+          <caret line="441" column="19" selection-start-line="441" selection-start-column="13" selection-end-line="441" selection-end-column="19" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/create_pre_match_tables.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="279">
+          <caret line="287" column="25" selection-start-line="287" selection-start-column="25" selection-end-line="287" selection-end-column="25" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/calcFunctions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3630">
+          <caret line="249" column="22" selection-start-line="249" selection-start-column="4" selection-end-line="249" selection-end-column="22" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1098,6 +1142,32 @@
           <folding>
             <element signature="e#364#419#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/create_pre_match_analysis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="20" column="72" selection-start-line="20" selection-start-column="72" selection-end-line="20" selection-end-column="72" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pre_match_functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/adhoc/update_code.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="570">
+          <caret line="38" column="90" selection-start-line="38" selection-start-column="90" selection-end-line="38" selection-end-column="90" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1116,70 +1186,6 @@
           <folding>
             <element signature="e#0#41#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pre_match_functions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-7639">
-          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/functions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2433">
-          <caret line="15" column="22" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="22" />
-          <folding>
-            <element signature="e#0#25#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scrape.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="441" column="19" selection-start-line="441" selection-start-column="13" selection-end-line="441" selection-end-column="19" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/adhoc/update_code.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="570">
-          <caret line="38" column="90" selection-start-line="38" selection-start-column="90" selection-end-line="38" selection-end-column="90" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/calcFunctions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="284">
-          <caret line="249" column="22" selection-start-line="249" selection-start-column="4" selection-end-line="249" selection-end-column="22" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/create_pre_match_analysis.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="284">
-          <caret line="23" column="33" selection-start-line="23" selection-start-column="29" selection-end-line="23" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/create_pre_match_tables.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="462">
-          <caret line="33" column="33" selection-start-line="33" selection-start-column="33" selection-end-line="33" selection-end-column="33" />
-          <folding />
         </state>
       </provider>
     </entry>

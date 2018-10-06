@@ -8,7 +8,7 @@ from functions import transform_date
 from functions import date_diff
 from calcFunctions import calculate_team_strength
 
-def create_pre_match_table(gamedate, serie, team, opponent, homeaway):
+def create_pre_match_table(gamedate, serie, team, homeaway):
 
     print(team)
 
@@ -331,15 +331,12 @@ def create_pre_match_table(gamedate, serie, team, opponent, homeaway):
     print(schedule_data)
     print(score_data)
 
+    return [base_table, full_data, home_data, away_data, last_five_data, last_match_data, streak_table, schedule_data, score_data]
 
 
-    #                SUM(CASE WHEN OUTCOME = 1 and HOMEAWAY = 'A' THEN 1 else 0 end) as HWINS,
-#                SUM(CASE WHEN OUTCOME = 2 and HOMEAWAY = 'A' THEN 1 else 0 end) as HOTWINS,
-#                SUM(CASE WHEN OUTCOME = 3 and HOMEAWAY = 'A' THEN 1 else 0 end) as HOTLOSSES,
-#                SUM(CASE WHEN OUTCOME = 4 and HOMEAWAY = 'A' THEN 1 else 0 end) as HLOSSES,
-#
-#                """)
+def create_pre_match_players(gamedate, serie, team, homeaway):
+    pass
+    #SEASON STATS
+    #LAST STATS
+    #POINTS TREND
 
-
-
-#    print(output)

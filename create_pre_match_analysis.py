@@ -18,7 +18,7 @@ from calcFunctions import calculate_team_strength
 def create_pre_match_analysis(gamedate, serie, hometeam, awayteam):
 
 
-    pre_match_table = create_pre_match_table(gamedate, serie, hometeam, awayteam, "H")
+    pre_match_table = create_pre_match_table(gamedate, serie, hometeam, "H")
 
     if 2==1:
         seasonYear = int(gamedate[0:4])
