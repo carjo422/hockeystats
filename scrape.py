@@ -96,8 +96,6 @@ for i in range(1,len(page_source)-10):
                 audVector.append(int(tds[j]))
                 venueVector.append(tds[j+1])
 
-print(gameVector, dateVector)
-
 for j in range(0, len(gameVector)):
     c.execute("INSERT INTO schedule (SEASONID, SERIE, GAMEID, GAMEDATE, AUD, VENUE) VALUES (?,?,?,?,?,?)",[seasonYear,serie,gameVector[j],dateVector[j], audVector[j], venueVector[j]])
 
@@ -217,8 +215,7 @@ for j in range(0,len(gameVector)):
             if len(hits) == 0:
 
                 c.execute(
-                    """SELECT PERSONNR FROM rosters WHERE SEASONID = ? and TEAM = ? and NUMBER = ? and FORNAME = ? AND SURNAME = ? """,
-                    (seasonYear, events[i][4], events[i][5], events[i][7], events[i][6]))
+                    """SELECT PERSONNR FROM rosters WHERE SEASONID = ? and TEAM = ? and NUMBER = ? and FORNAME = ? AND SURNAME = ? """,(seasonYear, events[i][4], events[i][5], events[i][7], events[i][6]))
                 personnr = c.fetchall()
 
                 if personnr == []:

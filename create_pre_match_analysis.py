@@ -15,10 +15,65 @@ from pre_match_functions import create_tables
 from create_pre_match_tables import create_pre_match_table
 from calcFunctions import calculate_team_strength
 
-def create_pre_match_analysis(gamedate, serie, hometeam, awayteam):
+def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid):
+    [base_table1, full_data1, home_data1, away_data1, last_five_data1, last_match_data1, streak_table1, schedule_data1, score_data1] = create_pre_match_table(gamedate, serie, hometeam, "H")
+    [base_table2, full_data2, home_data2, away_data2, last_five_data2, last_match_data2, streak_table2, schedule_data2, score_data2] = create_pre_match_table(gamedate, serie, awayteam, "A")
+
+    if len(full_data1) > 0 and len(full_data2) > 0:
+        hwpt = full_data1[0][1] / full_data1[0][0]
+        hdpt = (full_data1[0][2] + full_data1[0][3]) / full_data1[0][0]
+        hlpt = full_data1[0][4] / full_data1[0][0]
+        hggt = full_data1[0][5] / full_data1[0][0]/4
+        hggpt = full_data1[0][5] / (full_data1[0][5]+full_data1[0][6])
+        hsgt = full_data1[0][9] / full_data1[0][0]/50
+        hsgpt = full_data1[0][9] / (full_data1[0][9] + full_data1[0][10])
+
+        awpt = full_data2[0][1] / full_data2[0][0]
+        adpt = (full_data2[0][2] + full_data2[0][3]) / full_data2[0][0]
+        alpt = full_data2[0][4] / full_data2[0][0]
+        aggt = full_data2[0][5] / full_data2[0][0]/4
+        aggpt = full_data2[0][5] / (full_data2[0][5] + full_data2[0][6])
+        asgt = full_data2[0][9] / full_data2[0][0]/50
+        asgpt = full_data2[0][9] / (full_data2[0][9] + full_data2[0][10])
+
+        hpl = (last_match_data1[0][1]*3 + (last_match_data1[0][2] + last_match_data1[0][3])*1)/3
+        hp5 = ((last_five_data1[0][1]*3 + (last_five_data1[0][2] + last_five_data1[0][3])*1) / last_five_data1[0][0])/3
+
+        apl = (last_match_data2[0][1]*3 + (last_match_data2[0][2] + last_match_data2[0][3])*1)/3
+        ap5 = ((last_five_data2[0][1] * 3 + (last_five_data2[0][2] + last_five_data2[0][3]) * 1) / last_five_data2[0][0])/3
+
+        hsched = schedule_data1[0]
+        asched = schedule_data2[0]
+
+        hscore = score_data1[3]/10
+        ascore = score_data2[3]/10
+
+        c.execute("SELECT CASE WHEN OUTCOME = 1 THEN 1 WHEN OUTCOME = 2 or OUTCOME = 3 THEN 2 ELSE 3 END AS OUTCOME FROM TEAMGAMES WHERE GAMEID = ? AND TEAM = ?", [gameid, base_table1[3]])
+
+        outcome = c.fetchall()[0][0]
 
 
-    pre_match_table = create_pre_match_table(gamedate, serie, hometeam, "H")
+        out1=0
+        out2=0
+        out3=0
+
+        if outcome == 1:
+            out1 = 1
+        elif outcome == 2:
+            out2 = 1
+        else:
+            out3 = 1
+
+        c.execute("SELECT GAMEID FROM OUTCOME_PREDICTER WHERE GAMEID = ?",[gameid])
+        chk = c.fetchall()
+
+        if len(chk) == 0:
+            c.execute("""INSERT INTO OUTCOME_PREDICTER (GAMEID, HWPT, HDPT, HLPT, HGGT, HGGPT, HSGT, HSGPT, AWPT, ADPT, ALPT, AGGT, AGGPT, ASGT, ASGPT, HPL, HP5, APL, AP5, HSCHED, ASCHED, HSCORE,ASCORE, OUT1, OUT2, OUT3) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                      [gameid, hwpt, hdpt, hlpt, hggt, hggpt, hsgt, hsgpt, awpt, adpt, alpt, aggt, aggpt, asgt, asgpt, hpl, hp5,apl, ap5, hsched, asched, hscore, ascore, out1, out2, out3])
+        else:
+            pass
+
+        conn.commit()
 
     if 2==1:
         seasonYear = int(gamedate[0:4])
@@ -78,22 +133,6 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam):
         schedule_home = (get_team_schedule(hometeam, seasonYear, gamedate, c))
         schedule_away = (get_team_schedule(awayteam, seasonYear, gamedate, c))
 
-        print([odds1, oddsX, odds2])
-        print([prob4, prob5, prob6])
-
-
-
-
-
-
-
-
-
-create_pre_match_analysis('2018-10-04','SHL','Linköping HC','Mora IK')
-#create_pre_match_analysis('2018-10-02','SHL','Skellefteå AIK','Växjö Lakers HC')
-#create_pre_match_analysis('2018-10-02','SHL','IF Malmö Redhawks','Frölunda HC')
-
-if 1 == 2:
 
     #TEST DATA ON TWO SEASONS
 
@@ -128,3 +167,12 @@ if 1 == 2:
             c.execute("INSERT INTO TEST_DATA_GAME (GAMEID, OUTCOME, HGOALS, AGOALS, TGOALS, HSCORE, HFORM, HLAST, HPLAYER, ASCORE, AFORM, ALAST, APLAYER) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",[testGames[i][0],outcome, scoreStats[0][3], scoreStats[0][4], tscore, hscore[0][0], hscore[0][1], hscore[0][2], hscore[0][3], ascore[0][0], ascore[0][1], ascore[0][2], ascore[0][3]])
 
         conn.commit()
+
+
+c.execute("SELECT GAMEDATE, SERIE, TEAM, OPPONENT, GAMEID FROM TEAMGAMES WHERE SEASONID = ? AND SERIE = ? AND HOMEAWAY = ?",[2019, 'SHL', 'H'])
+lst = c.fetchall()
+
+for i in range(0,len(lst)):
+
+    create_pre_match_analysis(lst[i][0],lst[i][1],lst[i][2],lst[i][3],lst[i][4])
+    print(lst[i][4],"loaded")

@@ -241,5 +241,7 @@ def get_short_team_name(team):
         output = ("Djurgården")
     elif team == "Färjestad BK":
         output = ("Färjestad")
+    elif team == "Karlskrona HK":
+        output = ("Karlskrona")
 
     return output

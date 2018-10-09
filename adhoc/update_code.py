@@ -1,5 +1,5 @@
 import sqlite3
-conn = sqlite3.connect('hockeystats.db')
+conn = sqlite3.connect('/Users/carljonsson/Python/hockeystats/hockeystats.db')
 c = conn.cursor()
 
 from calcFunctions import create_game_rating
@@ -18,10 +18,9 @@ def re_score(seasonYear,serie):
 
         n=len(gameVector)
 
-        for j in range(0, n):
+        for j in range(0, len(gameVector)):
 
             c.execute("DELETE FROM teamscore where gameid = ?", [gameVector[j][0]])
-            c.execute("DELETE FROM team_score_build where gameid = ?", [gameVector[j][0]])
             conn.commit()
 
             c.execute("SELECT TEAM, GAMEDATE FROM TEAMGAMES WHERE GAMEID = ?", [gameVector[j][0]])
@@ -60,8 +59,6 @@ def re_score(seasonYear,serie):
             [final_team_score, points, season_points, player_score_final] = calculate_team_strength(tgt[1][0],tgt[1][1], c)
 
 
-
-
             # Add score to lineups
 
             c.execute("SELECT TEAM, NUMBER, FORNAME, SURNAME, GAMEDATE FROM lineups where GAMEID = ?", [gameVector[j][0]])
@@ -82,7 +79,6 @@ def re_score(seasonYear,serie):
                     "UPDATE lineups SET SCORE = ?, FINALSCORE = ?, OFFSCORE = ?, DEFSCORE = ? WHERE GAMEID = ? and TEAM = ? and NUMBER = ?",
                     [score[0], score[1], score[2], score[3], gameVector[j][0], lineups[i][0], lineups[i][1]])
 
-
             t+=1
             print(str(seasonYear) + " " + str(t) + "/" + str(n) + " scores updated")
 
@@ -90,7 +86,12 @@ def re_score(seasonYear,serie):
 
         c.close
 
-re_score(2016,'SHL')
-re_score(2017,'SHL')
-re_score(2018,'SHL')
+#re_score(2016,'SHL')
+#re_score(2016,'HA')
+#re_score(2017,'SHL')
+#re_score(2017,'HA')
+#re_score(2018,'SHL')
+#re_score(2018,'HA')
 re_score(2019,'SHL')
+re_score(2019,'HA')
+

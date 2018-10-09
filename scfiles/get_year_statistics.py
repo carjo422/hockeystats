@@ -5,6 +5,7 @@
 import urllib.request as urllib
 
 from functions import get_td_content
+from functions import isnumber
 
 
 def get_year_statistics(id,seasonYear,serie):
@@ -33,7 +34,12 @@ def get_year_statistics(id,seasonYear,serie):
     c.execute("SELECT DISTINCT TEAM FROM rosters where seasonid = ? and serie = ?", [seasonYear, serie])
     teams = c.fetchall()
 
+
+
     for j in range(0,len(teams)):
+
+        last_n = 0
+        search_keepers = 0
 
         team_found = 0
 
@@ -42,7 +48,6 @@ def get_year_statistics(id,seasonYear,serie):
                 team_found += 1
 
                 if team_found == 2:
-
                     team = tds[i]
 
             if "," in tds[i] and tds[i+1] in ["GK","LD","RD","LW","RW","CE"]:
@@ -58,7 +63,45 @@ def get_year_statistics(id,seasonYear,serie):
                 penalty = tds[i+6]
                 plus = tds[i+7]
                 minus = tds[i+8]
+                shots = 0
+                saves = 0
 
-
-                c.execute("UPDATE rosters SET GAMES = ?, GOALS = ?, ASSIST = ?, PENALTY = ?, PLUS = ?, MINUS = ? WHERE SEASONID = ? and SERIE = ? and TEAM = ? and FORNAME = ? and SURNAME = ?",[games, goals, assist, penalty, plus, minus, seasonYear, serie, team, forname, surname])
+                c.execute("UPDATE rosters SET GAMES = ?, GOALS = ?, ASSIST = ?, PENALTY = ?, PLUS = ?, MINUS = ?, SHOTS = ?, SAVES = ? WHERE SEASONID = ? and SERIE = ? and TEAM = ? and FORNAME = ? and SURNAME = ?",[games, goals, assist, penalty, plus, minus, shots, saves, seasonYear, serie, team, forname, surname])
                 conn.commit()
+
+            if isnumber(tds[i]) and isnumber(tds[i + 1]) == True and "," in tds[i + 2]:
+
+                if last_n > int(tds[i]):
+
+                    if search_keepers == 0:
+                        search_keepers = 1
+                    else:
+                        search_keepers = 0
+
+                last_n = int(tds[i])
+
+                if search_keepers == 1:
+                    if ":" in tds[i + 6]:
+
+                        forname = tds[i+2][tds[i+2].find(",") + 2:len(tds[i+2])]
+                        forname = forname.replace("*", "")
+
+                        surname = tds[i+2][0:tds[i+2].find(",")]
+
+                        games = tds[i+5]
+                        goals = 0
+                        assist = 0
+                        penalty = 0
+                        plus = 0
+                        minus = 0
+                        shots = tds[i+9]
+                        saves = tds[i+8]
+
+                        c.execute("UPDATE rosters SET GAMES = ?, SHOTS = ?, SAVES = ? WHERE SEASONID = ? and SERIE = ? and TEAM = ? and FORNAME = ? and SURNAME = ?",
+                            [games, shots, saves, seasonYear, serie, team, forname,
+                             surname])
+
+                        conn.commit()
+
+
+
