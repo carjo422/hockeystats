@@ -268,8 +268,10 @@ def create_pre_match_table(gamedate, serie, team, homeaway):
         #SCHEDULE DATA
 
         c.execute("SELECT GAMEDATE, OPPONENT, OUTCOME, SCORE1, SCORE2, OPP_SCORE_SIMPLE FROM TEAMGAMES WHERE SEASONID = ? AND TEAM = ? AND GAMEDATE < ? ORDER BY GAMEDATE DESC",[seasonYear,team, gamedate])
-
         schedule = c.fetchall()
+
+        c.execute("SELECT GAMEDATE FROM CHL_GAMES WHERE SEASONID = ? AND TEAM = ? AND GAMEDATE < ?", [seasonYear, team, gamedate])
+        CHLschedule = c.fetchall()
 
         sched = 0
         comp1 = 0
@@ -303,7 +305,14 @@ def create_pre_match_table(gamedate, serie, team, homeaway):
             comp5 = comp4 + schedule[4][5]
 
         for i in range(0,len(schedule)):
-            sched += 1/date_diff(gamedate,schedule[i][0])
+
+            if date_diff(gamedate,schedule[i][0]) < 13:
+                sched += 1/date_diff(gamedate,schedule[i][0])
+
+        for i in range(0,len(CHLschedule)):
+            if date_diff(gamedate, CHLschedule[i][0]) < 13:
+                sched += 1/date_diff(gamedate,CHLschedule[i][0])
+
 
         schedule_data.append(sched)
         schedule_data.append(comp1)

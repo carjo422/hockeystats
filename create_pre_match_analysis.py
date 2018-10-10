@@ -2,6 +2,8 @@ import sqlite3
 conn = sqlite3.connect('hockeystats.db')
 c = conn.cursor()
 
+import math
+
 from pre_match_functions import get_form
 from pre_match_functions import get_strength
 from pre_match_functions import getOdds1X2
@@ -36,17 +38,19 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid):
         asgt = full_data2[0][9] / full_data2[0][0]/50
         asgpt = full_data2[0][9] / (full_data2[0][9] + full_data2[0][10])
 
-        hpl = (last_match_data1[0][1]*3 + (last_match_data1[0][2] + last_match_data1[0][3])*1)/3
-        hp5 = ((last_five_data1[0][1]*3 + (last_five_data1[0][2] + last_five_data1[0][3])*1) / last_five_data1[0][0])/3
+        if schedule_data2[0] > 0:
+            schedRatio = math.log(schedule_data1[0]/schedule_data2[0])
+        else:
+            schedRatio = 0
 
-        apl = (last_match_data2[0][1]*3 + (last_match_data2[0][2] + last_match_data2[0][3])*1)/3
-        ap5 = ((last_five_data2[0][1] * 3 + (last_five_data2[0][2] + last_five_data2[0][3]) * 1) / last_five_data2[0][0])/3
-
-        hsched = schedule_data1[0]
-        asched = schedule_data2[0]
+        if schedRatio > 1:
+            schedRatio = 1
 
         hscore = score_data1[3]/10
         ascore = score_data2[3]/10
+
+        hpenalty = last_five_data1[0][7]/last_five_data1[0][0]
+        apenalty = last_five_data2[0][7]/last_five_data2[0][0]
 
         c.execute("SELECT CASE WHEN OUTCOME = 1 THEN 1 WHEN OUTCOME = 2 or OUTCOME = 3 THEN 2 ELSE 3 END AS OUTCOME FROM TEAMGAMES WHERE GAMEID = ? AND TEAM = ?", [gameid, base_table1[3]])
 
@@ -68,8 +72,8 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid):
         chk = c.fetchall()
 
         if len(chk) == 0:
-            c.execute("""INSERT INTO OUTCOME_PREDICTER (GAMEID, HWPT, HDPT, HLPT, HGGT, HGGPT, HSGT, HSGPT, AWPT, ADPT, ALPT, AGGT, AGGPT, ASGT, ASGPT, HPL, HP5, APL, AP5, HSCHED, ASCHED, HSCORE,ASCORE, OUT1, OUT2, OUT3) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
-                      [gameid, hwpt, hdpt, hlpt, hggt, hggpt, hsgt, hsgpt, awpt, adpt, alpt, aggt, aggpt, asgt, asgpt, hpl, hp5,apl, ap5, hsched, asched, hscore, ascore, out1, out2, out3])
+            c.execute("""INSERT INTO OUTCOME_PREDICTER (GAMEID, HWPT, HDPT, HLPT, HGGT, HGGPT, HSGT, HSGPT, AWPT, ADPT, ALPT, AGGT, AGGPT, ASGT, ASGPT, HSCORE, ASCORE, HPENALTY, APENALTY, SCHEDULE_RATIO, OUT1, OUT2, OUT3) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                      [gameid, hwpt, hdpt, hlpt, hggt, hggpt, hsgt, hsgpt, awpt, adpt, alpt, aggt, aggpt, asgt, asgpt, hscore, ascore, hpenalty, apenalty, schedRatio, out1, out2, out3])
         else:
             pass
 
@@ -169,7 +173,7 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid):
         conn.commit()
 
 
-c.execute("SELECT GAMEDATE, SERIE, TEAM, OPPONENT, GAMEID FROM TEAMGAMES WHERE SEASONID = ? AND SERIE = ? AND HOMEAWAY = ?",[2019, 'SHL', 'H'])
+c.execute("SELECT GAMEDATE, SERIE, TEAM, OPPONENT, GAMEID FROM TEAMGAMES WHERE SEASONID = ? AND SERIE = ? AND HOMEAWAY = ?",[2018, 'SHL', 'H'])
 lst = c.fetchall()
 
 for i in range(0,len(lst)):
