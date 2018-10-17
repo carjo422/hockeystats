@@ -615,8 +615,8 @@ def get_expected_shots(full_data1, home_data1, away_data2, full_data2, home_data
 
 def get_shots_goals(int1, c11, c12, c13, int2, c21, c22, c23, shots):
 
-    h_shots = int1 + c11 * shots[1] + c12 * shots[2] + c13 * shots[9]
-    a_shots = int2 + c21 * shots[5] + c22 * shots[6] + c23 * shots[10]
+    h_shots = int1 + c11 * shots[1] + c12 * shots[6] + c13 * shots[9]
+    a_shots = int2 + c21 * shots[2] + c22 * shots[5] + c23 * shots[10]
 
     h_goals = h_shots * (shots[3] / 2 + shots[8] / 2) * (0.975 + (22 - h_shots) / 400)  # More shots generally means lower scoring % Adjusted here
     a_goals = a_shots * (shots[4] / 2 + shots[7] / 2) * (0.99 + (20 - a_shots) / 400)  # More shots generally means lower scoring % Adjusted here

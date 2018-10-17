@@ -49,8 +49,6 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid):
         c.execute("SELECT INT1, INT2, C11, C12, C13, C21, C22, C23 FROM EXP_SHOTS_TABLE WHERE SEASON = ? ORDER BY GAMEID DESC",[seasonYear])
         p = c.fetchall()
 
-        print(p)
-
         shots_list = [0, ave_home_shots, ave_home_shots_against, ave_score_shot_home, ave_conceded_shot_home, ave_away_shots, ave_away_shots_against, ave_score_shot_away, ave_conceded_shot_away, score_data1[0], score_data2[0]]
 
         exp_home_shots, exp_away_shots, exp_home_goals, exp_away_goals = get_shots_goals(p[0][0], p[0][2], p[0][3], p[0][4], p[0][1], p[0][5], p[0][6], p[0][7], shots_list)
@@ -83,5 +81,12 @@ create_pre_match_analysis('2018-10-18','SHL',"Växjö Lakers HC","HV 71","")
 create_pre_match_analysis('2018-10-18','SHL',"IF Malmö Redhawks","Brynäs IF","")
 create_pre_match_analysis('2018-10-18','SHL',"Timrå IK","Rögle BK","")
 create_pre_match_analysis('2018-10-18','SHL',"Frölunda HC","Luleå HF","")
+
+#create_pre_match_analysis('2018-10-02','SHL',"Linköping HC","BrynäsIF","")
+#create_pre_match_analysis('2018-10-04','SHL',"Linköping HC","Mora IK","")
+#create_pre_match_analysis('2018-10-06','SHL',"Färjestad BK","Linköping HC","")
+#create_pre_match_analysis('2018-10-11','SHL',"Linköping HC","Timrå IK","")
+
+
 
 conn.commit()
