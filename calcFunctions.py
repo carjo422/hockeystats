@@ -67,8 +67,10 @@ def create_game_rating(lineup,team,c,conn):
 
     # How good is the competition
 
+    opp_score_simple = calculate_team_strength_simple(opponent,gamedate,c)
+
     #Check if score is already in team score table
-    c.execute("Update TEAMGAMES SET OPP_SCORE_SIMPLE = ? WHERE GAMEID = ? AND TEAM = ?",[0, lineup[0][1], lineup[0][8]])
+    c.execute("Update TEAMGAMES SET OPP_SCORE_SIMPLE = ? WHERE GAMEID = ? AND TEAM = ?",[opp_score_simple, lineup[0][1], lineup[0][8]])
     conn.commit()
 
     #Calculate score for player
@@ -301,10 +303,10 @@ def calculate_team_strength(team,gamedate,c):
         final_team_score = points * 0 + season_points * 0 + player_score_final * 0.5
 
     else:
-        final_team_score = 5
+        final_team_score = 2
         points = 0
         season_points = 0
-        player_score_final = 5
+        player_score_final = 2
 
     return [final_team_score, points, season_points, player_score_final]
 

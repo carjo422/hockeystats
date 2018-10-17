@@ -22,8 +22,8 @@ t=0
 t_count = 0 # Counts number of update
 
 #Input variables on seasons
-seasonID = 9171
-seasonYear = 2019
+seasonID = 8121
+seasonYear = 2018
 serie = "SHL"
 score_update = "New" #New if only fill with new scores
 

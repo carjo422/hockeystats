@@ -211,8 +211,14 @@ def get_stats(id, gamedate):
     output.append(ap3penalty)
     output.append(ap4penalty)
 
-    home_pp = pct_vect[4]
-    away_pp = pct_vect[5]
+    if len(pct_vect) > 4:
+        home_pp = pct_vect[4]
+    else:
+        home_pp = 0
+    if len(pct_vect) > 5:
+        away_pp = pct_vect[5]
+    else:
+        away_pp = 0
 
     output.append(home_pp)
     output.append(away_pp)

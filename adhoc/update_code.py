@@ -86,12 +86,12 @@ def re_score(seasonYear,serie):
 
         c.close
 
-#re_score(2016,'SHL')
+re_score(2016,'SHL')
 #re_score(2016,'HA')
-#re_score(2017,'SHL')
+re_score(2017,'SHL')
 #re_score(2017,'HA')
-#re_score(2018,'SHL')
+re_score(2018,'SHL')
 #re_score(2018,'HA')
 re_score(2019,'SHL')
-re_score(2019,'HA')
+#re_score(2019,'HA')
 
