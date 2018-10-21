@@ -10,7 +10,6 @@ def delete(gameid):
 
     c.execute("DELETE FROM TEAMGAMES WHERE GAMEID = ?", [gameid])
     c.execute("DELETE FROM TEAMSCORE WHERE GAMEID = ?", [gameid])
-    c.execute("DELETE FROM TEAM_SCORE_BUILD WHERE GAMEID = ?", [gameid])
     c.execute("DELETE FROM events WHERE GAMEID = ?", [gameid])
     c.execute("DELETE FROM lineups WHERE GAMEID = ?", [gameid])
     c.execute("DELETE FROM refs WHERE GAMEID = ?", [gameid])
@@ -21,7 +20,7 @@ def delete(gameid):
 
 #delete(393366)
 
-c.execute("SELECT GAMEID FROM stats WHERE SEASONID = ? AND SERIE = ?",[2019, 'SHL'])
+c.execute("SELECT GAMEID FROM stats WHERE SEASONID = ? AND SERIE = ?",[2019, 'HA'])
 list = c.fetchall()
 
 for i in range(0,len(list)):

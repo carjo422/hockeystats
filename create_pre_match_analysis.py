@@ -42,18 +42,18 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid):
 
     #Recalibrate regression on shots
 
-    if 1 == 1:
+    if 1 == 2:
 
         update_season_shots_goals(serie, seasonYear, c)
 
         c.execute("SELECT INT1, INT2, C11, C12, C13, C21, C22, C23 FROM EXP_SHOTS_TABLE WHERE SEASON = ? ORDER BY GAMEID DESC",[seasonYear])
         p = c.fetchall()
 
-        shots_list = [0, ave_home_shots, ave_home_shots_against, ave_score_shot_home, ave_conceded_shot_home, ave_away_shots, ave_away_shots_against, ave_score_shot_away, ave_conceded_shot_away, score_data1[0], score_data2[0]]
+        shots_list = [0, ave_home_shots, ave_home_shots_against, ave_away_shots, ave_away_shots_against, score_data1[0], score_data2[0]]
 
-        exp_home_shots, exp_away_shots, exp_home_goals, exp_away_goals = get_shots_goals(p[0][0], p[0][2], p[0][3], p[0][4], p[0][1], p[0][5], p[0][6], p[0][7], shots_list)
+        exp_home_shots, exp_away_shots = get_shots_goals(p[0][0], p[0][2], p[0][3], p[0][4], p[0][1], p[0][5], p[0][6], p[0][7], shots_list)
 
-        print(exp_home_shots, exp_away_shots, exp_home_goals, exp_away_goals)
+        print(exp_home_shots, exp_away_shots)
 
         #Create result dataframe
 
@@ -66,11 +66,11 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid):
 
 
 
-c.execute("SELECT GAMEDATE, SERIE, TEAM, OPPONENT, GAMEID FROM TEAMGAMES WHERE (SEASONID = ? OR SEASONID = ?) AND SERIE = ? AND HOMEAWAY = ?",[2016, 2016, 'SHL', 'H'])
-lst = c.fetchall()
+#c.execute("SELECT GAMEDATE, SERIE, TEAM, OPPONENT, GAMEID FROM TEAMGAMES WHERE (SEASONID = ? OR SEASONID = ?) AND SERIE = ? AND HOMEAWAY = ?",[2017, 2017, 'HA', 'H'])
+#lst = c.fetchall()
 
 #for i in range(0,len(lst)):
-#
+
 #    create_pre_match_analysis(lst[i][0],lst[i][1],lst[i][2],lst[i][3],lst[i][4])
 #    print(lst[i][4],"loaded")
 
