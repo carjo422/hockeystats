@@ -18,11 +18,10 @@ from pre_match_functions import get_defence_info
 from pre_match_functions import get_stats
 from pre_match_functions import create_tables
 from create_pre_match_tables import create_pre_match_table
-from create_pre_match_tables import create_outcome_predicter_table
 from create_pre_match_tables import get_expected_shots
 from calcFunctions import calculate_team_strength
-from adhoc.linreg_shots import update_season_shots_goals
-from create_pre_match_tables import get_shots_goals
+from adhoc.model_game_shots import update_shots_model
+from adhoc.model_game_shots import get_shots_goals_linreg
 
 
 
@@ -34,8 +33,6 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid):
     if int(gamedate[5:7]) > 6:
         seasonYear +=1
 
-    #create_outcome_predicter_table(base_table1, full_data1, full_data2, home_data1, away_data2, schedule_data1, schedule_data2, score_data1, score_data2, last_five_data1, last_five_data2, gameid)
-
     print(hometeam, awayteam)
 
     [ave_home_shots, ave_home_shots_against, ave_score_shot_home, ave_conceded_shot_home, ave_away_shots, ave_away_shots_against, ave_score_shot_away, ave_conceded_shot_away] = get_expected_shots(full_data1, home_data1, away_data2, full_data2, home_data2, score_data1, score_data2, serie, c, gameid, gamedate, seasonYear)
@@ -44,25 +41,14 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid):
 
     if 1 == 2:
 
-        update_season_shots_goals(serie, seasonYear, c)
-
-        c.execute("SELECT INT1, INT2, C11, C12, C13, C21, C22, C23 FROM EXP_SHOTS_TABLE WHERE SEASON = ? ORDER BY GAMEID DESC",[seasonYear])
-        p = c.fetchall()
-
-        shots_list = [0, ave_home_shots, ave_home_shots_against, ave_away_shots, ave_away_shots_against, score_data1[0], score_data2[0]]
-
-        exp_home_shots, exp_away_shots = get_shots_goals(p[0][0], p[0][2], p[0][3], p[0][4], p[0][1], p[0][5], p[0][6], p[0][7], shots_list)
-
-        print(exp_home_shots, exp_away_shots)
-
         #Create result dataframe
 
         results = pd.DataFrame(np.zeros((11, 11)))
 
-        for i in range(0,11):
-            for j in range(0,11):
-
-                results[i][j] = scipy.stats.distributions.poisson.pmf(j, exp_home_goals) * scipy.stats.distributions.poisson.pmf(i, exp_away_goals)
+        #for i in range(0,11):
+        #    for j in range(0,11):
+        #
+        #        results[i][j] = scipy.stats.distributions.poisson.pmf(j, exp_home_goals) * scipy.stats.distributions.poisson.pmf(i, exp_away_goals)
 
 
 

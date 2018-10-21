@@ -417,92 +417,6 @@ def create_pre_match_players(gamedate, serie, team, homeaway):
     # SAVES
     # SCORE
 
-def create_outcome_predicter_table(base_table1, full_data1, full_data2, home_data1, away_data2, schedule_data1, schedule_data2, score_data1, score_data2, last_five_data1, last_five_data2, gameid):
-
-    import math
-
-    if len(full_data1) > 0 and len(full_data2) > 0:
-        hwpt = full_data1[0][1] / full_data1[0][0]
-        hdpt = (full_data1[0][2] + full_data1[0][3]) / full_data1[0][0]
-        hlpt = full_data1[0][4] / full_data1[0][0]
-        hggt = full_data1[0][5] / full_data1[0][0] / 4
-        hggpt = full_data1[0][5] / (full_data1[0][5] + full_data1[0][6])
-        hsgt = full_data1[0][9] / full_data1[0][0] / 50
-        hsgpt = full_data1[0][9] / (full_data1[0][9] + full_data1[0][10])
-
-        awpt = full_data2[0][1] / full_data2[0][0]
-        adpt = (full_data2[0][2] + full_data2[0][3]) / full_data2[0][0]
-        alpt = full_data2[0][4] / full_data2[0][0]
-        aggt = full_data2[0][5] / full_data2[0][0] / 4
-        aggpt = full_data2[0][5] / (full_data2[0][5] + full_data2[0][6])
-        asgt = full_data2[0][9] / full_data2[0][0] / 50
-        asgpt = full_data2[0][9] / (full_data2[0][9] + full_data2[0][10])
-
-        if len(home_data1) > 0 and home_data1[0][0] > 0:
-            hhwpt = home_data1[0][1] / home_data1[0][0]
-            hhdpt = (home_data1[0][2] + home_data1[0][3]) / home_data1[0][0]
-            hhlpt = home_data1[0][4] / home_data1[0][0]
-        else:
-            hhwpt = 0
-            hhdpt = 0
-            hhlpt = 0
-        if len(away_data2) > 0 and away_data2[0][0] > 0:
-            aawpt = away_data2[0][1] / away_data2[0][0]
-            aadpt = (away_data2[0][2] + away_data2[0][3]) / away_data2[0][0]
-            aalpt = away_data2[0][4] / away_data2[0][0]
-        else:
-            aawpt = 0
-            aadpt = 0
-            aalpt = 0
-
-        if schedule_data2[0] > 0:
-            schedRatio = math.log(schedule_data1[0] / schedule_data2[0])
-        else:
-            schedRatio = 0
-
-        if schedRatio > 1:
-            schedRatio = 1
-
-        hscore = score_data1[3] / 10
-        ascore = score_data2[3] / 10
-
-        hcomform = schedule_data1[11] / 5
-        acomform = schedule_data2[11] / 5
-
-        hpenalty = last_five_data1[0][7] / last_five_data1[0][0]
-        apenalty = last_five_data2[0][7] / last_five_data2[0][0]
-
-        c.execute(
-            "SELECT CASE WHEN OUTCOME = 1 THEN 1 WHEN OUTCOME = 2 or OUTCOME = 3 THEN 2 ELSE 3 END AS OUTCOME FROM TEAMGAMES WHERE GAMEID = ? AND TEAM = ?",
-            [gameid, base_table1[3]])
-
-        outcome = c.fetchall()[0][0]
-
-        out1 = 0
-        out2 = 0
-        out3 = 0
-
-        if outcome == 1:
-            out1 = 1
-        elif outcome == 2:
-            out2 = 1
-        else:
-            out3 = 1
-
-        c.execute("SELECT GAMEID FROM OUTCOME_PREDICTER WHERE GAMEID = ?", [gameid])
-        chk = c.fetchall()
-
-        if len(chk) == 0:
-            c.execute(
-                """INSERT INTO OUTCOME_PREDICTER (GAMEID, HWPT, HDPT, HLPT, HGGT, HGGPT, HSGT, HSGPT, AWPT, ADPT, ALPT, AGGT, AGGPT, ASGT, ASGPT, HSCORE, ASCORE, HPENALTY, APENALTY, HCOMFORM, ACOMFORM, SCHEDULE_RATIO, hhwpt, hhdpt, hhlpt, aawpt, aadpt, aalpt, OUT1, OUT2, OUT3) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
-                [gameid, hwpt, hdpt, hlpt, hggt, hggpt, hsgt, hsgpt, awpt, adpt, alpt, aggt, aggpt, asgt, asgpt, hscore,
-                 ascore, hpenalty, apenalty, hcomform, acomform, schedRatio, hhwpt, hhdpt, hhlpt, aawpt, aadpt, aalpt, out1,
-                 out2, out3])
-        else:
-            pass
-
-        conn.commit()
-
 def get_expected_shots(full_data1, home_data1, away_data2, full_data2, home_data2, score_table1, score_table2, serie, c, gameid, gamedate, season):
 
     c.execute("SELECT SUM(SCORE11+SCORE12+SCORE13)*1000/SUM(SHOTS11+SHOTS12+SHOTS13) AS HOME_SHOT_PERCENT, SUM(SHOTS11+SHOTS12+SHOTS13)*10/COUNT(GAMEID) AS HOME_SHOTS FROM (SELECT * FROM TEAMGAMES WHERE SERIE = ? and GAMEDATE < ? and HOMEAWAY = ? ORDER BY GAMEDATE DESC LIMIT 80)",[serie,gamedate,"H"])
@@ -613,10 +527,3 @@ def get_expected_shots(full_data1, home_data1, away_data2, full_data2, home_data
 
 
 
-def get_shots_goals(int1, c11, c12, c13, int2, c21, c22, c23, shots):
-
-    h_shots = int1 + c11 * shots[1] + c12 * shots[4] + c13 * shots[5]
-    a_shots = int2 + c21 * shots[2] + c22 * shots[3] + c23 * shots[6]
-
-
-    return h_shots, a_shots
