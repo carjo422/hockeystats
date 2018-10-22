@@ -18,15 +18,12 @@ from sklearn.ensemble import RandomForestRegressor
 from pandas import ExcelWriter
 import pickle
 
-def update_efficiency_model_linreg(seasonYear,c):
+def update_efficiency_model_linreg(seasonYear, serie, c):
 
-    c.execute("SELECT AVG(ASSH), AVG(ASSA) FROM EXP_SHOTS_TABLE WHERE SEASON <= ?",[seasonYear - 1])
-    avgs = c.fetchall()
-
-    c.execute("SELECT ACT_SHOTS1, ACT_SHOTS2, ASSH+ACSA - ?, ASSA+ACSH - ?, SCORE1, SCORE2, CAST(ACT_GOALS1 AS FLOAT)/CAST(ACT_SHOTS1 AS FLOAT), CAST(ACT_GOALS2 AS FLOAT)/CAST(ACT_SHOTS2 AS FLOAT) FROM EXP_SHOTS_TABLE WHERE SEASON <= ?",[avgs[0][0]*2, avgs[0][1]*2, seasonYear - 1])
+    c.execute("SELECT ACT_SHOTS1, ACT_SHOTS2, ASSH, ASSA, SCORE1, SCORE2, CAST(ACT_GOALS1 AS FLOAT)/CAST(ACT_SHOTS1 AS FLOAT), CAST(ACT_GOALS2 AS FLOAT)/CAST(ACT_SHOTS2 AS FLOAT) FROM EXP_SHOTS_TABLE WHERE SEASON <= ? AND SERIE = ?",[seasonYear - 1, serie])
     regdata = pd.DataFrame(c.fetchall())
 
-    regdata.columns = ['Shots1', 'Shots2', 'Home_Eff_Delta', 'Away_Eff_Delta', 'Score1', 'Score2', 'Act_Eff_Home', 'Act_Eff_Away']
+    regdata.columns = ['Shots1', 'Shots2', 'Home_Eff', 'Away_Eff', 'Score1', 'Score2', 'Act_Eff_Home', 'Act_Eff_Away']
 
     #Home efficiency model
 
@@ -36,7 +33,9 @@ def update_efficiency_model_linreg(seasonYear,c):
     lm_home_efficiency = LinearRegression()
     lm_home_efficiency.fit(X, Y)
 
-    filename = data_directory + '/models/lm_shot_eff_home_' + str(seasonYear) + '.sav'
+    print(lm_home_efficiency.intercept_, lm_home_efficiency.coef_)
+
+    filename = data_directory + '/models/lm_shot_eff_home_' + serie + str(seasonYear) + '.sav'
 
     pickle.dump(lm_home_efficiency, open(filename, 'wb'))
 
@@ -49,13 +48,13 @@ def update_efficiency_model_linreg(seasonYear,c):
     lm_away_efficiency = LinearRegression()
     lm_away_efficiency.fit(X, Y)
 
-    filename = data_directory + '/models/lm_shot_eff_away_' + str(seasonYear) + '.sav'
+    filename = data_directory + '/models/lm_shot_eff_away_' + serie + str(seasonYear) + '.sav'
 
     pickle.dump(lm_away_efficiency, open(filename, 'wb'))
 
     # Update model_shot_table with exp_shots
 
-    c.execute("SELECT EXP_SHOTS1, EXP_SHOTS2, SCORE1, SCORE2, GAMEID FROM EXP_SHOTS_TABLE WHERE SEASON = ?",[seasonYear])
+    c.execute("SELECT EXP_SHOTS1, EXP_SHOTS2, SCORE1, SCORE2, GAMEID FROM EXP_SHOTS_TABLE WHERE SEASON = ? AND SERIE = ?",[seasonYear, serie])
     upd = c.fetchall()
 
     for i in range(0, len(upd)):
@@ -67,9 +66,9 @@ def update_efficiency_model_linreg(seasonYear,c):
     conn.commit()
 
 
-def get_efficiency_model_linreg(seasonYear, inputs, gameid,c):
+def get_efficiency_model_linreg(seasonYear, inputs, gameid, serie, c):
 
-    filename = data_directory + '/models/lm_shot_eff_home_' + str(seasonYear) + '.sav'
+    filename = data_directory + '/models/lm_shot_eff_home_' + serie + str(seasonYear) + '.sav'
 
     lm_home_efficiency = pickle.load(open(filename, 'rb'))
 
@@ -80,7 +79,7 @@ def get_efficiency_model_linreg(seasonYear, inputs, gameid,c):
 
     h_goals = (int1 + c11 * inputs[0] + c12 * inputs[2] + c13 * inputs[3]) * inputs[0]
 
-    filename = data_directory + '/models/lm_shot_eff_away_' + str(seasonYear) + '.sav'
+    filename = data_directory + '/models/lm_shot_eff_away_' + serie + str(seasonYear) + '.sav'
 
     lm_away_efficiency = pickle.load(open(filename, 'rb'))
 
@@ -98,4 +97,11 @@ def get_efficiency_model_linreg(seasonYear, inputs, gameid,c):
     return h_goals[0], a_goals[0]
 
 
-update_efficiency_model_linreg(2016,c)
+update_efficiency_model_linreg(2019,'SHL',c)
+#update_efficiency_model_linreg(2018,'SHL',c)
+#update_efficiency_model_linreg(2017,'SHL',c)
+#update_efficiency_model_linreg(2016,'SHL',c)
+
+#update_efficiency_model_linreg(2019, 'HA', c)
+#update_efficiency_model_linreg(2018, 'HA', c)
+
