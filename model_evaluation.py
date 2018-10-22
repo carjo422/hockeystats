@@ -17,7 +17,7 @@ def exp_act_results(year_vector,serie_vector):
     for i in range(0,len(year_vector)):
         for j in range(0,len(serie_vector)):
 
-            c.execute("SELECT EXP_GOAL1, EXP_GOAL2, ACT_GOAL1, ACT_GOAL2 FROM EXP_SHOTS_TABLE WHERE SEASON = ? AND SERIE = ?",[year_vector[i], serie_vector[j]])
+            c.execute("SELECT EXP_GOALS1, EXP_GOALS2, ACT_GOALS1, ACT_GOALS2 FROM EXP_SHOTS_TABLE WHERE SEASON = ? AND SERIE = ?",[year_vector[i], serie_vector[j]])
             ev_matrix = c.fetchall()
 
             for k in range(0,len(ev_matrix)):
@@ -55,7 +55,7 @@ def exp_act_nGoals(year_vector, serie_vector):
     for i in range(0, len(year_vector)):
         for j in range(0, len(serie_vector)):
 
-            c.execute("SELECT SEASON, SERIE, SUM(EXP_GOAL1), SUM(EXP_GOAL2), SUM(ACT_GOAL1), SUM(ACT_GOAL2) FROM EXP_SHOTS_TABLE WHERE SEASON = ? AND SERIE = ? GROUP BY SEASON, SERIE ORDER BY SERIE, SEASON",[year_vector[i], serie_vector[j]])
+            c.execute("SELECT SEASON, SERIE, SUM(EXP_GOALS1), SUM(EXP_GOALS2), SUM(ACT_GOALS1), SUM(ACT_GOALS2) FROM EXP_SHOTS_TABLE WHERE SEASON = ? AND SERIE = ? GROUP BY SEASON, SERIE ORDER BY SERIE, SEASON",[year_vector[i], serie_vector[j]])
 
             exp_act_goals.append(c.fetchall())
 
@@ -63,16 +63,16 @@ def exp_act_nGoals(year_vector, serie_vector):
     return np.array(exp_act_goals)
 
 def home_goal_by_exp_goal():
-    c.execute("SELECT ROUND(EXP_GOAL1*10) EXPG, COUNT(EXP_GOAL1) AS N, SUM(ACT_GOAL1*10)/COUNT(ACT_GOAL1) AS ACT_GOAL1 FROM EXP_SHOTS_TABLE GROUP BY EXPG ORDER BY EXPG DESC")
+    c.execute("SELECT ROUND(EXP_GOALS1*10) AS EXPG, COUNT(EXP_GOALS1) AS N, SUM(ACT_GOALS1*10)/COUNT(ACT_GOALS1) AS ACT_GOALS1 FROM EXP_SHOTS_TABLE GROUP BY EXPG ORDER BY EXPG DESC")
     return(c.fetchall())
 
 def away_goal_by_exp_goal():
-    c.execute("SELECT ROUND(EXP_GOAL2*10) EXPG, COUNT(EXP_GOAL2) AS N, SUM(ACT_GOAL2*10)/COUNT(ACT_GOAL2) AS ACT_GOAL1 FROM EXP_SHOTS_TABLE GROUP BY EXPG ORDER BY EXPG DESC")
+    c.execute("SELECT ROUND(EXP_GOALS2*10) AS EXPG, COUNT(EXP_GOALS2) AS N, SUM(ACT_GOALS2*10)/COUNT(ACT_GOALS2) AS ACT_GOALS1 FROM EXP_SHOTS_TABLE GROUP BY EXPG ORDER BY EXPG DESC")
     return(c.fetchall())
 
-exp_act_results([2015,2016,2017,2018,2019],['SHL','HA'])
+exp_act_results([2016,2017,2018,2019],['SHL','HA'])
 
-print(exp_act_nGoals([2015,2016,2017,2018,2019],['SHL','HA']))
+print(exp_act_nGoals([2016,2017,2018,2019],['SHL','HA']))
 
 print(act_exp_outcome)
 

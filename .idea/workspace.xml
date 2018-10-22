@@ -2,13 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="34d2bf4b-fd4c-4039-8ec7-45fbb538b0f4" name="Default" comment="dont fuck up">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/adhoc/linreg_shots.py" afterPath="$PROJECT_DIR$/Old/linreg_shots.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/model_shot_efficiency.py" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/adhoc/model_shot_efficiency.py" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/adhoc/model_game_shots.py" afterPath="$PROJECT_DIR$/model_game_shots.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hockeystats.db" afterPath="$PROJECT_DIR$/hockeystats.db" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/adhoc/model_game_shots.py" afterPath="$PROJECT_DIR$/adhoc/model_game_shots.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/adhoc/model_shot_efficiency.py" afterPath="$PROJECT_DIR$/adhoc/model_shot_efficiency.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/adhoc/delete_game.py" afterPath="$PROJECT_DIR$/adhoc/delete_game.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/adhoc/update_code.py" afterPath="$PROJECT_DIR$/adhoc/update_code.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/create_pre_match_analysis.py" afterPath="$PROJECT_DIR$/create_pre_match_analysis.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/create_pre_match_tables.py" afterPath="$PROJECT_DIR$/create_pre_match_tables.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model_evaluation.py" afterPath="$PROJECT_DIR$/model_evaluation.py" />
     </list>
     <ignored path="hockeystats.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -32,18 +35,8 @@
       <file leaf-file-name="create_pre_match_tables.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/create_pre_match_tables.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6120">
-              <caret line="408" column="265" selection-start-line="408" selection-start-column="265" selection-end-line="408" selection-end-column="265" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="scrape.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scrape.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6930">
-              <caret line="478" column="16" selection-start-line="478" selection-start-column="16" selection-end-line="478" selection-end-column="16" />
+            <state relative-caret-position="358">
+              <caret line="400" column="77" selection-start-line="400" selection-start-column="77" selection-end-line="400" selection-end-column="77" />
               <folding />
             </state>
           </provider>
@@ -60,20 +53,30 @@
         </entry>
       </file>
       <file leaf-file-name="model_game_shots.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/adhoc/model_game_shots.py">
+        <entry file="file://$PROJECT_DIR$/model_game_shots.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="301">
-              <caret line="121" column="0" selection-start-line="121" selection-start-column="0" selection-end-line="121" selection-end-column="0" />
+            <state relative-caret-position="524">
+              <caret line="151" column="30" selection-start-line="151" selection-start-column="30" selection-end-line="151" selection-end-column="30" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="model_shot_efficiency.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/adhoc/model_shot_efficiency.py">
+      <file leaf-file-name="model_shot_efficiency.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/model_shot_efficiency.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="20" column="56" selection-start-line="20" selection-start-column="56" selection-end-line="20" selection-end-column="56" />
+            <state relative-caret-position="449">
+              <caret line="89" column="74" selection-start-line="89" selection-start-column="74" selection-end-line="89" selection-end-column="74" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pre_match_functions.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/pre_match_functions.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="165">
+              <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -82,18 +85,18 @@
       <file leaf-file-name="create_pre_match_analysis.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/create_pre_match_analysis.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="435">
-              <caret line="43" column="0" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+            <state relative-caret-position="133">
+              <caret line="26" column="115" selection-start-line="26" selection-start-column="115" selection-end-line="26" selection-end-column="115" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="model_evaluation.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="model_evaluation.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/model_evaluation.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1260">
-              <caret line="84" column="0" selection-start-line="84" selection-start-column="0" selection-end-line="93" selection-end-column="13" />
+            <state relative-caret-position="356">
+              <caret line="77" column="0" selection-start-line="77" selection-start-column="0" selection-end-line="77" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -102,8 +105,8 @@
       <file leaf-file-name="delete_game.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/adhoc/delete_game.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="11" column="65" selection-start-line="11" selection-start-column="65" selection-end-line="11" selection-end-column="65" />
+            <state relative-caret-position="0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -112,8 +115,8 @@
       <file leaf-file-name="update_code.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/adhoc/update_code.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1410">
-              <caret line="94" column="0" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="0" />
+            <state relative-caret-position="1365">
+              <caret line="91" column="61" selection-start-line="91" selection-start-column="61" selection-end-line="91" selection-end-column="61" />
               <folding />
             </state>
           </provider>
@@ -167,25 +170,26 @@
         <option value="$PROJECT_DIR$/calcFunctions.py" />
         <option value="$PROJECT_DIR$/functions.py" />
         <option value="$PROJECT_DIR$/scfiles/get_stats.py" />
-        <option value="$PROJECT_DIR$/adhoc/update_code.py" />
         <option value="$PROJECT_DIR$/adhoc/analysis.py" />
-        <option value="$PROJECT_DIR$/adhoc/delete_game.py" />
-        <option value="$PROJECT_DIR$/model_evaluation.py" />
         <option value="$PROJECT_DIR$/adhoc/ANN.py" />
         <option value="$PROJECT_DIR$/scrape.py" />
         <option value="$PROJECT_DIR$/adhoc/linreg_shots.py" />
-        <option value="$PROJECT_DIR$/create_pre_match_analysis.py" />
         <option value="$PROJECT_DIR$/create_pre_match_tables.py" />
-        <option value="$PROJECT_DIR$/adhoc/model_game_shots.py" />
+        <option value="$PROJECT_DIR$/adhoc/update_code.py" />
+        <option value="$PROJECT_DIR$/adhoc/delete_game.py" />
         <option value="$PROJECT_DIR$/adhoc/model_shot_efficiency.py" />
+        <option value="$PROJECT_DIR$/adhoc/model_game_shots.py" />
+        <option value="$PROJECT_DIR$/create_pre_match_analysis.py" />
+        <option value="$PROJECT_DIR$/model_evaluation.py" />
+        <option value="$PROJECT_DIR$/model_game_shots.py" />
+        <option value="$PROJECT_DIR$/model_shot_efficiency.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="283" />
-    <option name="y" value="128" />
-    <option name="width" value="1903" />
-    <option name="height" value="1271" />
+    <option name="y" value="23" />
+    <option name="width" value="1920" />
+    <option name="height" value="1119" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -293,23 +297,23 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/adhoc/model_game_shots.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/adhoc/model_shot_efficiency.py" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/Old" />
+    <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/Old" />
       <recent name="$PROJECT_DIR$/adhoc" />
       <recent name="$PROJECT_DIR$/scfiles" />
       <recent name="$PROJECT_DIR$/Scrape files" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
-    </key>
   </component>
-  <component name="RunManager" selected="Python.model_game_shots">
+  <component name="RunManager" selected="Python.model_evaluation">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -552,7 +556,7 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="/anaconda3/bin/python" />
+      <option name="SDK_HOME" value="/Library/Frameworks/Python.framework/Versions/3.6/bin/python3.6" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -569,13 +573,30 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="/anaconda3/bin/python" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/adhoc" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="hockeystats" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/model_game_shots.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="model_shot_efficiency" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/Library/Frameworks/Python.framework/Versions/3.6/bin/python3.6" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/adhoc" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="hockeystats" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/adhoc/model_game_shots.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/model_shot_efficiency.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -648,7 +669,7 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
-    <list size="12">
+    <list size="13">
       <item index="0" class="java.lang.String" itemvalue="Python.scrape" />
       <item index="1" class="java.lang.String" itemvalue="Python.update_schedules" />
       <item index="2" class="java.lang.String" itemvalue="Python.delete" />
@@ -657,10 +678,11 @@
       <item index="5" class="java.lang.String" itemvalue="Python.create_pre_match_analysis" />
       <item index="6" class="java.lang.String" itemvalue="Python.model_evaluation" />
       <item index="7" class="java.lang.String" itemvalue="Python.model_game_shots" />
-      <item index="8" class="java.lang.String" itemvalue="Python.ANN" />
-      <item index="9" class="java.lang.String" itemvalue="Python.add_extra_data" />
-      <item index="10" class="java.lang.String" itemvalue="Python.analysis" />
-      <item index="11" class="java.lang.String" itemvalue="Python.official_roster" />
+      <item index="8" class="java.lang.String" itemvalue="Python.model_shot_efficiency" />
+      <item index="9" class="java.lang.String" itemvalue="Python.ANN" />
+      <item index="10" class="java.lang.String" itemvalue="Python.add_extra_data" />
+      <item index="11" class="java.lang.String" itemvalue="Python.analysis" />
+      <item index="12" class="java.lang.String" itemvalue="Python.official_roster" />
     </list>
   </component>
   <component name="ShelveChangesManager" show_recycled="false">
@@ -870,15 +892,15 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="283" y="128" width="1903" height="1271" extended-state="0" />
+    <frame x="0" y="23" width="1920" height="1119" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1487779" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26434967" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901296" sideWeight="0.19905214" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901296" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32868853" sideWeight="0.49605057" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2865801" sideWeight="0.80094784" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28671327" sideWeight="0.80094784" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24970461" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -1201,13 +1223,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pre_match_functions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/calcFunctions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1236,7 +1251,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="6930">
           <caret line="478" column="16" selection-start-line="478" selection-start-column="16" selection-end-line="478" selection-end-column="16" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1244,46 +1258,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2100">
           <caret line="140" column="31" selection-start-line="140" selection-start-column="31" selection-end-line="159" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/create_pre_match_tables.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6120">
-          <caret line="408" column="265" selection-start-line="408" selection-start-column="265" selection-end-line="408" selection-end-column="265" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/create_pre_match_analysis.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="43" column="0" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model_evaluation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1260">
-          <caret line="84" column="0" selection-start-line="84" selection-start-column="0" selection-end-line="93" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/adhoc/delete_game.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="65" selection-start-line="11" selection-start-column="65" selection-end-line="11" selection-end-column="65" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/adhoc/update_code.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1410">
-          <caret line="94" column="0" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -1298,18 +1272,66 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/adhoc/model_game_shots.py">
+    <entry file="file://$PROJECT_DIR$/adhoc/update_code.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="301">
-          <caret line="121" column="0" selection-start-line="121" selection-start-column="0" selection-end-line="121" selection-end-column="0" />
+        <state relative-caret-position="1365">
+          <caret line="91" column="61" selection-start-line="91" selection-start-column="61" selection-end-line="91" selection-end-column="61" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/adhoc/model_shot_efficiency.py">
+    <entry file="file://$PROJECT_DIR$/adhoc/delete_game.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="20" column="56" selection-start-line="20" selection-start-column="56" selection-end-line="20" selection-end-column="56" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pre_match_functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/create_pre_match_tables.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="358">
+          <caret line="400" column="77" selection-start-line="400" selection-start-column="77" selection-end-line="400" selection-end-column="77" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/create_pre_match_analysis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="26" column="115" selection-start-line="26" selection-start-column="115" selection-end-line="26" selection-end-column="115" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model_game_shots.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="524">
+          <caret line="151" column="30" selection-start-line="151" selection-start-column="30" selection-end-line="151" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model_shot_efficiency.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="449">
+          <caret line="89" column="74" selection-start-line="89" selection-start-column="74" selection-end-line="89" selection-end-column="74" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model_evaluation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="356">
+          <caret line="77" column="0" selection-start-line="77" selection-start-column="0" selection-end-line="77" selection-end-column="0" />
           <folding />
         </state>
       </provider>

@@ -1,6 +1,3 @@
-import os.path
-print(os.path.abspath(__file__))
-
 import sqlite3
 conn = sqlite3.connect('/Users/carljonsson/Python/hockeystats/hockeystats.db')
 c = conn.cursor()

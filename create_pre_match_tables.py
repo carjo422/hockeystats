@@ -402,11 +402,11 @@ def get_expected_shots(full_data1, home_data1, away_data2, full_data2, home_data
     chk = c.fetchall()
 
     if len(chk) == 0 and len(sts) > 0:
-        c.execute("INSERT INTO EXP_SHOTS_TABLE (GAMEID, GAMEDATE, SEASON, SERIE, HOMETEAM, AWAYTEAM, AHS, AHSA, ASSH, ACSH, AAS, AASA, ASSA, ACSA, ACT_SHOTS1, ACT_SHOTS2, SCORE1, SCORE2) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-        [sts[0][0], gamedate, season, serie, sts[0][1], sts[0][2], ave_home_shots-home_s[0][1]/10, ave_home_shots_against-away_s[0][1]/10, ave_score_shot_home, ave_conceded_shot_home, ave_away_shots-away_s[0][1]/10, ave_away_shots_against-home_s[0][1]/10, ave_score_shot_away, ave_conceded_shot_away, sts[0][3], sts[0][4], score_table1[0],score_table2[0]])
+        c.execute("INSERT INTO EXP_SHOTS_TABLE (GAMEID, GAMEDATE, SEASON, SERIE, HOMETEAM, AWAYTEAM, AHS, AHSA, ASSH, ACSH, AAS, AASA, ASSA, ACSA, ACT_SHOTS1, ACT_SHOTS2, ACT_GOALS1, ACT_GOALS2, SCORE1, SCORE2) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        [sts[0][0], gamedate, season, serie, sts[0][1], sts[0][2], ave_home_shots-home_s[0][1]/10, ave_home_shots_against-away_s[0][1]/10, ave_score_shot_home, ave_conceded_shot_home, ave_away_shots-away_s[0][1]/10, ave_away_shots_against-home_s[0][1]/10, ave_score_shot_away, ave_conceded_shot_away, sts[0][3], sts[0][4], sts[0][5], sts[0][6], score_table1[0], score_table2[0]])
     elif len(sts) > 0:
-        c.execute("UPDATE EXP_SHOTS_TABLE SET AHS = ?, AHSA = ?, ASSH = ?, ACSH = ?, AAS = ?, AASA = ?, ASSA = ?, ACSA = ?, ACT_SHOTS1 = ?, ACT_SHOTS2 = ?, SCORE1 = ?, SCORE2 = ? WHERE GAMEID = ?",
-        [ave_home_shots-home_s[0][1]/10, ave_home_shots_against-away_s[0][1]/10, ave_score_shot_home, ave_conceded_shot_home, ave_away_shots-away_s[0][1]/10, ave_away_shots_against-home_s[0][1]/10, ave_score_shot_away, ave_conceded_shot_away, sts[0][3], sts[0][4], score_table1[0],score_table2[0],gameid])
+        c.execute("UPDATE EXP_SHOTS_TABLE SET AHS = ?, AHSA = ?, ASSH = ?, ACSH = ?, AAS = ?, AASA = ?, ASSA = ?, ACSA = ?, ACT_SHOTS1 = ?, ACT_SHOTS2 = ?, ACT_GOALS1 = ?, ACT_GOALS2 = ?, SCORE1 = ?, SCORE2 = ? WHERE GAMEID = ?",
+        [ave_home_shots-home_s[0][1]/10, ave_home_shots_against-away_s[0][1]/10, ave_score_shot_home, ave_conceded_shot_home, ave_away_shots-away_s[0][1]/10, ave_away_shots_against-home_s[0][1]/10, ave_score_shot_away, ave_conceded_shot_away, sts[0][3], sts[0][4], sts[0][5], sts[0][6], score_table1[0], score_table2[0], gameid])
 
     conn.commit()
 

@@ -1,5 +1,6 @@
 import sqlite3
-conn = sqlite3.connect('/Users/carljonsson/Python/hockeystats/hockeystats.db')
+#conn = sqlite3.connect('/Users/carljonsson/Python/hockeystats/hockeystats.db')
+conn = sqlite3.connect('/Users/carljonsson/PycharmProjects/GetHockeyData/hockeystats/hockeystats.db')
 c = conn.cursor()
 
 from calcFunctions import create_game_rating
@@ -86,12 +87,23 @@ def re_score(seasonYear,serie):
 
         c.close
 
-re_score(2016,'SHL')
+def goals_to_model_table():
+
+    c.execute("SELECT GAMEID, HSCORE1+HSCORE2+HSCORE3, ASCORE1+ASCORE2+ASCORE3 FROM stats")
+    upd = c.fetchall()
+
+    for i in range(0,len(upd)):
+        c.execute("UPDATE EXP_SHOTS_TABLE SET ACT_GOALS1 = ?, ACT_GOALS2 = ? WHERE GAMEID = ?",[upd[i][1],upd[i][2],upd[i][0]])
+
+    conn.commit()
+
+#re_score(2016,'SHL')
 #re_score(2016,'HA')
-re_score(2017,'SHL')
+#re_score(2017,'SHL')
 #re_score(2017,'HA')
-re_score(2018,'SHL')
+#re_score(2018,'SHL')
 #re_score(2018,'HA')
-re_score(2019,'SHL')
+#re_score(2019,'SHL')
 #re_score(2019,'HA')
 
+goals_to_model_table()
