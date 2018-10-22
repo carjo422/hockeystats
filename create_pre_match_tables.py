@@ -19,7 +19,6 @@ def create_pre_match_table(gamedate, serie, team, homeaway):
     last_five_data = []
     last_match_data = []
     streak_table = []
-    schedule_data = []
     score_data = []
 
     #BASE TABLE
@@ -265,119 +264,6 @@ def create_pre_match_table(gamedate, serie, team, homeaway):
         streak_table.append(astreak4)
         streak_table.append(astreak34)
 
-        #SCHEDULE DATA
-
-        c.execute("SELECT GAMEDATE, OPPONENT, OUTCOME, SCORE1, SCORE2, OPP_SCORE_SIMPLE, CASE WHEN HOMEAWAY = ? then 0.95 else 1.1 end as HAFACT FROM TEAMGAMES WHERE SEASONID = ? AND TEAM = ? AND GAMEDATE < ? ORDER BY GAMEDATE DESC",['H',seasonYear,team, gamedate])
-        schedule = c.fetchall()
-
-        c.execute("SELECT GAMEDATE FROM CHL_GAMES WHERE SEASONID = ? AND TEAM = ? AND GAMEDATE < ?", [seasonYear, team, gamedate])
-        CHLschedule = c.fetchall()
-
-        sched = 0
-        comp1 = 0
-        comp2 = 0
-        comp3 = 0
-        comp4 = 0
-        comp5 = 0
-
-        dlast1 = 0
-        dlast2 = 0
-        dlast3 = 0
-        dlast4 = 0
-        dlast5 = 0
-
-        out1 = 0
-        out2 = 0
-        out3 = 0
-        out4 = 0
-        out5 = 0
-
-        [ha1,ha2,ha3,ha4,ha5] = [0,0,0,0,0]
-
-        if len(schedule) > 0:
-            dlast1 = date_diff(gamedate,schedule[0][0])
-            comp1 = schedule[0][5]
-            out1 = int(schedule[0][2])
-            ha1 = schedule[0][6]
-        if len(schedule) > 1:
-            dlast2 = date_diff(gamedate,schedule[1][0])
-            comp2 = comp1 + schedule[1][5]
-            out2 = int(schedule[1][2])
-            ha2 = schedule[1][6]
-        if len(schedule) > 2:
-            dlast3 = date_diff(gamedate,schedule[2][0])
-            comp3 = comp2 + schedule[2][5]
-            out3 = int(schedule[2][2])
-            ha3 = schedule[2][6]
-        if len(schedule) > 3:
-            dlast4 = date_diff(gamedate,schedule[3][0])
-            comp4 = comp3 + schedule[3][5]
-            out4 = int(schedule[3][2])
-            ha4 = schedule[3][6]
-        if len(schedule) > 4:
-            dlast5 = date_diff(gamedate,schedule[4][0])
-            comp5 = comp4 + schedule[4][5]
-            out5 = int(schedule[4][2])
-            ha5 = schedule[4][6]
-
-        for i in range(0,len(schedule)):
-
-            if date_diff(gamedate,schedule[i][0]) < 13:
-                sched += 1/date_diff(gamedate,schedule[i][0])
-
-        for i in range(0,len(CHLschedule)):
-            if date_diff(gamedate, CHLschedule[i][0]) < 13:
-                sched += 1/date_diff(gamedate,CHLschedule[i][0])
-
-
-        schedule_data.append(sched)
-        schedule_data.append(comp1)
-        schedule_data.append(comp2)
-        schedule_data.append(comp3)
-        schedule_data.append(comp4)
-        schedule_data.append(comp5)
-        schedule_data.append(dlast1)
-        schedule_data.append(dlast2)
-        schedule_data.append(dlast3)
-        schedule_data.append(dlast4)
-        schedule_data.append(dlast5)
-
-        formcorp = 0
-        formweight = 0
-
-
-        if out1 > 0:
-            compadd = max(comp1-3,0)
-            formcorp += (((4-out1)*(comp1))**(1/2)+compadd)*1*ha1
-            formweight += 1
-
-        if out2 > 0:
-            compadd = max(comp2 - 3, 0)
-            formcorp += (((4 - out2) * (comp2)) ** (1 / 2) + compadd) * 0.8*ha2
-            formweight += 0.8
-
-        if out3 > 0:
-            compadd = max(comp3 - 3, 0)
-            formcorp += (((4 - out3) * (comp3)) ** (1 / 2) + compadd) * 0.6*ha3
-            formweight += 0.6
-
-        if out4 > 0:
-            compadd = max(comp4 - 3, 0)
-            formcorp += (((4 - out4) * (comp4)) ** (1 / 2) + compadd) * 0.5*ha4
-            formweight += 0.5
-
-        if out5 > 0:
-            compadd = max(comp5 - 3, 0)
-            formcorp += (((4 - out5) * (comp5)) ** (1 / 2) + compadd) * 0.4*ha5
-            formweight += 0.4
-
-        if formweight == 0:
-            formcorp = 2
-        else:
-            formcorp /= formweight
-
-
-        schedule_data.append(formcorp)
 
     #SCORE DATA
 
@@ -397,10 +283,9 @@ def create_pre_match_table(gamedate, serie, team, homeaway):
     #print(last_five_data)
     #print(last_match_data)
     #print(streak_table)
-    #print(schedule_data)
     #print(score_data)
 
-    return [base_table, full_data, home_data, away_data, last_five_data, last_match_data, streak_table, schedule_data, score_data]
+    return [base_table, full_data, home_data, away_data, last_five_data, last_match_data, streak_table, score_data]
 
 
 def create_pre_match_players(gamedate, serie, team, homeaway):
@@ -517,11 +402,13 @@ def get_expected_shots(full_data1, home_data1, away_data2, full_data2, home_data
     chk = c.fetchall()
 
     if len(chk) == 0 and len(sts) > 0:
-        c.execute("INSERT INTO EXP_SHOTS_TABLE (GAMEID, GAMEDATE, SEASON, SERIE, HOMETEAM, AWAYTEAM, AHS, AHSA, ASSH, ACSH, AAS, AASA, ASSA, ACSA, ACT_SHOTS1, ACT_SHOTS2, ACT_GOAL1, ACT_GOAL2, SCORE1, SCORE2) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-        [sts[0][0], gamedate, season, serie, sts[0][1], sts[0][2], ave_home_shots-home_s[0][1]/10, ave_home_shots_against-away_s[0][1]/10, ave_score_shot_home, ave_conceded_shot_home, ave_away_shots-away_s[0][1]/10, ave_away_shots_against-home_s[0][1]/10, ave_score_shot_away, ave_conceded_shot_away, sts[0][3], sts[0][4], sts[0][5], sts[0][6], score_table1[0],score_table2[0]])
+        c.execute("INSERT INTO EXP_SHOTS_TABLE (GAMEID, GAMEDATE, SEASON, SERIE, HOMETEAM, AWAYTEAM, AHS, AHSA, ASSH, ACSH, AAS, AASA, ASSA, ACSA, ACT_SHOTS1, ACT_SHOTS2, SCORE1, SCORE2) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        [sts[0][0], gamedate, season, serie, sts[0][1], sts[0][2], ave_home_shots-home_s[0][1]/10, ave_home_shots_against-away_s[0][1]/10, ave_score_shot_home, ave_conceded_shot_home, ave_away_shots-away_s[0][1]/10, ave_away_shots_against-home_s[0][1]/10, ave_score_shot_away, ave_conceded_shot_away, sts[0][3], sts[0][4], score_table1[0],score_table2[0]])
     elif len(sts) > 0:
-        c.execute("UPDATE EXP_SHOTS_TABLE SET AHS = ?, AHSA = ?, ASSH = ?, ACSH = ?, AAS = ?, AASA = ?, ASSA = ?, ACSA = ?, ACT_SHOTS1 = ?, ACT_SHOTS2 = ?, ACT_GOAL1 = ?, ACT_GOAL2 = ?, SCORE1 = ?, SCORE2 = ? WHERE GAMEID = ?",
-        [ave_home_shots-home_s[0][1]/10, ave_home_shots_against-away_s[0][1]/10, ave_score_shot_home, ave_conceded_shot_home, ave_away_shots-away_s[0][1]/10, ave_away_shots_against-home_s[0][1]/10, ave_score_shot_away, ave_conceded_shot_away, sts[0][3], sts[0][4], sts[0][5], sts[0][6], score_table1[0],score_table2[0],gameid])
+        c.execute("UPDATE EXP_SHOTS_TABLE SET AHS = ?, AHSA = ?, ASSH = ?, ACSH = ?, AAS = ?, AASA = ?, ASSA = ?, ACSA = ?, ACT_SHOTS1 = ?, ACT_SHOTS2 = ?, SCORE1 = ?, SCORE2 = ? WHERE GAMEID = ?",
+        [ave_home_shots-home_s[0][1]/10, ave_home_shots_against-away_s[0][1]/10, ave_score_shot_home, ave_conceded_shot_home, ave_away_shots-away_s[0][1]/10, ave_away_shots_against-home_s[0][1]/10, ave_score_shot_away, ave_conceded_shot_away, sts[0][3], sts[0][4], score_table1[0],score_table2[0],gameid])
+
+    conn.commit()
 
     return [ave_home_shots-home_s[0][1]/10, ave_home_shots_against-away_s[0][1]/10, ave_score_shot_home, ave_conceded_shot_home, ave_away_shots-away_s[0][1]/10, ave_away_shots_against-home_s[0][1]/10, ave_score_shot_away, ave_conceded_shot_away]
 
