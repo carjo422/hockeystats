@@ -1,7 +1,11 @@
 #Establish connection to database
 
 import os
-data_directory = '/Users/carljonsson/PycharmProjects/GetHockeyData/hockeystats/'
+
+if os.path.exists('/Users/carljonsson/PycharmProjects/GetHockeyData/hockeystats/'):
+    data_directory = '/Users/carljonsson/PycharmProjects/GetHockeyData/hockeystats/'
+else:
+    data_directory = '/Users/carljonsson/Python/hockeystats/hockeystats.db'
 
 import sqlite3
 conn = sqlite3.connect(data_directory + '/hockeystats.db')
