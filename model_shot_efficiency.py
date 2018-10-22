@@ -5,7 +5,7 @@ import os
 if os.path.exists('/Users/carljonsson/PycharmProjects/GetHockeyData/hockeystats/'):
     data_directory = '/Users/carljonsson/PycharmProjects/GetHockeyData/hockeystats/'
 else:
-    data_directory = '/Users/carljonsson/Python/hockeystats/hockeystats.db'
+    data_directory = '/Users/carljonsson/Python/hockeystats/'
 
 import sqlite3
 conn = sqlite3.connect(data_directory + '/hockeystats.db')
@@ -59,8 +59,8 @@ def update_efficiency_model_linreg(seasonYear,c):
     upd = c.fetchall()
 
     for i in range(0, len(upd)):
-        exp_goals_home = lm_home_efficiency.predict([[upd[i][0], upd[i][2], upd[i][3]]])[0][0]
-        exp_goals_away = lm_away_efficiency.predict([[upd[i][1], upd[i][3], upd[i][2]]])[0][0]
+        exp_goals_home = lm_home_efficiency.predict([[upd[i][0], upd[i][2], upd[i][3]]])[0][0]*upd[i][0]
+        exp_goals_away = lm_away_efficiency.predict([[upd[i][1], upd[i][3], upd[i][2]]])[0][0]*upd[i][1]
 
         c.execute("UPDATE EXP_SHOTS_TABLE SET EXP_GOALS1 = ?, EXP_GOALS2 = ?, SHOT_MODEL = ? WHERE GAMEID = ?", [exp_goals_home, exp_goals_away, "LINREG", upd[i][4]])
 

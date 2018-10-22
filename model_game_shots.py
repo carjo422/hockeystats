@@ -153,7 +153,7 @@ def get_shots_goals_forest(seasonYear, inputs, gameid,c):
     return h_shots, a_shots
 
 
-update_shots_model_linreg(2016,c)
+update_shots_model_linreg(2019,c)
 #update_shots_model_forest(2019,c)
 #get_shots_goals_linreg(2019, [3,-3,-3,-2,6,4], "")
 #get_shots_goals_forest(2019, [3,-3,-3,-2,6,4], "")

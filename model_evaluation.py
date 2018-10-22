@@ -55,7 +55,7 @@ def exp_act_nGoals(year_vector, serie_vector):
     for i in range(0, len(year_vector)):
         for j in range(0, len(serie_vector)):
 
-            c.execute("SELECT SEASON, SERIE, SUM(EXP_GOALS1), SUM(EXP_GOALS2), SUM(ACT_GOALS1), SUM(ACT_GOALS2) FROM EXP_SHOTS_TABLE WHERE SEASON = ? AND SERIE = ? GROUP BY SEASON, SERIE ORDER BY SERIE, SEASON",[year_vector[i], serie_vector[j]])
+            c.execute("SELECT SEASON, SERIE, SUM(ACT_SHOTS1), SUM(ACT_SHOTS2), SUM(EXP_GOALS1), SUM(EXP_GOALS2), SUM(ACT_GOALS1), SUM(ACT_GOALS2) FROM EXP_SHOTS_TABLE WHERE SEASON = ? AND SERIE = ? GROUP BY SEASON, SERIE ORDER BY SERIE, SEASON",[year_vector[i], serie_vector[j]])
 
             exp_act_goals.append(c.fetchall())
 
