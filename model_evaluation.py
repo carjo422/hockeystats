@@ -22,7 +22,7 @@ def exp_act_results(year_vector,serie_vector):
 
             for k in range(0,len(ev_matrix)):
 
-                if ev_matrix[k][2] + ev_matrix[k][3] < 11:
+                if ev_matrix[k][2] + ev_matrix[k][3] < 19:
                     act_matrix[ev_matrix[k][2]][ev_matrix[k][3]] += 1
 
                     if ev_matrix[k][2] > ev_matrix[k][3]:
@@ -35,7 +35,7 @@ def exp_act_results(year_vector,serie_vector):
                     for m1 in range(0,10):
                         for m2 in range(0,10):
 
-                            if m1+m2 < 11:
+                            if m1+m2 < 19:
                                 exp_matrix[m1][m2] += scipy.stats.distributions.poisson.pmf(m1,ev_matrix[k][0]) * scipy.stats.distributions.poisson.pmf(m2, ev_matrix[k][1])
 
                                 if m1 > m2:
@@ -44,6 +44,7 @@ def exp_act_results(year_vector,serie_vector):
                                     act_exp_outcome[1][1] += scipy.stats.distributions.poisson.pmf(m1,ev_matrix[k][0]) * scipy.stats.distributions.poisson.pmf(m2, ev_matrix[k][1])
                                 else:
                                     act_exp_outcome[1][2] += scipy.stats.distributions.poisson.pmf(m1,ev_matrix[k][0]) * scipy.stats.distributions.poisson.pmf(m2, ev_matrix[k][1])
+
 
 def exp_act_nGoals(year_vector, serie_vector):
 

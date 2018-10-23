@@ -1,6 +1,14 @@
+#Establish connection to database
+
+import os
+
+if os.path.exists('/Users/carljonsson/PycharmProjects/GetHockeyData/hockeystats/'):
+    data_directory = '/Users/carljonsson/PycharmProjects/GetHockeyData/hockeystats/'
+else:
+    data_directory = '/Users/carljonsson/Python/hockeystats/'
+
 import sqlite3
-#conn = sqlite3.connect('/Users/carljonsson/Python/hockeystats/hockeystats.db')
-conn = sqlite3.connect('/Users/carljonsson/PycharmProjects/GetHockeyData/hockeystats/hockeystats.db')
+conn = sqlite3.connect(data_directory + '/hockeystats.db')
 c = conn.cursor()
 
 from calcFunctions import create_game_rating
@@ -97,6 +105,23 @@ def goals_to_model_table():
 
     conn.commit()
 
+
+c.execute("SELECT HOMETEAM, AWAYTEAM, GAMEDATE FROM EXP_SHOTS_TABLE")
+upd = c.fetchall()
+
+count=0
+
+for i in range(0,len(upd)):
+    [a, b, d, hts] = calculate_team_strength(upd[i][0], upd[i][2], c)
+    [a, b, d, ats] = calculate_team_strength(upd[i][1], upd[i][2], c)
+
+    c.execute("UPDATE EXP_SHOTS_TABLE SET SCORE1 = ?, SCORE2 = ? WHERE HOMETEAM = ? AND AWAYTEAM = ? AND GAMEDATE = ?",[hts, ats, upd[i][0], upd[i][1], upd[i][2]])
+    count+=1
+
+    print(count)
+
+conn.commit()
+
 #re_score(2016,'SHL')
 #re_score(2016,'HA')
 #re_score(2017,'SHL')
@@ -106,4 +131,4 @@ def goals_to_model_table():
 #re_score(2019,'SHL')
 #re_score(2019,'HA')
 
-goals_to_model_table()
+#goals_to_model_table()

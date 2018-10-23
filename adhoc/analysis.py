@@ -6,9 +6,24 @@ import pandas as pd
 from pandas import ExcelWriter
 import matplotlib.pyplot as plt
 
-#Create correlation matrix
-
 if 1 == 5:
+
+    c.execute("SELECT SUM(EXP_GOALS1),SUM(ACT_GOALS1) FROM EXP_SHOTS_TABLE WHERE SEASON = 2019 and HOMETEAM = ?",["Linköping HC"])
+    tst = c.fetchall()
+    print(tst)
+
+    # Create correlation matrix
+
+    c.execute(
+        "SELECT AGP, CAST(ACT_GOALS1 AS FLOAT)/CAST(ACT_SHOTS1 AS FLOAT), CAST(ACT_GOALS2 AS FLOAT)/CAST(ACT_SHOTS2 AS FLOAT) FROM EXP_SHOTS_TABLE")
+    analyse = pd.DataFrame(c.fetchall())
+
+    # DF TO EXCEL
+    from pandas import ExcelWriter
+
+    writer = ExcelWriter('PythonExport.xlsx')
+    analyse.corr().to_excel(writer, 'EFF_ANALYS')
+    writer.save()
 
     c.execute("SELECT * FROM OUTCOME_PREDICTER")
     tst = c.fetchall()
@@ -68,9 +83,9 @@ if 1 == 5:
     tst = c.fetchall()
     print(pd.DataFrame(tst))
 
-c.execute("SELECT ACT_SHOTS1, SUM(EXP_SHOTS1), SUM(ACT_SHOTS1), SUM(EXP_GOAL1), SUM(ACT_GOAL2) FROM EXP_SHOTS_TABLE WHERE SEASON > 2015 GROUP BY ACT_SHOTS1 ORDER BY ACT_SHOTS1")
+    c.execute("SELECT ACT_SHOTS1, SUM(EXP_SHOTS1), SUM(ACT_SHOTS1), SUM(EXP_GOAL1), SUM(ACT_GOAL2) FROM EXP_SHOTS_TABLE WHERE SEASON > 2015 GROUP BY ACT_SHOTS1 ORDER BY ACT_SHOTS1")
 
-tst = pd.DataFrame(c.fetchall())
-writer = ExcelWriter('efficiency.xlsx')
-tst.to_excel(writer,'Sheet1')
-writer.save()
+    tst = pd.DataFrame(c.fetchall())
+    writer = ExcelWriter('efficiency.xlsx')
+    tst.to_excel(writer,'Sheet1')
+    writer.save()

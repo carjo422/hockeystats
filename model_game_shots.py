@@ -5,7 +5,7 @@ import os
 if os.path.exists('/Users/carljonsson/PycharmProjects/GetHockeyData/hockeystats/'):
     data_directory = '/Users/carljonsson/PycharmProjects/GetHockeyData/hockeystats/'
 else:
-    data_directory = '/Users/carljonsson/Python/hockeystats/hockeystats.db'
+    data_directory = '/Users/carljonsson/Python/hockeystats/'
 
 import sqlite3
 conn = sqlite3.connect(data_directory + '/hockeystats.db')
@@ -22,7 +22,7 @@ def update_shots_model_linreg(seasonYear,serie,c):
 
     #Model for home shots
 
-    c.execute("SELECT GAMEID, AHS, AASA, SCORE1, SCORE2, ACT_SHOTS1 FROM EXP_SHOTS_TABLE WHERE SEASON < ? AND SERIE = ?",[seasonYear, serie])
+    c.execute("SELECT GAMEID, AHS, AASA, SCORE1, SCORE2, ACT_SHOTS1 FROM EXP_SHOTS_TABLE WHERE SEASON <= ? AND SEASON > ? AND SERIE = ?",[seasonYear - 1, seasonYear - 4, serie])
     regdata = pd.DataFrame(c.fetchall())
 
     regdata.columns = ['GameID','HomeShotDelta','AwayShotDelta','Score1','Score2','Shots']
@@ -32,6 +32,9 @@ def update_shots_model_linreg(seasonYear,serie,c):
 
     lm_home_shots = LinearRegression()
     lm_home_shots.fit(X, Y)
+
+    #print(lm_home_shots.intercept_)
+    #print(lm_home_shots.coef_)
 
     filename = data_directory + '/models/lm_home_shots_' + serie + str(seasonYear) + '.sav'
 
@@ -49,6 +52,9 @@ def update_shots_model_linreg(seasonYear,serie,c):
 
     lm_away_shots = LinearRegression()
     lm_away_shots.fit(X, Y)
+
+    #print(lm_away_shots.intercept_)
+    #print(lm_away_shots.coef_)
 
     filename = data_directory + '/models/lm_away_shots_' + serie + str(seasonYear) + '.sav'
 

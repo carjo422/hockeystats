@@ -20,20 +20,21 @@ import pickle
 
 def update_efficiency_model_linreg(seasonYear, serie, c):
 
-    c.execute("SELECT ACT_SHOTS1, ACT_SHOTS2, ASSH, ASSA, SCORE1, SCORE2, CAST(ACT_GOALS1 AS FLOAT)/CAST(ACT_SHOTS1 AS FLOAT), CAST(ACT_GOALS2 AS FLOAT)/CAST(ACT_SHOTS2 AS FLOAT) FROM EXP_SHOTS_TABLE WHERE SEASON <= ? AND SERIE = ?",[seasonYear - 1, serie])
+    c.execute("SELECT ACT_SHOTS1, ACT_SHOTS2, ASSH, ASSA, SCORE1-SCORE2, AGP, CAST(ACT_GOALS1 AS FLOAT)/CAST(ACT_SHOTS1 AS FLOAT), CAST(ACT_GOALS2 AS FLOAT)/CAST(ACT_SHOTS2 AS FLOAT) FROM EXP_SHOTS_TABLE WHERE SEASON <= ? AND SEASON > ? AND SERIE = ?",[seasonYear - 1, seasonYear - 4, serie])
     regdata = pd.DataFrame(c.fetchall())
 
-    regdata.columns = ['Shots1', 'Shots2', 'Home_Eff', 'Away_Eff', 'Score1', 'Score2', 'Act_Eff_Home', 'Act_Eff_Away']
+    regdata.columns = ['Shots1', 'Shots2', 'Home_Eff', 'Away_Eff', 'Score diff', 'AGP', 'Act_Eff_Home', 'Act_Eff_Away']
 
     #Home efficiency model
 
-    X = regdata[['Shots1', 'Score1', 'Score2']]
+    X = regdata[['Shots1', 'Score diff', 'AGP']]
     Y = regdata[['Act_Eff_Home']]
 
     lm_home_efficiency = LinearRegression()
     lm_home_efficiency.fit(X, Y)
 
-    print(lm_home_efficiency.intercept_, lm_home_efficiency.coef_)
+    #print(lm_home_efficiency.intercept_)
+    #print(lm_home_efficiency.coef_)
 
     filename = data_directory + '/models/lm_shot_eff_home_' + serie + str(seasonYear) + '.sav'
 
@@ -42,11 +43,14 @@ def update_efficiency_model_linreg(seasonYear, serie, c):
 
     #Away efficiency model
 
-    X = regdata[['Shots2', 'Score2', 'Score1']]
+    X = regdata[['Shots2', 'Score diff', 'AGP']]
     Y = regdata[['Act_Eff_Away']]
 
     lm_away_efficiency = LinearRegression()
     lm_away_efficiency.fit(X, Y)
+
+    #print(lm_away_efficiency.intercept_)
+    #print(lm_away_efficiency.coef_)
 
     filename = data_directory + '/models/lm_shot_eff_away_' + serie + str(seasonYear) + '.sav'
 
@@ -54,12 +58,12 @@ def update_efficiency_model_linreg(seasonYear, serie, c):
 
     # Update model_shot_table with exp_shots
 
-    c.execute("SELECT EXP_SHOTS1, EXP_SHOTS2, SCORE1, SCORE2, GAMEID FROM EXP_SHOTS_TABLE WHERE SEASON = ? AND SERIE = ?",[seasonYear, serie])
+    c.execute("SELECT EXP_SHOTS1, EXP_SHOTS2, SCORE1-SCORE2, AGP, GAMEID FROM EXP_SHOTS_TABLE WHERE SEASON = ? AND SERIE = ?",[seasonYear, serie])
     upd = c.fetchall()
 
     for i in range(0, len(upd)):
         exp_goals_home = lm_home_efficiency.predict([[upd[i][0], upd[i][2], upd[i][3]]])[0][0]*upd[i][0]
-        exp_goals_away = lm_away_efficiency.predict([[upd[i][1], upd[i][3], upd[i][2]]])[0][0]*upd[i][1]
+        exp_goals_away = lm_away_efficiency.predict([[upd[i][1], upd[i][2], upd[i][3]]])[0][0]*upd[i][1]
 
         c.execute("UPDATE EXP_SHOTS_TABLE SET EXP_GOALS1 = ?, EXP_GOALS2 = ?, SHOT_MODEL = ? WHERE GAMEID = ?", [exp_goals_home, exp_goals_away, "LINREG", upd[i][4]])
 
@@ -88,9 +92,9 @@ def get_efficiency_model_linreg(seasonYear, inputs, gameid, serie, c):
     c22 = lm_away_efficiency.coef_[0][1]
     c23 = lm_away_efficiency.coef_[0][2]
 
-    a_goals = (int2 + c21 * inputs[1] + c22 * inputs[3] + c23 * inputs[2]) * inputs[1]
+    a_goals = (int2 + c21 * inputs[1] + c22 * inputs[2] + c23 * inputs[3]) * inputs[1]
 
-    c.execute("UPDATE EXP_SHOTS_TABLE SET EXP_GOALS1 = ?, EXP_GOALS2 = ?, GOAL_MODEL = ? WHERE gameid = ?",[h_goals, a_goals, "LINREG", gameid])
+    c.execute("UPDATE EXP_SHOTS_TABLE SET EXP_GOALS1 = ?, EXP_GOALS2 = ?, GOAL_MODEL = ? WHERE gameid = ?",[h_goals[0], a_goals[0], "LINREG", gameid])
 
     conn.commit()
 
@@ -98,6 +102,14 @@ def get_efficiency_model_linreg(seasonYear, inputs, gameid, serie, c):
 
 
 update_efficiency_model_linreg(2019,'SHL',c)
+update_efficiency_model_linreg(2018,'SHL',c)
+update_efficiency_model_linreg(2017,'SHL',c)
+update_efficiency_model_linreg(2016,'SHL',c)
+
+
+update_efficiency_model_linreg(2019,'HA',c)
+update_efficiency_model_linreg(2018,'HA',c)
+
 #update_efficiency_model_linreg(2018,'SHL',c)
 #update_efficiency_model_linreg(2017,'SHL',c)
 #update_efficiency_model_linreg(2016,'SHL',c)
