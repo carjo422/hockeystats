@@ -173,15 +173,34 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid):
 
         shots = c.fetchall()
 
-        home_shots_temp = shots[0][0]
-        away_shots_temp = shots[0][1]
-        score1 = shots[0][2]
-        score2 = shots[0][3]
-        score2 = shots[0][3]
-        average_goal_percent = shots[0][4]
+        if len(shots) == 0:
+            [base_table1, full_data1, home_data1, away_data1, last_five_data1, last_match_data1, streak_table1, score_data1] = create_pre_match_table(gamedate, serie, hometeam, "H")
+            [base_table2, full_data2, home_data2, away_data2, last_five_data2, last_match_data2, streak_table2, score_data2] = create_pre_match_table(gamedate, serie, awayteam, "A")
 
-        act_goals1 = shots[0][5]
-        act_goals2 = shots[0][6]
+            score1 = score_data1[3]
+            score2 = score_data2[3]
+
+            # Get datatables from create_pre_match_tables
+
+            [ave_home_shots, ave_home_shots_against, ave_score_shot_home, ave_conceded_shot_home, ave_away_shots, ave_away_shots_against, ave_score_shot_away, ave_conceded_shot_away, average_goal_percent] = get_expected_shots(full_data1, home_data1, away_data2, full_data2, home_data2, score_data1, score_data2, serie, c, gameid, gamedate, seasonYear)
+
+            print("Scores:", score1, score2)
+
+            # Get shots, first base function then adjusted function
+
+            home_shots_temp, away_shots_temp = get_shots_goals_linreg(seasonYear, [ave_home_shots, ave_home_shots_against, ave_away_shots, ave_away_shots_against, score_data1[3], score_data2[3]], gameid, 'SHL', c)
+
+        else:
+
+            home_shots_temp = shots[0][0]
+            away_shots_temp = shots[0][1]
+            score1 = shots[0][2]
+            score2 = shots[0][3]
+            score2 = shots[0][3]
+            average_goal_percent = shots[0][4]
+
+            act_goals1 = shots[0][5]
+            act_goals2 = shots[0][6]
 
     home_shots, away_shots = get_adjusted_shots(home_shots_temp, away_shots_temp, hometeam, awayteam, gamedate, seasonYear, c)
 
@@ -206,9 +225,9 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid):
 
     return results, odds1X2, odds45, home_goals, away_goals, act_goals1, act_goals2
 
-backtest = 1
+backtest = 0
 
-if backtest == 0:
+if backtest == 1:
 
     c.execute("SELECT GAMEDATE, SERIE, TEAM, OPPONENT, GAMEID FROM TEAMGAMES WHERE (SEASONID = ? OR SEASONID = ? OR SEASONID = ? OR SEASONID = ?) AND SERIE = ? AND HOMEAWAY = ?",[2019, 2018, 2018, 2018, 'HA', 'H'])
     lst = c.fetchall()
@@ -281,6 +300,6 @@ if backtest == 0:
 
     print("Prediction:", predictability)
 
-create_pre_match_analysis('2018-10-24','HA',"MODO Hockey","Södertälje SK","")
+create_pre_match_analysis('2018-10-24','HA',"Djurgårdens IF","Brynäs IF","")
 
 conn.commit()
