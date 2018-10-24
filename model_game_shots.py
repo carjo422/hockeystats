@@ -159,10 +159,10 @@ def get_shots_goals_forest(seasonYear, inputs, gameid, serie, c):
     return h_shots, a_shots
 
 
-update_shots_model_linreg(2019,'SHL',c)
-update_shots_model_linreg(2018,'SHL',c)
-update_shots_model_linreg(2017,'SHL',c)
-update_shots_model_linreg(2016,'SHL',c)
+#update_shots_model_linreg(2019,'SHL',c)
+#update_shots_model_linreg(2018,'SHL',c)
+#update_shots_model_linreg(2017,'SHL',c)
+#update_shots_model_linreg(2016,'SHL',c)
 
 update_shots_model_linreg(2019,'HA',c)
 update_shots_model_linreg(2018,'HA',c)

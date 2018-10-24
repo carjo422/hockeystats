@@ -76,6 +76,9 @@ def get_efficiency_model_linreg(seasonYear, inputs, gameid, serie, c):
 
     lm_home_efficiency = pickle.load(open(filename, 'rb'))
 
+    print(lm_home_efficiency.intercept_)
+    print(lm_home_efficiency.coef_)
+
     int1 = lm_home_efficiency.intercept_
     c11 = lm_home_efficiency.coef_[0][0]
     c12 = lm_home_efficiency.coef_[0][1]
@@ -101,10 +104,10 @@ def get_efficiency_model_linreg(seasonYear, inputs, gameid, serie, c):
     return h_goals[0], a_goals[0]
 
 
-update_efficiency_model_linreg(2019,'SHL',c)
-update_efficiency_model_linreg(2018,'SHL',c)
-update_efficiency_model_linreg(2017,'SHL',c)
-update_efficiency_model_linreg(2016,'SHL',c)
+#update_efficiency_model_linreg(2019,'SHL',c)
+#update_efficiency_model_linreg(2018,'SHL',c)
+#update_efficiency_model_linreg(2017,'SHL',c)
+#update_efficiency_model_linreg(2016,'SHL',c)
 
 
 update_efficiency_model_linreg(2019,'HA',c)
