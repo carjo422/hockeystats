@@ -6,6 +6,7 @@ from create_pre_match_tables import create_pre_match_table
 from create_pre_match_tables import get_expected_shots
 from model_game_shots import get_shots_goals_linreg
 from model_shot_efficiency import get_efficiency_model_linreg
+from create_pre_match_tables import get_team_players
 
 import pandas as pd
 import numpy as np
@@ -204,6 +205,11 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid):
     print(odds1X2)
     print(odds45)
 
+    # Get all players that played last three games
+
+    players = get_team_players(hometeam, gamedate, seasonYear)
+    print(players)
+
     return results, odds1X2, odds45, home_goals, away_goals, act_goals1, act_goals2
 
 backtest = 1
@@ -281,6 +287,6 @@ if backtest == 0:
 
     print("Prediction:", predictability)
 
-create_pre_match_analysis('2018-10-24','HA',"MODO Hockey","Södertälje SK","")
+create_pre_match_analysis('2018-10-24','SHL',"Frölunda HC","Skellefteå AIK","")
 
 conn.commit()
