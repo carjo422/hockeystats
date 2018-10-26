@@ -8,6 +8,7 @@ from functions import transform_date
 from functions import date_diff
 from calcFunctions import calculate_team_strength
 import pandas as pd
+import numpy as np
 
 def create_pre_match_table(gamedate, serie, team, homeaway):
 
@@ -431,7 +432,7 @@ def get_team_players(team, gamedate, seasonYear):
     output = c.fetchall()
     teamplayers = pd.DataFrame(output)
 
-    print(teamplayers)
+    #print(teamplayers)
 
     if len(output) == 0:
 
@@ -443,6 +444,9 @@ def get_team_players(team, gamedate, seasonYear):
 
 
     #Check rosters for all scorers
+
+
+    keeper_stat = pd.DataFrame(np.zeros((0, 8)), columns=['Forname', 'Surname', 'nCon', 'L%', 'R%', 'D%', 'F%', 'Start%'])
 
     for i in range(0,len(output)):
 
@@ -485,6 +489,10 @@ def get_team_players(team, gamedate, seasonYear):
             n_conceded = 0
             concL = 0
             concR = 0
+            concD = 0
+            concF = 0
+
+            startp = 0
 
             if len(game_list) > 0:
                 for j in range(0,len(game_list)):
@@ -507,23 +515,36 @@ def get_team_players(team, gamedate, seasonYear):
                             #print(events[k])
                             n_conceded += 1
 
-                            c.execute("SELECT HANDLE FROM ROSTERS WHERE FORNAME = ? AND SURNAME = ? AND PERSONNR = ? AND SEASONID = ?",[events[k][3],events[k][4],events[k][5],events[k][7]])
+                            c.execute("SELECT HANDLE, POSITION FROM ROSTERS WHERE FORNAME = ? AND SURNAME = ? AND PERSONNR = ? AND SEASONID = ?",[events[k][3],events[k][4],events[k][5],events[k][7]])
                             LR = c.fetchall()
 
 
                             if len(LR) > 0:
+
                                 if LR[0][0] == "R":
                                     concR += 1
                                 elif LR[0][0] == "L":
                                     concL += 1
 
-            print(n_conceded)
-            print(concR, concR/(concR+concL))
-            print(concL, concL/(concR+concL))
+                                if LR[0][1] in ['LD','RD']:
+                                    concD += 1
+                                elif LR[0][1] in ['LW','RW','CE']:
+                                    concF += 1
 
 
+            c.execute("SELECT COUNT(GAMEID) FROM TEAMGAMES WHERE TEAM = ? AND SEASONID = ?",[teamplayers[5][i], seasonYear])
+            n_games = c.fetchall()[0][0]+0.5
+            c.execute("SELECT COUNT(GAMEID) FROM LINEUPS WHERE FORNAME = ? AND SURNAME = ? AND PERSONNR = ? AND TEAM = ? AND START_PLAYER = ? AND SEASONID = ?",[teamplayers[0][i],teamplayers[1][i],teamplayers[2][i],teamplayers[5][i],1,seasonYear])
+            n_games_keeper = c.fetchall()[0][0]+0.5
 
-            print("Keeper: ", teamplayers[0][i], teamplayers[1][i])
+            keeper_stat = keeper_stat.append({'Forname' : teamplayers[0][i], 'Surname' : teamplayers[1][i], 'nCon' : n_conceded, 'L%' : concL/(concR+concL), 'R%' : concR/(concR+concL), 'D%' : concD/(concD+concF) , 'F%' : concF/(concD+concF), 'Start%' : n_games_keeper}, ignore_index = True)
+
+            keeper_sum = keeper_stat['Start%'].sum()
+            keeper_stat['Start%'] = keeper_stat['Start%'] / keeper_sum
+
+    player_stat = []
+
+    return keeper_stat, player_stat
 
 
 
