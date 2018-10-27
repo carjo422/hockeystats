@@ -6,84 +6,29 @@ import pandas as pd
 from pandas import ExcelWriter
 import matplotlib.pyplot as plt
 
+
+c.execute("SELECT FORNAME, SURNAME, PERSONNR, SUM(CASE WHEN EVENT = ? THEN 1 ELSE 0 END) AS N_GOALS FROM EVENTS WHERE GAMEID IN (SELECT GAMEID FROM STATS WHERE SERIE = ?) GROUP BY FORNAME, SURNAME, PERSONNR ORDER BY N_GOALS DESC",["Goal","SHL"])
+
+players = c.fetchall()
+
+for i in range(0,20):
+    c.execute("SELECT GAMEID, TIME FROM EVENTS WHERE FORNAME = ? AND SURNAME = ? AND PERSONNR = ? AND EVENT = ?",[players[i][0], players[i][1], players[i][2], "Goal"])
+    player_goals = c.fetchall()
+
+    total_d = 0
+    total_w = 0
+
+    for j in range(0,len(player_goals)):
+        c.execute("SELECT a.GAMEID, a.TIME, a.PERSONNR, a.FORNAME, a.SURNAME, b.POSITION, b.LENGHT, b.WEIGHT FROM EVENTS a LEFT JOIN ROSTERS b ON a.PERSONNR = b.PERSONNR AND a.FORNAME = b.FORNAME and a.SURNAME = b.SURNAME WHERE a.SEASONID = b.SEASONID AND a.GAMEID = ? AND a.TIME = ? AND a.EVENT = ? AND (b.POSITION = ? OR b.POSITION = ?)",[player_goals[j][0],player_goals[j][1],"-1","LD","RD"])
+        player_info = c.fetchall()
+
+        for k in range(0,len(player_info)):
+            total_d += 1
+            total_w += player_info[k][7]
+
+    print(players[i][0], players[i][1], players[i][3], total_d, total_w / total_d)
+
 if 1 == 5:
-
-    c.execute("SELECT SUM(EXP_GOALS1),SUM(ACT_GOALS1) FROM EXP_SHOTS_TABLE WHERE SEASON = 2019 and HOMETEAM = ?",["Linköping HC"])
-    tst = c.fetchall()
-    print(tst)
-
-    # Create correlation matrix
-
-    c.execute(
-        "SELECT AGP, CAST(ACT_GOALS1 AS FLOAT)/CAST(ACT_SHOTS1 AS FLOAT), CAST(ACT_GOALS2 AS FLOAT)/CAST(ACT_SHOTS2 AS FLOAT) FROM EXP_SHOTS_TABLE")
-    analyse = pd.DataFrame(c.fetchall())
-
-    # DF TO EXCEL
-    from pandas import ExcelWriter
-
-    writer = ExcelWriter('PythonExport.xlsx')
-    analyse.corr().to_excel(writer, 'EFF_ANALYS')
-    writer.save()
-
-    c.execute("SELECT * FROM OUTCOME_PREDICTER")
-    tst = c.fetchall()
-
-    dataframe = pd.DataFrame(tst)
-
-    plt.matshow(dataframe.corr())
-
-    print(dataframe.corr())
-
-
-    # DF TO EXCEL
-    from pandas import ExcelWriter
-
-    writer = ExcelWriter('PythonExport.xlsx')
-    dataframe.corr().to_excel(writer,'Sheet5')
-    writer.save()
-
-
-    #Shots as a predictor of goals
-
-    c.execute("SELECT (SHOTS11 + SHOTS12 + SHOTS13) as SHOTS, SUM(SCORE11+SCORE12+SCORE13)*100/COUNT(GAMEID) as AVE_GOALS FROM TEAMGAMES WHERE HOMEAWAY = ? GROUP BY SHOTS ORDER BY SHOTS",["H"])
-    score_shots = pd.DataFrame(c.fetchall())
-
-    #writer = ExcelWriter('shots_goals_home.xlsx')
-    #score_shots.to_excel(writer,'Sheet1')
-    #writer.save()
-
-    c.execute("SELECT (SHOTS21 + SHOTS22 + SHOTS23) as SHOTS, SUM(SCORE21+SCORE22+SCORE23)*100/COUNT(GAMEID) as AVE_GOALS FROM TEAMGAMES WHERE HOMEAWAY = ? GROUP BY SHOTS ORDER BY SHOTS",["H"])
-    score_shots = pd.DataFrame(c.fetchall())
-
-    writer = ExcelWriter('shots_goals_away.xlsx')
-    score_shots.to_excel(writer,'Sheet1')
-    writer.save()
-
-
-#Shots /Goals / Points table
-
-    c.execute("""SELECT TEAM, SUM(4-outcome) as POINTS, SUM(SHOTS11 + SHOTS12 + SHOTS13) as SHOTS1, SUM(SCORE11+SCORE12+SCORE13) as SCORE1, SUM(SHOTS21 + SHOTS22 + SHOTS23) as SHOTS2, SUM(SCORE21+SCORE22+SCORE23) as SCORE2, COUNT(GAMEID) FROM TEAMGAMES WHERE SEASONID = ? AND TEAM = ?
-                    AND (OPPONENT = ? OR OPPONENT = ? OR OPPONENT = ?) AND SERIE = ? AND HOMEAWAY = ? GROUP BY TEAM ORDER BY POINTS DESC""",[2018, "Växjö Lakers HC", "Örebro HK", "Rögle BK", "Leksands IF", "SHL", "H"])
-    table = pd.DataFrame(c.fetchall())
-    print(table)
-
-    writer = ExcelWriter('shots_goals_table_extra.xlsx')
-    table.to_excel(writer, 'Sheet1')
-    writer.save()
-
-    c.execute("SELECT TEAM, SUM(4-outcome) as POINTS, SUM(SHOTS11 + SHOTS12 + SHOTS13) as SHOTS1, SUM(SCORE11+SCORE12+SCORE13) as SCORE1, SUM(SHOTS21 + SHOTS22 + SHOTS23) as SHOTS2, SUM(SCORE21+SCORE22+SCORE23) as SCORE2, COUNT(GAMEID) as GAMES FROM TEAMGAMES WHERE SEASONID = ? AND SERIE = ? GROUP BY TEAM ORDER BY POINTS DESC",[2019, "SHL"])
-    table = pd.DataFrame(c.fetchall())
-    print(table)
-
-    writer = ExcelWriter('shots_goals_table_2019.xlsx')
-    table.to_excel(writer, 'Sheet1')
-    writer.save()
-
-    c.execute("SELECT AWAYTEAM, SUM(EXP_SHOTS2*10)/COUNT(EXP_SHOTS2), SUM(ACT_SHOTS2*10)/COUNT(ACT_SHOTS2) as ACT_SHOTS FROM EXP_SHOTS_TABLE GROUP BY AWAYTEAM ORDER BY ACT_SHOTS DESC")
-    tst = c.fetchall()
-    print(pd.DataFrame(tst))
-
-    c.execute("SELECT ACT_SHOTS1, SUM(EXP_SHOTS1), SUM(ACT_SHOTS1), SUM(EXP_GOAL1), SUM(ACT_GOAL2) FROM EXP_SHOTS_TABLE WHERE SEASON > 2015 GROUP BY ACT_SHOTS1 ORDER BY ACT_SHOTS1")
 
     tst = pd.DataFrame(c.fetchall())
     writer = ExcelWriter('efficiency.xlsx')

@@ -437,9 +437,10 @@ def get_team_players(team, gamedate, seasonYear):
     if len(output) == 0:
 
         c.execute("SELECT FORNAME, SURNAME, PERSONNR, POSITION, HANDLE, TEAM, 0, 0, 0, 0, 0 FROM ROSTERS WHERE SEASONID = ? AND TEAM = ?",[seasonYear,team])
-        teamplayers = pd.DataFrame(c.fetchall())
+        output = c.fetchall()
+        teamplayers = pd.DataFrame(output)
 
-        print(teamplayers)
+        #print(teamplayers)
 
 
 
@@ -447,6 +448,7 @@ def get_team_players(team, gamedate, seasonYear):
 
 
     keeper_stat = pd.DataFrame(np.zeros((0, 8)), columns=['Forname', 'Surname', 'nCon', 'L%', 'R%', 'D%', 'F%', 'Start%'])
+
 
     for i in range(0,len(output)):
 
@@ -483,7 +485,7 @@ def get_team_players(team, gamedate, seasonYear):
 
         else:
 
-            c.execute("SELECT DISTINCT GAMEID FROM events where FORNAME = ? AND SURNAME = ? AND PERSONNR = ? AND PERSONNR != ? ",[teamplayers[0][i],teamplayers[1][i],teamplayers[2][i],""])
+            c.execute("SELECT DISTINCT a.GAMEID FROM events a LEFT JOIN STATS b on a.gameid = b.gameid where a.FORNAME = ? AND a.SURNAME = ? AND a.PERSONNR = ? AND a.PERSONNR != ? AND b.GAMEDATE < ?",[teamplayers[0][i],teamplayers[1][i],teamplayers[2][i],"", gamedate])
             game_list = c.fetchall()
 
             n_conceded = 0
@@ -532,15 +534,29 @@ def get_team_players(team, gamedate, seasonYear):
                                     concF += 1
 
 
-            c.execute("SELECT COUNT(GAMEID) FROM TEAMGAMES WHERE TEAM = ? AND SEASONID = ?",[teamplayers[5][i], seasonYear])
+            c.execute("SELECT COUNT(GAMEID) FROM TEAMGAMES WHERE TEAM = ? AND SEASONID = ? AND GAMEDATE < ?",[teamplayers[5][i], seasonYear, gamedate])
             n_games = c.fetchall()[0][0]+0.5
-            c.execute("SELECT COUNT(GAMEID) FROM LINEUPS WHERE FORNAME = ? AND SURNAME = ? AND PERSONNR = ? AND TEAM = ? AND START_PLAYER = ? AND SEASONID = ?",[teamplayers[0][i],teamplayers[1][i],teamplayers[2][i],teamplayers[5][i],1,seasonYear])
+            c.execute("SELECT COUNT(GAMEID) FROM LINEUPS WHERE FORNAME = ? AND SURNAME = ? AND PERSONNR = ? AND TEAM = ? AND START_PLAYER = ? AND SEASONID = ? AND GAMEDATE < ?",[teamplayers[0][i],teamplayers[1][i],teamplayers[2][i],teamplayers[5][i],1,seasonYear, gamedate])
             n_games_keeper = c.fetchall()[0][0]+0.5
 
-            keeper_stat = keeper_stat.append({'Forname' : teamplayers[0][i], 'Surname' : teamplayers[1][i], 'nCon' : n_conceded, 'L%' : concL/(concR+concL), 'R%' : concR/(concR+concL), 'D%' : concD/(concD+concF) , 'F%' : concF/(concD+concF), 'Start%' : n_games_keeper}, ignore_index = True)
+            pL = 0
+            pR = 0
+            pD = 0
+            pF = 0
 
-            keeper_sum = keeper_stat['Start%'].sum()
-            keeper_stat['Start%'] = keeper_stat['Start%'] / keeper_sum
+            if concL > 0:
+                pL = concL/(concR+concL)
+            if concR > 0:
+                pR = concR / (concR + concL)
+            if concR > 0:
+                pD = concD / (concD + concF)
+            if concR > 0:
+                pF = concF / (concD + concF)
+
+            keeper_stat = keeper_stat.append({'Forname' : teamplayers[0][i], 'Surname' : teamplayers[1][i], 'nCon' : n_conceded, 'L%' : pL, 'R%' : pR, 'D%' : pD, 'F%' : pF, 'Start%' : n_games_keeper}, ignore_index = True)
+
+    keeper_sum = keeper_stat['Start%'].sum()
+    keeper_stat['Start%'] = keeper_stat['Start%'] / keeper_sum
 
     player_stat = []
 

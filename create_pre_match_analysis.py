@@ -7,6 +7,7 @@ from create_pre_match_tables import get_expected_shots
 from model_game_shots import get_shots_goals_linreg
 from model_shot_efficiency import get_efficiency_model_linreg
 from create_pre_match_tables import get_team_players
+from pandas import ExcelWriter
 
 import pandas as pd
 import numpy as np
@@ -47,7 +48,6 @@ def get_adjusted_shots(home_shots, away_shots, hometeam, awayteam, gamedate, sea
         away_shots *= shot_adjust_away
 
         return home_shots, away_shots
-
 
 
 def get_result_matrix(home_goals, away_goals):
@@ -233,91 +233,6 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid):
 
     return results, odds1X2, odds45, home_goals, away_goals, act_goals1, act_goals2, keeper_stat_home, keeper_stat_away
 
-backtest = 1
-
-if backtest == 1:
-
-    c.execute("SELECT GAMEDATE, SERIE, TEAM, OPPONENT, GAMEID FROM TEAMGAMES WHERE (SEASONID = ? OR SEASONID = ? OR SEASONID = ? OR SEASONID = ?) AND SERIE = ? AND HOMEAWAY = ?",[2019, 2019, 2019, 2019, 'SHL', 'H'])
-    lst = c.fetchall()
-
-    #Create DataFrames
-
-    exp_results = pd.DataFrame(np.zeros((11, 11)))
-    act_results = pd.DataFrame(np.zeros((11, 11)))
-
-    exp_1X2 = pd.DataFrame(np.zeros((1, 3)), columns = ['1','X','2'])
-    act_1X2 = pd.DataFrame(np.zeros((1, 3)), columns = ['1','X','2'])
-
-    exp_45 = pd.DataFrame(np.zeros((1, 2)), columns=['O45', 'U45'])
-    act_45 = pd.DataFrame(np.zeros((1, 2)), columns=['O45', 'U45'])
-
-    exp_goals_home = 0
-    act_goals_home = 0
-    exp_goals_away = 0
-    act_goals_away = 0
-
-    nGames = 0
-    predict = 0
-
-    scorePredict = pd.DataFrame(np.zeros((0, 13)))
-    scorePredict.columns = ['GameID','Team','Predicted keeper','Actual keeper','L%','R%','D%','F%','Total goals','L Goals','R Goals','D Goals','F Goals']
-
-    for i in range(0,len(lst)):
-
-        results, odds1X2, odds45, exp_hg, exp_ag, hg, ag, ks_home, ks_away  = create_pre_match_analysis(lst[i][0],lst[i][1],lst[i][2],lst[i][3],lst[i][4])
-
-        nGames += 1
-
-        # Code to compare outcomes Actual vs expected
-
-        exp_1X2['1'] += odds1X2['1']
-        exp_1X2['X'] += odds1X2['X']
-        exp_1X2['2'] += odds1X2['2']
-
-        exp_45['O45'] += odds45['O45']
-        exp_45['U45'] += odds45['U45']
-
-        if hg > ag:
-            act_1X2['1'] += 1
-            predict+=odds1X2['1']
-        if hg == ag:
-            act_1X2['X'] += 1
-            predict += odds1X2['X']
-        if hg < ag:
-            act_1X2['2'] += 1
-            predict += odds1X2['2']
-
-        if hg+ag > 4:
-            act_45['O45'] += 1
-        if hg + ag <= 4:
-            act_45['U45'] += 1
-
-        exp_goals_home += exp_hg
-        act_goals_home += exp_ag
-        exp_goals_away += hg
-        act_goals_away += ag
-
-        # Create goal scorer vs keeper DataFrame
-
-
-
-
-        print(lst[i][4], "loaded")
-
-    predictability = predict / nGames
-
-    print(exp_1X2)
-    print(act_1X2)
-
-    print(exp_45)
-    print(act_45)
-
-    print(exp_goals_home)
-    print(act_goals_home)
-    print(exp_goals_away)
-    print(act_goals_away)
-
-    print("Prediction:", predictability)
 
 #create_pre_match_analysis('2018-10-26','SHL',"Färjestad BK","Rögle BK","")
 #create_pre_match_analysis('2018-10-26','SHL',"HV 71","Mora IK","")
