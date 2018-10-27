@@ -49,6 +49,42 @@ def get_adjusted_shots(home_shots, away_shots, hometeam, awayteam, gamedate, sea
 
         return home_shots, away_shots
 
+def get_adjusted_shots_against(home_shots, away_shots, hometeam, awayteam, gamedate, seasonYear, c):
+
+    #Keep track on how well expected shots were calculated for the team so far
+
+        c.execute("SELECT COUNT(GAMEID), SUM(EXP_SHOTS2), SUM(ACT_SHOTS2) FROM (SELECT * FROM EXP_SHOTS_TABLE WHERE SEASON = ? AND HOMETEAM = ? AND GAMEDATE < ? ORDER BY GAMEDATE DESC LIMIT 13)",[seasonYear, hometeam, gamedate])
+        hths = c.fetchall()
+        c.execute("SELECT COUNT(GAMEID), SUM(EXP_SHOTS1), SUM(ACT_SHOTS1) FROM (SELECT * FROM EXP_SHOTS_TABLE WHERE SEASON = ? AND AWAYTEAM = ? AND GAMEDATE < ? ORDER BY GAMEDATE DESC LIMIT 7)",[seasonYear, hometeam, gamedate])
+        htas = c.fetchall()
+
+        if hths[0][0] != 0 and htas[0][0] != 0 and hths[0][0] + htas[0][0] > 0:
+
+            p = ((hths[0][0] + htas[0][0])/20)**(1/2)
+
+            goal_adjust_away = (hths[0][2]+htas[0][2]) / (hths[0][1]+htas[0][1]) * p + (1-p)
+        else:
+            goal_adjust_away = 1
+
+        c.execute("SELECT COUNT(GAMEID), SUM(EXP_SHOTS2), SUM(ACT_SHOTS2) FROM (SELECT * FROM EXP_SHOTS_TABLE WHERE SEASON = ? AND HOMETEAM = ? AND GAMEDATE < ? ORDER BY GAMEDATE DESC LIMIT 7)",[seasonYear, awayteam, gamedate])
+        aths = c.fetchall()
+        c.execute("SELECT COUNT(GAMEID), SUM(EXP_SHOTS1), SUM(ACT_SHOTS1) FROM (SELECT * FROM EXP_SHOTS_TABLE WHERE SEASON = ? AND AWAYTEAM = ? AND GAMEDATE < ? ORDER BY GAMEDATE DESC LIMIT 13)",[seasonYear, awayteam, gamedate])
+        atas = c.fetchall()
+
+
+        if aths[0][0] != 0 and atas[0][0] != 0 and aths[0][0] + atas[0][0] > 0:
+
+            p = ((aths[0][0] + atas[0][0]) / 20)**(1/2)
+
+            goal_adjust_home = (aths[0][2] + atas[0][2]) / (aths[0][1] + atas[0][1]) * p + (1-p)
+        else:
+            goal_adjust_home = 1
+
+        home_shots *= goal_adjust_home
+        away_shots *= goal_adjust_away
+
+        return home_shots, away_shots
+
 
 def get_result_matrix(home_goals, away_goals):
     results = pd.DataFrame(np.zeros((11, 11)))
@@ -138,7 +174,7 @@ def get_result_matrix(home_goals, away_goals):
     return results, odds1X2, odds45
 
 
-def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid):
+def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c):
 
     seasonYear = int(gamedate[0:4])
 
@@ -205,7 +241,9 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid):
             home_shots_temp, away_shots_temp = get_shots_goals_linreg(seasonYear, [ave_home_shots, ave_home_shots_against, ave_away_shots, ave_away_shots_against, score_data1[3], score_data2[3]], gameid, 'SHL', c)
 
 
-    home_shots, away_shots = get_adjusted_shots(home_shots_temp, away_shots_temp, hometeam, awayteam, gamedate, seasonYear, c)
+    home_shots_temp2, away_shots_temp2 = get_adjusted_shots(home_shots_temp, away_shots_temp, hometeam, awayteam, gamedate, seasonYear, c)
+
+    home_shots, away_shots = get_adjusted_shots_against(home_shots_temp2, away_shots_temp2, hometeam, awayteam, gamedate,seasonYear, c)
 
     print("Expected shots:", home_shots, away_shots)
 
@@ -233,12 +271,12 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid):
 
     return results, odds1X2, odds45, home_goals, away_goals, act_goals1, act_goals2, keeper_stat_home, keeper_stat_away
 
-
-#create_pre_match_analysis('2018-10-26','SHL',"Färjestad BK","Rögle BK","")
-#create_pre_match_analysis('2018-10-26','SHL',"HV 71","Mora IK","")
-#create_pre_match_analysis('2018-10-26','SHL',"IF Malmö Redhawks","Linköping HC","")
-#create_pre_match_analysis('2018-10-26','SHL',"Örebro HK","Timrå IK","")
-#create_pre_match_analysis('2018-10-26','SHL',"Skellefteå AIK","Frölunda HC","")
-#create_pre_match_analysis('2018-10-26','SHL',"Växjö Lakers HC","Luleå HF","")
+create_pre_match_analysis('2018-10-27','SHL',"IF Malmö Redhawks","Frölunda HC","",c)
+create_pre_match_analysis('2018-10-27','SHL',"Örebro HK","Skellefteå AIK","",c)
+create_pre_match_analysis('2018-10-27','SHL',"Djurgårdens IF","Växjö Lakers HC","",c)
+create_pre_match_analysis('2018-10-27','SHL',"Rögle BK","Linköping HC","",c)
+create_pre_match_analysis('2018-10-27','SHL',"Timrå IK","HV 71","",c)
+create_pre_match_analysis('2018-10-27','SHL',"Luleå HF","Mora IK","",c)
+create_pre_match_analysis('2018-10-27','SHL',"Brynäs IF","Färjestad BK","",c)
 
 conn.commit()
