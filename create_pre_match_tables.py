@@ -564,15 +564,207 @@ def get_team_players(team, gamedate, seasonYear):
 
 
 
+def get_ANN_odds(gameid, serie, gamedate, seasonYear,c):
+
+    if gameid != "":
+
+        c.execute("SELECT HOMETEAM, AWAYTEAM, SCORE1, SCORE2, ACT_SHOTS1, ACT_SHOTS2, ACT_GOALS1, ACT_GOALS2 FROM EXP_SHOTS_TABLE WHERE GAMEID = ?",[gameid])
+        exp_table_data = c.fetchall()
+
+        c.execute("SELECT GAMEID FROM ANN_TABLE WHERE GAMEID = ?",[gameid])
+        chk = c.fetchall()
+
+        score1 = exp_table_data[0][2] ** (1 / 2)
+        score2 = exp_table_data[0][3] ** (1 / 2)
+
+        score1d = (25 / exp_table_data[0][2]) ** (1 / 2)
+        score2d = (25 / exp_table_data[0][3]) ** (1 / 2)
+
+        act_shots1 = exp_table_data[0][4]
+        act_shots2 = exp_table_data[0][5]
+        act_goals1 = exp_table_data[0][6]
+        act_goals2 = exp_table_data[0][7]
+
+        off_score1 = (act_shots1 + (act_goals1 - act_goals2) * 4) * (score2) / 180
+        off_score2 = (act_shots2 + (act_goals2 - act_goals1) * 4) * (score1) / 140
+
+        def_score1 = (act_shots2 + (act_goals2 - act_goals1) * 3) * (score2d) / 130
+        def_score2 = (act_shots1 + (act_goals1 - act_goals2) * 3) * (score1d) / 100
+
+        if exp_table_data[0][6] == exp_table_data[0][7]:
+            outcome = 1
+        elif exp_table_data[0][6] > exp_table_data[0][7]:
+            outcome = 0
+        elif exp_table_data[0][6] < exp_table_data[0][7]:
+            outcome = 2
+
+        if exp_table_data[0][6] + exp_table_data[0][7] < 5:
+            out45 = 0
+        else:
+            out45 = 1
+
+        if len(chk) == 0:
+            c.execute("INSERT INTO ANN_TABLE (GAMEID, GAMEDATE, SEASONID, SERIE, HOMETEAM, AWAYTEAM, SCORE1, SCORE2, ACT_SHOTS1, ACT_SHOTS2, ACT_GOALS1, ACT_GOALS2, OFF_SCORE_GAME1, OFF_SCORE_GAME2, DEF_SCORE_GAME1, DEF_SCORE_GAME2, OUTCOME1X2, OUTCOME45) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                      [gameid, gamedate, seasonYear, serie, exp_table_data[0][0], exp_table_data[0][1], exp_table_data[0][2], exp_table_data[0][3], exp_table_data[0][4], exp_table_data[0][5], exp_table_data[0][6], exp_table_data[0][7], off_score1, off_score2, def_score1, def_score2, outcome, out45])
+
+            conn.commit()
+
+    return 0,0
+
+
+def update_forest_data():
+
+    c.execute("SELECT GAMEDATE, SERIE, TEAM, OPPONENT, GAMEID, SEASONID FROM TEAMGAMES WHERE (SEASONID = ? OR SEASONID = ? OR SEASONID = ? OR SEASONID = ?) AND SERIE = ? AND HOMEAWAY = ? ORDER BY GAMEDATE ",[2019, 2018, 2017, 2016, 'SHL', 'H'])
+    lst = c.fetchall()
+
+    for i in range(0, len(lst)):
+        gameid = lst[i][4]
+        serie = lst[i][1]
+        gamedate = lst[i][0]
+        seasonYear = lst[i][5]
+
+        print(gameid, serie, gamedate, seasonYear)
+
+        odds1X2_ANN, odds45_ANN = get_ANN_odds(gameid, serie, gamedate, seasonYear, c)
+
+        print(gameid, seasonYear)
+
+        conn.commit()
+
+    for i in range(0, len(lst)):
+
+        gameid = lst[i][4]
+        serie = lst[i][1]
+        gamedate = lst[i][0]
+        seasonYear = lst[i][5]
+        print(gamedate)
+
+        c.execute("SELECT SCORE1, SCORE2 FROM EXP_SHOTS_TABLE WHERE GAMEID = ?",[gameid])
+        scores = c.fetchall()
+
+        c.execute("SELECT HOMETEAM, COUNT(GAMEID), AVG(SCORE1), AVG(OFF_SCORE_GAME1), AVG(DEF_SCORE_GAME1) FROM (SELECT * FROM ANN_TABLE WHERE  GAMEDATE < ? AND SEASONID = ? AND (HOMETEAM = ?) ORDER BY GAMEDATE DESC LIMIT 6)",[gamedate, seasonYear, lst[i][2]])
+        hth_data = c.fetchall()
+        c.execute("SELECT AWAYTEAM, COUNT(GAMEID), AVG(SCORE2), AVG(OFF_SCORE_GAME2), AVG(DEF_SCORE_GAME2) FROM (SELECT * FROM ANN_TABLE WHERE  GAMEDATE < ? AND SEASONID = ? AND (AWAYTEAM = ?) ORDER BY GAMEDATE DESC LIMIT 4)",[gamedate, seasonYear, lst[i][2]])
+        hta_data = c.fetchall()
+
+        if (hth_data[0][1] + hta_data[0][1]) > 0 and hth_data[0][0] != None and hta_data[0][0] != None:
+            home_team_off = (hth_data[0][1] * hth_data[0][3] + hta_data[0][1] * hta_data[0][3]) / (hth_data[0][1] + hta_data[0][1])
+            home_team_def = (hth_data[0][1] * hth_data[0][4] + hta_data[0][1] * hta_data[0][4]) / (hth_data[0][1] + hta_data[0][1])
+
+            home_team_off = home_team_off * (hth_data[0][1] + hta_data[0][1]) / 10 + scores[0][0]/15 * (10-(hth_data[0][1] + hta_data[0][1])) / 10
+            home_team_def = home_team_def * (hth_data[0][1] + hta_data[0][1]) / 10 + (1-scores[0][0]/12) * (10-(hth_data[0][1] + hta_data[0][1])) / 10
+
+        else:
+
+
+            home_team_off = scores[0][0]/15
+            home_team_def = 1-scores[0][0]/12
+
+        home_team_score = 0
 
 
 
+        c.execute("UPDATE ANN_TABLE SET OFF_SCORE_HOME = ?, DEF_SCORE_HOME = ?, SCORE_HOME = ? WHERE GAMEID = ?",[home_team_off, home_team_def, home_team_score, gameid])
 
 
 
+        c.execute("SELECT HOMETEAM, COUNT(GAMEID), AVG(SCORE1), AVG(OFF_SCORE_GAME1), AVG(DEF_SCORE_GAME1) FROM (SELECT * FROM ANN_TABLE WHERE  GAMEDATE < ? AND SEASONID = ? AND (HOMETEAM = ?) ORDER BY GAMEDATE DESC LIMIT 4)",[gamedate, seasonYear, lst[i][3]])
+        hth_data = c.fetchall()
+        c.execute("SELECT AWAYTEAM, COUNT(GAMEID), AVG(SCORE2), AVG(OFF_SCORE_GAME2), AVG(DEF_SCORE_GAME2) FROM (SELECT * FROM ANN_TABLE WHERE  GAMEDATE < ? AND SEASONID = ? AND (AWAYTEAM = ?) ORDER BY GAMEDATE DESC LIMIT 6)",[gamedate, seasonYear, lst[i][3]])
+        hta_data = c.fetchall()
+
+        if (hth_data[0][1] + hta_data[0][1]) > 0 and hth_data[0][0] != None and hta_data[0][0] != None:
+            away_team_off = (hth_data[0][1] * hth_data[0][3] + hta_data[0][1] * hta_data[0][3]) / (hth_data[0][1] + hta_data[0][1])
+            away_team_def = (hth_data[0][1] * hth_data[0][4] + hta_data[0][1] * hta_data[0][4]) / (hth_data[0][1] + hta_data[0][1])
+
+            away_team_off = home_team_off * (hth_data[0][1] + hta_data[0][1]) / 10 + scores[0][1] / 15 * (10 - (hth_data[0][1] + hta_data[0][1])) / 10
+            away_team_def = home_team_def * (hth_data[0][1] + hta_data[0][1]) / 10 + (1 - scores[0][1] / 12) * (10 - (hth_data[0][1] + hta_data[0][1])) / 10
+
+        else:
+
+            away_team_off = scores[0][1] / 15
+            away_team_def = 1 - scores[0][1] / 12
+
+        away_team_score = 0
+
+        c.execute("UPDATE ANN_TABLE SET OFF_SCORE_AWAY = ?, DEF_SCORE_AWAY = ?, SCORE_AWAY = ? WHERE GAMEID = ?",[away_team_off, away_team_def, away_team_score, gameid])
+
+        conn.commit()
 
 
 
+get_inputs_forest_model():
+
+    gameid = lst[i][4]
+    serie = lst[i][1]
+    gamedate = lst[i][0]
+    seasonYear = lst[i][5]
+    print(gamedate)
+
+    c.execute("SELECT SCORE1, SCORE2 FROM EXP_SHOTS_TABLE WHERE GAMEID = ?", [gameid])
+    scores = c.fetchall()
+
+    c.execute(
+        "SELECT HOMETEAM, COUNT(GAMEID), AVG(SCORE1), AVG(OFF_SCORE_GAME1), AVG(DEF_SCORE_GAME1) FROM (SELECT * FROM ANN_TABLE WHERE  GAMEDATE < ? AND SEASONID = ? AND (HOMETEAM = ?) ORDER BY GAMEDATE DESC LIMIT 6)",
+        [gamedate, seasonYear, lst[i][2]])
+    hth_data = c.fetchall()
+    c.execute(
+        "SELECT AWAYTEAM, COUNT(GAMEID), AVG(SCORE2), AVG(OFF_SCORE_GAME2), AVG(DEF_SCORE_GAME2) FROM (SELECT * FROM ANN_TABLE WHERE  GAMEDATE < ? AND SEASONID = ? AND (AWAYTEAM = ?) ORDER BY GAMEDATE DESC LIMIT 4)",
+        [gamedate, seasonYear, lst[i][2]])
+    hta_data = c.fetchall()
+
+    if (hth_data[0][1] + hta_data[0][1]) > 0 and hth_data[0][0] != None and hta_data[0][0] != None:
+        home_team_off = (hth_data[0][1] * hth_data[0][3] + hta_data[0][1] * hta_data[0][3]) / (
+        hth_data[0][1] + hta_data[0][1])
+        home_team_def = (hth_data[0][1] * hth_data[0][4] + hta_data[0][1] * hta_data[0][4]) / (
+        hth_data[0][1] + hta_data[0][1])
+
+        home_team_off = home_team_off * (hth_data[0][1] + hta_data[0][1]) / 10 + scores[0][0] / 15 * (
+        10 - (hth_data[0][1] + hta_data[0][1])) / 10
+        home_team_def = home_team_def * (hth_data[0][1] + hta_data[0][1]) / 10 + (1 - scores[0][0] / 12) * (
+        10 - (hth_data[0][1] + hta_data[0][1])) / 10
+
+    else:
+
+        home_team_off = scores[0][0] / 15
+        home_team_def = 1 - scores[0][0] / 12
+
+    home_team_score = 0
+
+    c.execute("UPDATE ANN_TABLE SET OFF_SCORE_HOME = ?, DEF_SCORE_HOME = ?, SCORE_HOME = ? WHERE GAMEID = ?",
+              [home_team_off, home_team_def, home_team_score, gameid])
+
+    c.execute(
+        "SELECT HOMETEAM, COUNT(GAMEID), AVG(SCORE1), AVG(OFF_SCORE_GAME1), AVG(DEF_SCORE_GAME1) FROM (SELECT * FROM ANN_TABLE WHERE  GAMEDATE < ? AND SEASONID = ? AND (HOMETEAM = ?) ORDER BY GAMEDATE DESC LIMIT 4)",
+        [gamedate, seasonYear, lst[i][3]])
+    hth_data = c.fetchall()
+    c.execute(
+        "SELECT AWAYTEAM, COUNT(GAMEID), AVG(SCORE2), AVG(OFF_SCORE_GAME2), AVG(DEF_SCORE_GAME2) FROM (SELECT * FROM ANN_TABLE WHERE  GAMEDATE < ? AND SEASONID = ? AND (AWAYTEAM = ?) ORDER BY GAMEDATE DESC LIMIT 6)",
+        [gamedate, seasonYear, lst[i][3]])
+    hta_data = c.fetchall()
+
+    if (hth_data[0][1] + hta_data[0][1]) > 0 and hth_data[0][0] != None and hta_data[0][0] != None:
+        away_team_off = (hth_data[0][1] * hth_data[0][3] + hta_data[0][1] * hta_data[0][3]) / (
+        hth_data[0][1] + hta_data[0][1])
+        away_team_def = (hth_data[0][1] * hth_data[0][4] + hta_data[0][1] * hta_data[0][4]) / (
+        hth_data[0][1] + hta_data[0][1])
+
+        away_team_off = home_team_off * (hth_data[0][1] + hta_data[0][1]) / 10 + scores[0][1] / 15 * (
+        10 - (hth_data[0][1] + hta_data[0][1])) / 10
+        away_team_def = home_team_def * (hth_data[0][1] + hta_data[0][1]) / 10 + (1 - scores[0][1] / 12) * (
+        10 - (hth_data[0][1] + hta_data[0][1])) / 10
+
+    else:
+
+        away_team_off = scores[0][1] / 15
+        away_team_def = 1 - scores[0][1] / 12
+
+    away_team_score = 0
+
+    c.execute("UPDATE ANN_TABLE SET OFF_SCORE_AWAY = ?, DEF_SCORE_AWAY = ?, SCORE_AWAY = ? WHERE GAMEID = ?",
+              [away_team_off, away_team_def, away_team_score, gameid])
+
+    conn.commit()
 
 
 

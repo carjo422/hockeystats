@@ -8,6 +8,8 @@ from model_game_shots import get_shots_goals_linreg
 from model_shot_efficiency import get_efficiency_model_linreg
 from create_pre_match_tables import get_team_players
 from pandas import ExcelWriter
+from create_pre_match_tables import get_ANN_odds
+from create_pre_match_tables import update_forest_data
 
 import pandas as pd
 import numpy as np
@@ -186,66 +188,31 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c):
     act_goals1 = 0
     act_goals2 = 0
 
-    if gameid == "":
-
-        [base_table1, full_data1, home_data1, away_data1, last_five_data1, last_match_data1, streak_table1, score_data1] = create_pre_match_table(gamedate, serie, hometeam, "H")
-        [base_table2, full_data2, home_data2, away_data2, last_five_data2, last_match_data2, streak_table2, score_data2] = create_pre_match_table(gamedate, serie, awayteam, "A")
-
-        score1 = score_data1[3]
-        score2 = score_data2[3]
-
-        #Get datatables from create_pre_match_tables
-
-        [ave_home_shots, ave_home_shots_against, ave_score_shot_home, ave_conceded_shot_home, ave_away_shots, ave_away_shots_against, ave_score_shot_away, ave_conceded_shot_away, average_goal_percent] = get_expected_shots(full_data1, home_data1, away_data2, full_data2, home_data2, score_data1, score_data2, serie, c, gameid, gamedate, seasonYear)
-
-        print("Scores:", score1, score2)
-
-        #Get shots, first base function then adjusted function
-
-        home_shots_temp, away_shots_temp = get_shots_goals_linreg(seasonYear,[ave_home_shots, ave_home_shots_against, ave_away_shots, ave_away_shots_against, score_data1[3], score_data2[3]], gameid, 'SHL', c)
-
-    else:
-
-        c.execute("SELECT EXP_SHOTS1, EXP_SHOTS2, SCORE1, SCORE2, AGP, ACT_GOALS1, ACT_GOALS2 FROM EXP_SHOTS_TABLE WHERE GAMEID = ?",[gameid])
-
-        shots = c.fetchall()
-
-        if len(shots) > 0:
-
-            home_shots_temp = shots[0][0]
-            away_shots_temp = shots[0][1]
-            score1 = shots[0][2]
-            score2 = shots[0][3]
-            score2 = shots[0][3]
-            average_goal_percent = shots[0][4]
-
-            act_goals1 = shots[0][5]
-            act_goals2 = shots[0][6]
-
-        else:
-
-            [base_table1, full_data1, home_data1, away_data1, last_five_data1, last_match_data1, streak_table1, score_data1] = create_pre_match_table(gamedate, serie, hometeam, "H")
-            [base_table2, full_data2, home_data2, away_data2, last_five_data2, last_match_data2, streak_table2, score_data2] = create_pre_match_table(gamedate, serie, awayteam, "A")
-
-            score1 = score_data1[3]
-            score2 = score_data2[3]
-
-            # Get datatables from create_pre_match_tables
-
-            [ave_home_shots, ave_home_shots_against, ave_score_shot_home, ave_conceded_shot_home, ave_away_shots, ave_away_shots_against, ave_score_shot_away, ave_conceded_shot_away, average_goal_percent] = get_expected_shots(full_data1, home_data1, away_data2, full_data2, home_data2, score_data1, score_data2, serie, c, gameid, gamedate, seasonYear)
-
-            print("Scores:", score1, score2)
-
-            # Get shots, first base function then adjusted function
-
-            home_shots_temp, away_shots_temp = get_shots_goals_linreg(seasonYear, [ave_home_shots, ave_home_shots_against, ave_away_shots, ave_away_shots_against, score_data1[3], score_data2[3]], gameid, 'SHL', c)
 
 
-    home_shots_temp2, away_shots_temp2 = get_adjusted_shots(home_shots_temp, away_shots_temp, hometeam, awayteam, gamedate, seasonYear, c)
+    [base_table1, full_data1, home_data1, away_data1, last_five_data1, last_match_data1, streak_table1, score_data1] = create_pre_match_table(gamedate, serie, hometeam, "H")
+    [base_table2, full_data2, home_data2, away_data2, last_five_data2, last_match_data2, streak_table2, score_data2] = create_pre_match_table(gamedate, serie, awayteam, "A")
 
-    home_shots, away_shots = get_adjusted_shots_against(home_shots_temp2, away_shots_temp2, hometeam, awayteam, gamedate,seasonYear, c)
+    score1 = score_data1[3]
+    score2 = score_data2[3]
+
+    # Get datatables from create_pre_match_tables
+
+    [ave_home_shots, ave_home_shots_against, ave_score_shot_home, ave_conceded_shot_home, ave_away_shots, ave_away_shots_against, ave_score_shot_away, ave_conceded_shot_away, average_goal_percent] = get_expected_shots(full_data1, home_data1, away_data2, full_data2, home_data2, score_data1, score_data2, serie, c, gameid, gamedate, seasonYear)
+
+    print("Scores:", score1, score2)
+
+
+    # Get shots, first base function then adjusted function
+
+    home_shots_temp, away_shots_temp = get_shots_goals_linreg(seasonYear, [ave_home_shots, ave_home_shots_against, ave_away_shots, ave_away_shots_against, score_data1[3], score_data2[3]], gameid, 'SHL', c)
+
+    home_shots, away_shots = get_adjusted_shots(home_shots_temp, away_shots_temp, hometeam, awayteam, gamedate, seasonYear, c)
+
+    #home_shots, away_shots = get_adjusted_shots_against(home_shots_temp2, away_shots_temp2, hometeam, awayteam, gamedate,seasonYear, c)
 
     print("Expected shots:", home_shots, away_shots)
+
 
     # Get goals from shots, first base function then basic adjustment
 
@@ -261,8 +228,17 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c):
 
     results, odds1X2, odds45 = get_result_matrix(home_goals, away_goals)
 
+    c.execute("UPDATE EXP_SHOTS_TABLE SET EXP_SHOTS1 = ?, EXP_SHOTS2 = ?, EXP_GOALS1 = ?, EXP_GOALS2 = ?, ODDS1 = ?, ODDSX = ?, ODDS2 = ? WHERE GAMEID = ?",[home_shots, away_shots, home_goals, away_goals, odds1X2['1'][0], odds1X2['X'][0], odds1X2['2'][0], gameid])
+    conn.commit()
+
     print(odds1X2)
     print(odds45)
+
+    update_forest_data()
+
+
+
+    odds1X2_ANN, odds45_ANN = get_ANN_odds(gameid, serie, gamedate, seasonYear,c)
 
     # Get all players that played last three games
 
@@ -271,12 +247,81 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c):
 
     return results, odds1X2, odds45, home_goals, away_goals, act_goals1, act_goals2, keeper_stat_home, keeper_stat_away
 
-create_pre_match_analysis('2018-10-27','SHL',"IF Malmö Redhawks","Frölunda HC","",c)
-create_pre_match_analysis('2018-10-27','SHL',"Örebro HK","Skellefteå AIK","",c)
-create_pre_match_analysis('2018-10-27','SHL',"Djurgårdens IF","Växjö Lakers HC","",c)
-create_pre_match_analysis('2018-10-27','SHL',"Rögle BK","Linköping HC","",c)
-create_pre_match_analysis('2018-10-27','SHL',"Timrå IK","HV 71","",c)
-create_pre_match_analysis('2018-10-27','SHL',"Luleå HF","Mora IK","",c)
-create_pre_match_analysis('2018-10-27','SHL',"Brynäs IF","Färjestad BK","",c)
+#create_pre_match_analysis('2018-10-27','SHL',"IF Malmö Redhawks","Frölunda HC","",c)
+#create_pre_match_analysis('2018-10-27','SHL',"Örebro HK","Skellefteå AIK","",c)
+#create_pre_match_analysis('2018-10-27','SHL',"Djurgårdens IF","Växjö Lakers HC","",c)
+#create_pre_match_analysis('2018-10-27','SHL',"Rögle BK","Linköping HC","",c)
+#create_pre_match_analysis('2018-10-27','SHL',"Timrå IK","HV 71","",c)
+#create_pre_match_analysis('2018-10-27','SHL',"Luleå HF","Mora IK","",c)
+#create_pre_match_analysis('2018-10-27','SHL',"Brynäs IF","Färjestad BK","",c)
 
-conn.commit()
+if 1 == 3:
+
+    c.execute("SELECT GAMEDATE, SERIE, TEAM, OPPONENT, GAMEID FROM TEAMGAMES WHERE (SEASONID = ? OR SEASONID = ? OR SEASONID = ? OR SEASONID = ?) AND SERIE = ? AND HOMEAWAY = ? ORDER BY GAMEDATE ",[2019, 2019, 2019, 2019, 'SHL', 'H'])
+    lst = c.fetchall()
+
+    # Create DataFrames
+
+    exp_results = pd.DataFrame(np.zeros((11, 11)))
+    act_results = pd.DataFrame(np.zeros((11, 11)))
+
+    exp_1X2 = pd.DataFrame(np.zeros((1, 3)), columns=['1', 'X', '2'])
+    act_1X2 = pd.DataFrame(np.zeros((1, 3)), columns=['1', 'X', '2'])
+
+    exp_45 = pd.DataFrame(np.zeros((1, 2)), columns=['O45', 'U45'])
+    act_45 = pd.DataFrame(np.zeros((1, 2)), columns=['O45', 'U45'])
+
+    exp_goals_home = 0
+    act_goals_home = 0
+    exp_goals_away = 0
+    act_goals_away = 0
+
+    nGames = 0
+    predict = 0
+
+    for i in range(0,len(lst)):
+
+        results, odds1X2, odds45, exp_hg, exp_ag, hg, ag, ks_home, ks_away  = create_pre_match_analysis(lst[i][0],lst[i][1],lst[i][2],lst[i][3],lst[i][4], c)
+
+        nGames += 1
+
+        # Code to compare outcomes Actual vs expected
+
+        exp_1X2['1'] += odds1X2['1']
+        exp_1X2['X'] += odds1X2['X']
+        exp_1X2['2'] += odds1X2['2']
+
+        exp_45['O45'] += odds45['O45']
+        exp_45['U45'] += odds45['U45']
+
+        if hg > ag:
+            act_1X2['1'] += 1
+            predict+=odds1X2['1']
+        if hg == ag:
+            act_1X2['X'] += 1
+            predict += odds1X2['X']
+        if hg < ag:
+            act_1X2['2'] += 1
+            predict += odds1X2['2']
+
+        if hg+ag > 4:
+            act_45['O45'] += 1
+        if hg + ag <= 4:
+            act_45['U45'] += 1
+
+        exp_goals_home += exp_hg
+        act_goals_home += exp_ag
+        exp_goals_away += hg
+        act_goals_away += ag
+
+    print(exp_1X2)
+    print(act_1X2)
+
+    print(exp_45)
+    print(act_45)
+
+    print(exp_goals_home, act_goals_home)
+    print(exp_goals_away, act_goals_away)
+
+    conn.commit()
+
