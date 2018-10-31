@@ -489,5 +489,6 @@ def scrape_sh(seasonID, seasonYear, serie, score_update):
 #scrape_sh(6053, 2016, "HA", "New")
 #scrape_sh(5057, 2015, "HA", "New")
 
-scrape_sh(9168, 2019, "HA", "New")
-scrape_sh(9171, 2019, "SHL", "New")
+scrape_sh(6053, 2016, "HA", "New")
+scrape_sh(5057, 2015, "HA", "New")
+#scrape_sh(9171, 2019, "SHL", "New")

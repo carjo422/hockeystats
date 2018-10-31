@@ -317,13 +317,17 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid):
     c.execute("SELECT SUM(ACT_GOALS1 + ACT_GOALS2), SUM(EXP_GOALS1 + EXP_GOALS2) FROM EXP_SHOTS_TABLE WHERE SEASON = ? AND GAMEDATE < ?",[seasonYear, gamedate])
     goals_year = c.fetchall()
 
-    if goals_year[0][0] > 0 and goals_year[0][1] > 0:
-        exp_ratio = goals_year[0][1] / goals_year[0][0]
+    exp_ratio = 1
 
-        if goals_year[0][0] < 100:
-            exp_ratio = exp_ratio ** (goals_year[0][0]/100)
+    if goals_year[0][0] != None and goals_year[0][1] != None:
 
-        #print(exp_ratio)
+        if goals_year[0][0] > 0 and goals_year[0][1] > 0:
+            exp_ratio = goals_year[0][1] / goals_year[0][0]
+
+            if goals_year[0][0] < 100:
+                exp_ratio = exp_ratio ** (goals_year[0][0]/100)
+
+            #print(exp_ratio)
 
     home_goals /= exp_ratio  # Adjustment based on expectency ratio
     away_goals /= exp_ratio  # Adjustment based on expectency ratio
@@ -343,10 +347,10 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid):
 
     home_team_off, home_team_def, away_team_off, away_team_def = get_inputs_forest_model(serie, seasonYear, gamedate, hometeam, awayteam)
 
-    inputs = pd.DataFrame([[score1, score2, home_team_off, home_team_def, away_team_off, away_team_def]])
+    inputs = pd.DataFrame([[ home_team_off, home_team_def, away_team_off, away_team_def]]) # score1, score2,
 
     # Get odds model 2
-    odds1X2_2, odds45_2 = get_outcome_model_forest(serie, seasonYear, inputs, c)
+    odds1X2_2, odds45_2 = get_outcome_model_forest(serie, 2019, inputs, c) #seasonYear = 2019
 
 
     ####################################################################################################################################################################

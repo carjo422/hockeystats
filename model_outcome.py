@@ -34,7 +34,7 @@ def update_shots_model_forest(seasonYear,serie,c):
     regdata['OUT1X2'].apply(int)
     regdata['OUT45'].apply(int)
 
-    x = regdata[regdata.columns[0:6]]
+    x = regdata[regdata.columns[2:6]]
     y = regdata[regdata.columns[6]]
     y45 = regdata[regdata.columns[7]]
 
@@ -48,13 +48,13 @@ def update_shots_model_forest(seasonYear,serie,c):
     test_data['OUT1X2'].apply(int)
     test_data['OUT45'].apply(int)
 
-    x_test = test_data[test_data.columns[2:8]]
+    x_test = test_data[test_data.columns[4:8]]
     y_test = test_data[test_data.columns[8]]
     y_test45 = test_data[test_data.columns[9]]
 
 
 
-    forest_outcome = RandomForestClassifier(n_estimators=2000, max_depth=2, min_samples_split=10)
+    forest_outcome = RandomForestClassifier(n_estimators=1000, max_depth=4, min_samples_split=5)
     forest_outcome.fit(x, y)
 
     filename = data_directory + '/models/forest_outcome_' + serie + str(seasonYear) + '.sav'
@@ -69,7 +69,7 @@ def update_shots_model_forest(seasonYear,serie,c):
 
 
 
-    forest_outcome45 = RandomForestClassifier(n_estimators=2000, max_depth=2, min_samples_split=10)
+    forest_outcome45 = RandomForestClassifier(n_estimators=1000, max_depth=4, min_samples_split=5)
     forest_outcome45.fit(x, y45)
 
     filename = data_directory + '/models/forest_outcome45_' + serie + str(seasonYear) + '.sav'
@@ -92,7 +92,7 @@ def get_outcome_model_forest(serie, seasonYear, inputs, c):
     forest_outcome = pickle.load(open(filename1, 'rb'))
     forest_outcome45 = pickle.load(open(filename2, 'rb'))
 
-    inputs.columns = ['SC1','SC2','OSH', 'DSH', 'OSA', 'DSA']
+    inputs.columns = ['OSH', 'DSH', 'OSA', 'DSA'] # 'SC1','SC2',
 
     odds1X2 = pd.DataFrame(forest_outcome.predict_proba(inputs))
     odds45 = pd.DataFrame(forest_outcome45.predict_proba(inputs))
