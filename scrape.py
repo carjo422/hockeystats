@@ -471,7 +471,7 @@ def scrape_sh(seasonID, seasonYear, serie, score_update):
 
             conn.commit()
 
-    # Update score for games
+    # Update pre-game info
 
     for j in range(0, len(gameVector)):
 
@@ -483,11 +483,7 @@ def scrape_sh(seasonID, seasonYear, serie, score_update):
             c.execute("SELECT HOMETEAM, AWAYTEAM FROM STATS WHERE GAMEID = ?",[gameVector[j][0]])
             teams = c.fetchall()
 
-            create_pre_match_analysis(dateVector[j][0], serie, teams[0][0], teams[0][1], gameVector[j][0], c)
-
-        conn.commit()
-
-    c.close
+            create_pre_match_analysis(dateVector[j][0], serie, teams[0][0], teams[0][1], gameVector[j][0])
 
 #scrape_sh(7157, 2017, "HA", "New")
 #scrape_sh(6053, 2016, "HA", "New")

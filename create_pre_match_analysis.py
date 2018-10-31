@@ -10,12 +10,14 @@ from create_pre_match_tables import get_team_players
 from pandas import ExcelWriter
 from create_pre_match_tables import get_ANN_odds
 from create_pre_match_tables import update_forest_data
+from create_pre_match_tables import get_inputs_forest_model
+from model_outcome import get_outcome_model_forest
 
 import pandas as pd
 import numpy as np
 import scipy
 
-def get_adjusted_shots(home_shots, away_shots, hometeam, awayteam, gamedate, seasonYear, c):
+def get_adjusted_shots(home_shots, away_shots, hometeam, awayteam, gamedate, seasonYear):
 
     #Keep track on how well expected shots were calculated for the team so far
 
@@ -51,7 +53,7 @@ def get_adjusted_shots(home_shots, away_shots, hometeam, awayteam, gamedate, sea
 
         return home_shots, away_shots
 
-def get_adjusted_shots_against(home_shots, away_shots, hometeam, awayteam, gamedate, seasonYear, c):
+def get_adjusted_shots_against(home_shots, away_shots, hometeam, awayteam, gamedate, seasonYear):
 
     #Keep track on how well expected shots were calculated for the team so far
 
@@ -86,7 +88,6 @@ def get_adjusted_shots_against(home_shots, away_shots, hometeam, awayteam, gamed
         away_shots *= goal_adjust_away
 
         return home_shots, away_shots
-
 
 def get_result_matrix(home_goals, away_goals):
     results = pd.DataFrame(np.zeros((11, 11)))
@@ -175,8 +176,92 @@ def get_result_matrix(home_goals, away_goals):
 
     return results, odds1X2, odds45
 
+def get_result_matrix_by_search(p1,pX,p2,u45,o45,hg_sp, ag_sp):
 
-def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c):
+    curr_error = 1
+
+    hg_final = 0
+    ag_final = 0
+
+
+    for t1 in range(0,6):
+        for t2 in range(0,6):
+
+            hg = hg_sp + t1 * 0.05 - 0.1
+            ag = ag_sp + t2 * 0.05 - 0.1
+
+            results, odds1X2, odds45 = get_result_matrix(hg, ag)
+
+            tot_error = 0
+            tot_error += abs(p1-odds1X2['1'][0])
+            tot_error += abs(pX-odds1X2['X'][0])
+            tot_error += abs(p2-odds1X2['2'][0])
+
+            tot_error += abs(u45 - odds45['U45'][0])
+            tot_error += abs(o45 - odds45['O45'][0])
+
+            if tot_error < curr_error:
+                curr_error = tot_error
+                hg_final = hg
+                ag_final = ag
+
+    hg_sp = hg_final
+    ag_sp = ag_final
+
+    for t1 in range(0, 6):
+        for t2 in range(0, 6):
+
+            hg = hg_sp + t1 * 0.01 - 0.02
+            ag = ag_sp + t2 * 0.01 - 0.02
+
+            results, odds1X2, odds45 = get_result_matrix(hg, ag)
+
+            tot_error = 0
+            tot_error += abs(p1 - odds1X2['1'][0])
+            tot_error += abs(pX - odds1X2['X'][0])
+            tot_error += abs(p2 - odds1X2['2'][0])
+
+            tot_error += abs(u45 - odds45['U45'][0])
+            tot_error += abs(o45 - odds45['O45'][0])
+
+            if tot_error < curr_error:
+                curr_error = tot_error
+                hg_final = hg
+                ag_final = ag
+
+    hg_sp = hg_final
+    ag_sp = ag_final
+
+    for t1 in range(0, 6):
+        for t2 in range(0, 6):
+
+            hg = hg_sp + t1 * 0.002 - 0.004
+            ag = ag_sp + t2 * 0.002 - 0.004
+
+            results, odds1X2, odds45 = get_result_matrix(hg, ag)
+
+            tot_error = 0
+            tot_error += abs(p1 - odds1X2['1'][0])
+            tot_error += abs(pX - odds1X2['X'][0])
+            tot_error += abs(p2 - odds1X2['2'][0])
+
+            tot_error += abs(u45 - odds45['U45'][0])
+            tot_error += abs(o45 - odds45['O45'][0])
+
+            if tot_error < curr_error:
+                curr_error = tot_error
+                hg_final = hg
+                ag_final = ag
+
+    return results
+
+
+
+def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid):
+
+
+
+    # Calculate season
 
     seasonYear = int(gamedate[0:4])
 
@@ -184,11 +269,6 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c):
         seasonYear += 1
 
     print(hometeam, awayteam)
-
-    act_goals1 = 0
-    act_goals2 = 0
-
-
 
     [base_table1, full_data1, home_data1, away_data1, last_five_data1, last_match_data1, streak_table1, score_data1] = create_pre_match_table(gamedate, serie, hometeam, "H")
     [base_table2, full_data2, home_data2, away_data2, last_five_data2, last_match_data2, streak_table2, score_data2] = create_pre_match_table(gamedate, serie, awayteam, "A")
@@ -203,11 +283,16 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c):
     print("Scores:", score1, score2)
 
 
+    ####################################################################################################################################################################
+    ###                                                                         MODEL 1                                                                              ###
+    ####################################################################################################################################################################
+
+
     # Get shots, first base function then adjusted function
 
     home_shots_temp, away_shots_temp = get_shots_goals_linreg(seasonYear, [ave_home_shots, ave_home_shots_against, ave_away_shots, ave_away_shots_against, score_data1[3], score_data2[3]], gameid, 'SHL', c)
 
-    home_shots, away_shots = get_adjusted_shots(home_shots_temp, away_shots_temp, hometeam, awayteam, gamedate, seasonYear, c)
+    home_shots, away_shots = get_adjusted_shots(home_shots_temp, away_shots_temp, hometeam, awayteam, gamedate, seasonYear)
 
     #home_shots, away_shots = get_adjusted_shots_against(home_shots_temp2, away_shots_temp2, hometeam, awayteam, gamedate,seasonYear, c)
 
@@ -221,107 +306,84 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c):
     home_goals *= 0.975 # Basic adjustment
     away_goals *= 0.995  # Basic adjustment
 
-    print("Expected goals:", home_goals, away_goals)
 
+    # Get result matrix and match odds for model 1
 
-    # Get result matrix and match odds
+    results, odds1X2_1, odds45_1 = get_result_matrix(home_goals, away_goals)
 
-    results, odds1X2, odds45 = get_result_matrix(home_goals, away_goals)
-
-    c.execute("UPDATE EXP_SHOTS_TABLE SET EXP_SHOTS1 = ?, EXP_SHOTS2 = ?, EXP_GOALS1 = ?, EXP_GOALS2 = ?, ODDS1 = ?, ODDSX = ?, ODDS2 = ? WHERE GAMEID = ?",[home_shots, away_shots, home_goals, away_goals, odds1X2['1'][0], odds1X2['X'][0], odds1X2['2'][0], gameid])
+    c.execute("UPDATE EXP_SHOTS_TABLE SET EXP_SHOTS1 = ?, EXP_SHOTS2 = ?, EXP_GOALS1 = ?, EXP_GOALS2 = ?, ODDS1 = ?, ODDSX = ?, ODDS2 = ? WHERE GAMEID = ?",[home_shots, away_shots, home_goals, away_goals, odds1X2_1['1'][0], odds1X2_1['X'][0], odds1X2_1['2'][0], gameid])
     conn.commit()
 
-    print(odds1X2)
-    print(odds45)
+    c.execute("SELECT SUM(ACT_GOALS1 + ACT_GOALS2), SUM(EXP_GOALS1 + EXP_GOALS2) FROM EXP_SHOTS_TABLE WHERE SEASON = ? AND GAMEDATE < ?",[seasonYear, gamedate])
+    goals_year = c.fetchall()
 
-    update_forest_data()
+    if goals_year[0][0] > 0 and goals_year[0][1] > 0:
+        exp_ratio = goals_year[0][1] / goals_year[0][0]
+
+        if goals_year[0][0] < 100:
+            exp_ratio = exp_ratio ** (goals_year[0][0]/100)
+
+        #print(exp_ratio)
+
+    home_goals /= exp_ratio  # Adjustment based on expectency ratio
+    away_goals /= exp_ratio  # Adjustment based on expectency ratio
+
+    print("Expected goals:", home_goals, away_goals)
+
+    results, odds1X2_1, odds45_1 = get_result_matrix(home_goals, away_goals)
 
 
+    ####################################################################################################################################################################
+    ###                                                                         MODEL 2                                                                              ###
+    ####################################################################################################################################################################
 
-    odds1X2_ANN, odds45_ANN = get_ANN_odds(gameid, serie, gamedate, seasonYear,c)
+
+    # Update model data
+    update_forest_data(serie)
+
+    home_team_off, home_team_def, away_team_off, away_team_def = get_inputs_forest_model(serie, seasonYear, gamedate, hometeam, awayteam)
+
+    inputs = pd.DataFrame([[score1, score2, home_team_off, home_team_def, away_team_off, away_team_def]])
+
+    # Get odds model 2
+    odds1X2_2, odds45_2 = get_outcome_model_forest(serie, seasonYear, inputs, c)
+
+
+    ####################################################################################################################################################################
+    ###                                                                      Combine Models                                                                          ###
+    ####################################################################################################################################################################
+
+
+    final_p = pd.DataFrame([[odds1X2_1['1'][0],odds1X2_1['X'][0],odds1X2_1['2'][0]],
+                               [odds1X2_2[0][0],odds1X2_2[1][0],odds1X2_2[2][0]],
+                               [odds1X2_1['1'][0] / 2 + odds1X2_2[0][0] / 2, odds1X2_1['X'][0] / 2 + odds1X2_2[1][0] / 2, odds1X2_1['2'][0] / 2 + odds1X2_2[2][0] / 2]])
+
+    final_p45 = pd.DataFrame([[odds45_1['U45'][0], odds45_1['O45'][0]],
+                              [odds45_2[0][0], odds45_2[1][0]],
+                              [odds45_1['U45'][0]/2 + odds45_2[0][0]/2, odds45_1['O45'][0]/2 + odds45_2[1][0]/2]])
+
+    final_p[3] = 1 / final_p[0]
+    final_p[4] = 1 / final_p[1]
+    final_p[5] = 1 / final_p[2]
+
+    final_p45[2] = 1 / final_p45[0]
+    final_p45[3] = 1 / final_p45[1]
+
+    print(final_p)
+    print(final_p45)
+
+    results = get_result_matrix_by_search(final_p[0][2],final_p[1][2],final_p[2][2],final_p45[0][2],final_p45[1][2],home_goals,away_goals)
+
+    print(results)
+
+    ####################################################################################################################################################################
+    ###                                                               TIME FOR PLAYERS DATA NOW                                                                      ###
+    ####################################################################################################################################################################
 
     # Get all players that played last three games
 
     keeper_stat_home, player_stat = get_team_players(hometeam, gamedate, seasonYear)
     keeper_stat_away, player_stat = get_team_players(awayteam, gamedate, seasonYear)
 
-    return results, odds1X2, odds45, home_goals, away_goals, act_goals1, act_goals2, keeper_stat_home, keeper_stat_away
-
-#create_pre_match_analysis('2018-10-27','SHL',"IF Malmö Redhawks","Frölunda HC","",c)
-#create_pre_match_analysis('2018-10-27','SHL',"Örebro HK","Skellefteå AIK","",c)
-#create_pre_match_analysis('2018-10-27','SHL',"Djurgårdens IF","Växjö Lakers HC","",c)
-#create_pre_match_analysis('2018-10-27','SHL',"Rögle BK","Linköping HC","",c)
-#create_pre_match_analysis('2018-10-27','SHL',"Timrå IK","HV 71","",c)
-#create_pre_match_analysis('2018-10-27','SHL',"Luleå HF","Mora IK","",c)
-#create_pre_match_analysis('2018-10-27','SHL',"Brynäs IF","Färjestad BK","",c)
-
-if 1 == 3:
-
-    c.execute("SELECT GAMEDATE, SERIE, TEAM, OPPONENT, GAMEID FROM TEAMGAMES WHERE (SEASONID = ? OR SEASONID = ? OR SEASONID = ? OR SEASONID = ?) AND SERIE = ? AND HOMEAWAY = ? ORDER BY GAMEDATE ",[2019, 2019, 2019, 2019, 'SHL', 'H'])
-    lst = c.fetchall()
-
-    # Create DataFrames
-
-    exp_results = pd.DataFrame(np.zeros((11, 11)))
-    act_results = pd.DataFrame(np.zeros((11, 11)))
-
-    exp_1X2 = pd.DataFrame(np.zeros((1, 3)), columns=['1', 'X', '2'])
-    act_1X2 = pd.DataFrame(np.zeros((1, 3)), columns=['1', 'X', '2'])
-
-    exp_45 = pd.DataFrame(np.zeros((1, 2)), columns=['O45', 'U45'])
-    act_45 = pd.DataFrame(np.zeros((1, 2)), columns=['O45', 'U45'])
-
-    exp_goals_home = 0
-    act_goals_home = 0
-    exp_goals_away = 0
-    act_goals_away = 0
-
-    nGames = 0
-    predict = 0
-
-    for i in range(0,len(lst)):
-
-        results, odds1X2, odds45, exp_hg, exp_ag, hg, ag, ks_home, ks_away  = create_pre_match_analysis(lst[i][0],lst[i][1],lst[i][2],lst[i][3],lst[i][4], c)
-
-        nGames += 1
-
-        # Code to compare outcomes Actual vs expected
-
-        exp_1X2['1'] += odds1X2['1']
-        exp_1X2['X'] += odds1X2['X']
-        exp_1X2['2'] += odds1X2['2']
-
-        exp_45['O45'] += odds45['O45']
-        exp_45['U45'] += odds45['U45']
-
-        if hg > ag:
-            act_1X2['1'] += 1
-            predict+=odds1X2['1']
-        if hg == ag:
-            act_1X2['X'] += 1
-            predict += odds1X2['X']
-        if hg < ag:
-            act_1X2['2'] += 1
-            predict += odds1X2['2']
-
-        if hg+ag > 4:
-            act_45['O45'] += 1
-        if hg + ag <= 4:
-            act_45['U45'] += 1
-
-        exp_goals_home += exp_hg
-        act_goals_home += exp_ag
-        exp_goals_away += hg
-        act_goals_away += ag
-
-    print(exp_1X2)
-    print(act_1X2)
-
-    print(exp_45)
-    print(act_45)
-
-    print(exp_goals_home, act_goals_home)
-    print(exp_goals_away, act_goals_away)
-
-    conn.commit()
+    return results, odds1X2_1, odds45_1, home_goals, away_goals, keeper_stat_home, keeper_stat_away
 

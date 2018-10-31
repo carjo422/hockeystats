@@ -5,15 +5,21 @@ import numpy as np
 import pandas as pd
 from pandas import ExcelWriter
 import matplotlib.pyplot as plt
+from calcFunctions import calculate_team_strength
 
-c.execute("SELECT ACT_SHOTS1, ACT_SHOTS2, ASSH, ASSA, SCORE1-SCORE2, AGP, CAST(ACT_GOALS1 AS FLOAT)/CAST(ACT_SHOTS1 AS FLOAT), CAST(ACT_GOALS2 AS FLOAT)/CAST(ACT_SHOTS2 AS FLOAT) FROM EXP_SHOTS_TABLE WHERE SEASON <= ? AND SERIE = ?",[2018,"SHL"])
-regdata = pd.DataFrame(c.fetchall())
+print("Örebro HK",calculate_team_strength("Örebro HK",'2018-10-29',c))
+print("Frölunda HC",calculate_team_strength("Frölunda HC",'2018-10-29',c))
+print("Brynäs IF",calculate_team_strength("Brynäs IF",'2018-10-29',c))
+print("HV 71",calculate_team_strength("HV 71",'2018-10-29',c))
+print("Linköping HC",calculate_team_strength("Linköping HC",'2018-10-29',c))
+print("Djurgårdens IF",calculate_team_strength("Djurgårdens IF",'2018-10-29',c))
+print("Växjö Lakers HC",calculate_team_strength("Växjö Lakers HC",'2018-10-29',c))
+print("Färjestad BK",calculate_team_strength("Färjestad BK",'2018-10-29',c))
+print("Skellefteå AIK",calculate_team_strength("Skellefteå AIK",'2018-10-29',c))
+print("Rögle BK",calculate_team_strength("Rögle BK",'2018-10-29',c))
+print("Mora IK",calculate_team_strength("Mora IK",'2018-10-29',c))
 
-regdata.columns = ['Shots1', 'Shots2', 'Home_Eff', 'Away_Eff', 'Score diff', 'AGP', 'Act_Eff_Home', 'Act_Eff_Away']
 
-writer = ExcelWriter('regdata.xlsx')
-regdata.to_excel(writer,'Sheet1')
-writer.save()
 
 
 #c.execute("SELECT FORNAME, SURNAME, PERSONNR, SUM(CASE WHEN EVENT = ? THEN 1 ELSE 0 END) AS N_GOALS FROM EVENTS WHERE GAMEID IN (SELECT GAMEID FROM STATS WHERE SERIE = ?) GROUP BY FORNAME, SURNAME, PERSONNR ORDER BY N_GOALS DESC",["Goal","SHL"])
