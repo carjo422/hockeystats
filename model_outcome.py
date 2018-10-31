@@ -26,7 +26,7 @@ def update_shots_model_forest(seasonYear,serie,c):
 
     # Train data
 
-    c.execute("SELECT SCORE1, SCORE2, OFF_SCORE_HOME, DEF_SCORE_HOME, OFF_SCORE_AWAY, DEF_SCORE_AWAY, OUTCOME1X2, OUTCOME45 FROM ANN_TABLE WHERE GAMEDATE > ? AND SEASONID < ? AND SERIE = ?",['2015-10-15', seasonYear, serie])
+    c.execute("SELECT SCORE1, SCORE2, OFF_SCORE_HOME, DEF_SCORE_HOME, OFF_SCORE_AWAY, DEF_SCORE_AWAY, OUTCOME1X2, OUTCOME45 FROM ANN_TABLE WHERE GAMEDATE > ? AND SEASONID < ?",['2015-10-15', seasonYear])
     regdata = pd.DataFrame(c.fetchall())
 
     regdata.columns = ('SC1','SC2','OSH', 'DSH','OSA', 'DSA', 'OUT1X2', 'OUT45')
@@ -40,7 +40,7 @@ def update_shots_model_forest(seasonYear,serie,c):
 
     # Test data
 
-    c.execute("SELECT HOMETEAM, AWAYTEAM, SCORE1, SCORE2, OFF_SCORE_HOME, DEF_SCORE_HOME, OFF_SCORE_AWAY, DEF_SCORE_AWAY, OUTCOME1X2, OUTCOME45 FROM ANN_TABLE WHERE GAMEDATE > ? AND SEASONID = ? AND SERIE = ?",['2015-10-15', seasonYear, serie])
+    c.execute("SELECT HOMETEAM, AWAYTEAM, SCORE1, SCORE2, OFF_SCORE_HOME, DEF_SCORE_HOME, OFF_SCORE_AWAY, DEF_SCORE_AWAY, OUTCOME1X2, OUTCOME45 FROM ANN_TABLE WHERE GAMEDATE > ? AND SEASONID = ?",['2015-10-15', seasonYear])
     test_data = pd.DataFrame(c.fetchall())
 
     test_data.columns = ('HT','AT','SC1','SC2','OSH', 'DSH', 'OSA', 'DSA', 'OUT1X2', 'OUT45')
@@ -54,7 +54,7 @@ def update_shots_model_forest(seasonYear,serie,c):
 
 
 
-    forest_outcome = RandomForestClassifier(n_estimators=1000, max_depth=4, min_samples_split=5)
+    forest_outcome = RandomForestClassifier(n_estimators=100, max_depth=4, min_samples_split=8, criterion='entropy')
     forest_outcome.fit(x, y)
 
     filename = data_directory + '/models/forest_outcome_' + serie + str(seasonYear) + '.sav'
@@ -69,7 +69,7 @@ def update_shots_model_forest(seasonYear,serie,c):
 
 
 
-    forest_outcome45 = RandomForestClassifier(n_estimators=1000, max_depth=4, min_samples_split=5)
+    forest_outcome45 = RandomForestClassifier(n_estimators=100, max_depth=4, min_samples_split=8)
     forest_outcome45.fit(x, y45)
 
     filename = data_directory + '/models/forest_outcome45_' + serie + str(seasonYear) + '.sav'
@@ -81,8 +81,9 @@ def update_shots_model_forest(seasonYear,serie,c):
     test_data['u45'] = test_outcome45[0]
     test_data['o45'] = test_outcome45[1]
 
-    #print(test_data)
-
+    print_data = test_data.iloc[:,8:13]
+    print(test_data['pX'].sum())
+    print(test_data[test_data.OUT1X2 == 1].count())
 
 def get_outcome_model_forest(serie, seasonYear, inputs, c):
 
