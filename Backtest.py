@@ -17,7 +17,6 @@ if backtest == 1:
 
     c.execute("SELECT GAMEDATE, SERIE, TEAM, OPPONENT, GAMEID FROM TEAMGAMES WHERE (SEASONID = ? OR SEASONID = ? OR SEASONID = ? OR SEASONID = ?) AND SERIE = ? AND HOMEAWAY = ? ORDER BY GAMEDATE ",[2019, 2019, 2019, 2019, 'SHL', 'H'])
     lst = c.fetchall()
-    print(lst)
 
     #Create DataFrames
 
@@ -44,7 +43,7 @@ if backtest == 1:
     for i in range(0,len(lst)):
 
 
-        results, odds1X2, odds45, exp_hg, exp_ag, hg, ag, ks_home, ks_away  = create_pre_match_analysis(lst[i][0],lst[i][1],lst[i][2],lst[i][3],lst[i][4], c)
+        results, odds1X2, odds45, exp_hg, exp_ag, hg, ag, ks_home, ks_away  = create_pre_match_analysis(lst[i][0],lst[i][1],lst[i][2],lst[i][3],lst[i][4])
 
         nGames += 1
 
@@ -197,5 +196,5 @@ if backtest == 1:
     print("Prediction:", predictability)
 
     writer = ExcelWriter('Pre_match_analysis.xlsx')
-    scorePredict.to_excel(writer, 'Keeper_matrix')
+    #scorePredict.to_excel(writer, 'Keeper_matrix')
     writer.save()

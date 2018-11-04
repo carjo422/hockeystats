@@ -65,7 +65,7 @@ def update_efficiency_model_linreg(seasonYear, serie, c):
         exp_goals_home = lm_home_efficiency.predict([[upd[i][0], upd[i][2], upd[i][3]]])[0][0]*upd[i][0]
         exp_goals_away = lm_away_efficiency.predict([[upd[i][1], upd[i][2], upd[i][3]]])[0][0]*upd[i][1]
 
-        c.execute("UPDATE EXP_SHOTS_TABLE SET EXP_GOALS1 = ?, EXP_GOALS2 = ?, SHOT_MODEL = ? WHERE GAMEID = ?", [exp_goals_home, exp_goals_away, "LINREG", upd[i][4]])
+        c.execute("UPDATE EXP_SHOTS_TABLE SET EXP_GOALS1 = ?, EXP_GOALS2 = ? WHERE GAMEID = ?", [exp_goals_home, exp_goals_away, upd[i][4]])
 
     conn.commit()
 
@@ -97,7 +97,7 @@ def get_efficiency_model_linreg(seasonYear, inputs, gameid, serie, c):
 
     a_goals = (int2 + c21 * inputs[1] + c22 * inputs[2] + c23 * inputs[3]) * inputs[1]
 
-    c.execute("UPDATE EXP_SHOTS_TABLE SET EXP_GOALS1 = ?, EXP_GOALS2 = ?, GOAL_MODEL = ? WHERE gameid = ?",[h_goals[0], a_goals[0], "LINREG", gameid])
+    c.execute("UPDATE EXP_SHOTS_TABLE SET EXP_GOALS1 = ?, EXP_GOALS2 = ? WHERE gameid = ?",[h_goals[0], a_goals[0], gameid])
 
     conn.commit()
 

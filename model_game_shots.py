@@ -7,10 +7,6 @@ if os.path.exists('/Users/carljonsson/PycharmProjects/GetHockeyData/hockeystats/
 else:
     data_directory = '/Users/carljonsson/Python/hockeystats/'
 
-import sqlite3
-conn = sqlite3.connect(data_directory + '/hockeystats.db')
-c = conn.cursor()
-
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
@@ -69,7 +65,7 @@ def update_shots_model_linreg(seasonYear,serie,c):
         exp_shots_home = lm_home_shots.predict([[upd[i][0],upd[i][1],upd[i][4]]])[0]
         exp_shots_away = lm_away_shots.predict([[upd[i][2],upd[i][3],upd[i][5]]])[0]
 
-        c.execute("UPDATE EXP_SHOTS_TABLE SET EXP_SHOTS1 = ?, EXP_SHOTS2 = ?, SHOT_MODEL = ? WHERE GAMEID = ?", [exp_shots_home, exp_shots_away, "LINREG", upd[i][6]])
+        c.execute("UPDATE EXP_SHOTS_TABLE SET EXP_SHOTS1 = ?, EXP_SHOTS2 = ? WHERE GAMEID = ?", [exp_shots_home, exp_shots_away, upd[i][6]])
 
     conn.commit()
 
@@ -108,7 +104,7 @@ def update_shots_model_forest(seasonYear,serie,c):
 
 
 
-def get_shots_goals_linreg(seasonYear, inputs, gameid, serie, c):
+def get_shots_goals_linreg(seasonYear, inputs, gameid, serie, c, conn):
 
     filename = data_directory + '/models/lm_home_shots_' + serie + str(seasonYear) + '.sav'
 
@@ -132,13 +128,13 @@ def get_shots_goals_linreg(seasonYear, inputs, gameid, serie, c):
 
     a_shots = int2 + c21 * inputs[1] + c22 * inputs[2] + c23 * inputs[5]
 
-    c.execute("UPDATE EXP_SHOTS_TABLE SET EXP_SHOTS1 = ?, EXP_SHOTS2 = ?, SHOT_MODEL = ? WHERE gameid = ?",[h_shots, a_shots, "LINREG", gameid])
+    c.execute("UPDATE EXP_SHOTS_TABLE SET EXP_SHOTS1 = ?, EXP_SHOTS2 = ? WHERE gameid = ?",[h_shots, a_shots, gameid])
 
     conn.commit()
 
     return h_shots, a_shots
 
-def get_shots_goals_forest(seasonYear, inputs, gameid, serie, c):
+def get_shots_goals_forest(seasonYear, inputs, gameid, serie, c, conn):
 
     filename = data_directory + '/models/forest_home_shots_' + serie + str(seasonYear) + '.sav'
 
@@ -152,7 +148,7 @@ def get_shots_goals_forest(seasonYear, inputs, gameid, serie, c):
 
     a_shots = forest_away_shots.predict([[input[1], inputs[0], inputs[5], inputs[4]]])
 
-    c.execute("UPDATE EXP_SHOTS_TABLE SET EXP_SHOTS1 = ?, EXP_SHOTS2 = ?, SHOT_MODEL = ? WHERE gameid = ?",[h_shots, a_shots, "FOREST", gameid])
+    c.execute("UPDATE EXP_SHOTS_TABLE SET EXP_SHOTS1 = ?, EXP_SHOTS2 = ? WHERE gameid = ?",[h_shots, a_shots, gameid])
 
     conn.commit()
 
@@ -164,8 +160,8 @@ def get_shots_goals_forest(seasonYear, inputs, gameid, serie, c):
 #update_shots_model_linreg(2017,'SHL',c)
 #update_shots_model_linreg(2016,'SHL',c)
 
-update_shots_model_linreg(2019,'SHL',c)
-update_shots_model_linreg(2018,'SHL',c)
+#update_shots_model_linreg(2019,'SHL',c)
+#update_shots_model_linreg(2018,'SHL',c)
 
 #update_shots_model_linreg(2018,'SHL',c)
 #update_shots_model_linreg(2017,'SHL',c)

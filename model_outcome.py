@@ -15,61 +15,74 @@ import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestRegressor
 from pandas import ExcelWriter
 import pickle
-from create_pre_match_tables import update_forest_data
+from create_pre_match_tables import update_forest_data_1
+#from create_pre_match_tables import update_forest_data_2
 
 
-def update_shots_model_forest(seasonYear,serie,c):
+def update_shots_model_forest_1(seasonYear,serie,c):
 
     #Model for home shots random forest)
 
     # Train data
 
-    c.execute("SELECT SCORE1, SCORE2, OFF_SCORE_HOME, DEF_SCORE_HOME, OFF_SCORE_AWAY, DEF_SCORE_AWAY, OUTCOME1X2, OUTCOME45 FROM ANN_TABLE WHERE GAMEDATE > ? AND SEASONID < ?",['2015-10-15', seasonYear])
+    c.execute("SELECT SCORE1, SCORE2, OFF_SCORE_HOME, DEF_SCORE_HOME, OFF_SCORE_AWAY, DEF_SCORE_AWAY, ACT_GOALS1, ACT_GOALS2, OUTCOME45 FROM GOALS_FOREST_TABLE_1 WHERE GAMEDATE > ? AND SEASONID < ? AND SERIE = ?",['2015-10-15', seasonYear, serie])
     regdata = pd.DataFrame(c.fetchall())
 
-    regdata.columns = ('SC1','SC2','OSH', 'DSH','OSA', 'DSA', 'OUT1X2', 'OUT45')
+    regdata.columns = ('SC1','SC2','OSH', 'DSH','OSA', 'DSA', 'ACT_GOALS1', 'ACT_GOALS2', 'OUT45')
 
-    regdata['OUT1X2'].apply(int)
+    regdata['ACT_GOALS1'].apply(int)
+    regdata['ACT_GOALS2'].apply(int)
     regdata['OUT45'].apply(int)
 
-    x = regdata[regdata.columns[2:6]]
-    y = regdata[regdata.columns[6]]
-    y45 = regdata[regdata.columns[7]]
+    x = regdata[regdata.columns[0:6]]
+    y1 = regdata[regdata.columns[6]]
+    y2 = regdata[regdata.columns[7]]
+    y45 = regdata[regdata.columns[8]]
 
     # Test data
 
-    c.execute("SELECT HOMETEAM, AWAYTEAM, SCORE1, SCORE2, OFF_SCORE_HOME, DEF_SCORE_HOME, OFF_SCORE_AWAY, DEF_SCORE_AWAY, OUTCOME1X2, OUTCOME45 FROM ANN_TABLE WHERE GAMEDATE > ? AND SEASONID = ?",['2015-10-15', seasonYear])
+    c.execute("SELECT HOMETEAM, AWAYTEAM, SCORE1, SCORE2, OFF_SCORE_HOME, DEF_SCORE_HOME, OFF_SCORE_AWAY, DEF_SCORE_AWAY, ACT_GOALS1, ACT_GOALS2, OUTCOME45 FROM GOALS_FOREST_TABLE_1 WHERE GAMEDATE > ? AND SEASONID = ? AND SERIE = ?",['2015-10-15', seasonYear, serie])
     test_data = pd.DataFrame(c.fetchall())
 
-    test_data.columns = ('HT','AT','SC1','SC2','OSH', 'DSH', 'OSA', 'DSA', 'OUT1X2', 'OUT45')
+    test_data.columns = ('HT','AT','SC1','SC2','OSH', 'DSH', 'OSA', 'DSA', 'ACT_GOALS1', 'ACT_GOALS2', 'OUT45')
 
-    test_data['OUT1X2'].apply(int)
+    regdata['ACT_GOALS1'].apply(int)
+    regdata['ACT_GOALS2'].apply(int)
     test_data['OUT45'].apply(int)
 
-    x_test = test_data[test_data.columns[4:8]]
-    y_test = test_data[test_data.columns[8]]
-    y_test45 = test_data[test_data.columns[9]]
+    x_test = test_data[test_data.columns[2:8]]
+    y_test1 = test_data[test_data.columns[8]]
+    y_test2 = test_data[test_data.columns[9]]
+    y_test45 = test_data[test_data.columns[10]]
 
 
 
-    forest_outcome = RandomForestClassifier(n_estimators=100, max_depth=4, min_samples_split=8, criterion='entropy')
-    forest_outcome.fit(x, y)
+    forest_outcome1 = RandomForestRegressor(n_estimators=1000, max_depth=2, min_samples_split=4)
+    forest_outcome1.fit(x, y1)
 
-    filename = data_directory + '/models/forest_outcome_' + serie + str(seasonYear) + '.sav'
+    filename = data_directory + '/models/forest_outcome1_' + serie + str(seasonYear) + '.sav'
 
-    pickle.dump(forest_outcome, open(filename, 'wb'))
+    pickle.dump(forest_outcome1, open(filename, 'wb'))
 
-    test_outcome = pd.DataFrame(forest_outcome.predict_proba(x_test))
-
-    test_data['p1'] = test_outcome[0]
-    test_data['pX'] = test_outcome[1]
-    test_data['p2'] = test_outcome[2]
+    test_outcome1 = pd.DataFrame(forest_outcome1.predict(x_test))
 
 
 
-    forest_outcome45 = RandomForestClassifier(n_estimators=100, max_depth=4, min_samples_split=8)
+    forest_outcome2 = RandomForestRegressor(n_estimators=1000, max_depth=2, min_samples_split=4)
+    forest_outcome2.fit(x, y2)
+
+    filename = data_directory + '/models/forest_outcome2_' + serie + str(seasonYear) + '.sav'
+
+    pickle.dump(forest_outcome2, open(filename, 'wb'))
+
+    test_outcome2 = pd.DataFrame(forest_outcome2.predict(x_test))
+
+
+
+    forest_outcome45 = RandomForestClassifier(n_estimators=1000, max_depth=2, min_samples_split=4)
     forest_outcome45.fit(x, y45)
 
     filename = data_directory + '/models/forest_outcome45_' + serie + str(seasonYear) + '.sav'
@@ -78,31 +91,123 @@ def update_shots_model_forest(seasonYear,serie,c):
 
     test_outcome45 = pd.DataFrame(forest_outcome45.predict_proba(x_test))
 
-    test_data['u45'] = test_outcome45[0]
-    test_data['o45'] = test_outcome45[1]
 
-    print_data = test_data.iloc[:,8:13]
-    print(test_data['pX'].sum())
-    print(test_data[test_data.OUT1X2 == 1].count())
+def update_shots_model_forest_2(seasonYear,serie,c):
 
-def get_outcome_model_forest(serie, seasonYear, inputs, c):
+    #Model for home shots random forest)
 
-    filename1 = data_directory + '/models/forest_outcome_' + serie + str(seasonYear) + '.sav'
-    filename2 = data_directory + '/models/forest_outcome45_' + serie + str(seasonYear) + '.sav'
+    # Train data
 
-    forest_outcome = pickle.load(open(filename1, 'rb'))
-    forest_outcome45 = pickle.load(open(filename2, 'rb'))
+    c.execute("SELECT SCORE1, SCORE2, OFF_SCORE_HOME, DEF_SCORE_HOME, OFF_SCORE_AWAY, DEF_SCORE_AWAY, ACT_GOALS1, ACT_GOALS2, OUTCOME45 FROM GOALS_FOREST_TABLE_1 WHERE GAMEDATE > ? AND SEASONID < ? AND SERIE = ?",['2015-10-15', seasonYear, serie])
+    regdata = pd.DataFrame(c.fetchall())
 
-    inputs.columns = ['OSH', 'DSH', 'OSA', 'DSA'] # 'SC1','SC2',
+    regdata.columns = ('SC1','SC2','OSH', 'DSH','OSA', 'DSA', 'ACT_GOALS1', 'ACT_GOALS2', 'OUT45')
 
-    odds1X2 = pd.DataFrame(forest_outcome.predict_proba(inputs))
+    regdata['ACT_GOALS1'].apply(int)
+    regdata['ACT_GOALS2'].apply(int)
+    regdata['OUT45'].apply(int)
+
+    x = regdata[regdata.columns[0:6]]
+    y1 = regdata[regdata.columns[6]]
+    y2 = regdata[regdata.columns[7]]
+    y45 = regdata[regdata.columns[8]]
+
+    # Test data
+
+    c.execute("SELECT HOMETEAM, AWAYTEAM, SCORE1, SCORE2, OFF_SCORE_HOME, DEF_SCORE_HOME, OFF_SCORE_AWAY, DEF_SCORE_AWAY, ACT_GOALS1, ACT_GOALS2, OUTCOME45 FROM GOALS_FOREST_TABLE_1 WHERE GAMEDATE > ? AND SEASONID = ? AND SERIE = ?",['2015-10-15', seasonYear, serie])
+    test_data = pd.DataFrame(c.fetchall())
+
+    test_data.columns = ('HT','AT','SC1','SC2','OSH', 'DSH', 'OSA', 'DSA', 'ACT_GOALS1', 'ACT_GOALS2', 'OUT45')
+
+    regdata['ACT_GOALS1'].apply(int)
+    regdata['ACT_GOALS2'].apply(int)
+    test_data['OUT45'].apply(int)
+
+    x_test = test_data[test_data.columns[2:8]]
+    y_test1 = test_data[test_data.columns[8]]
+    y_test2 = test_data[test_data.columns[9]]
+    y_test45 = test_data[test_data.columns[10]]
+
+
+
+    forest_outcome1 = RandomForestRegressor(n_estimators=1000, max_depth=2, min_samples_split=4)
+    forest_outcome1.fit(x, y1)
+
+    filename = data_directory + '/models/forest_outcome1_' + serie + str(seasonYear) + '.sav'
+
+    pickle.dump(forest_outcome1, open(filename, 'wb'))
+
+    test_outcome1 = pd.DataFrame(forest_outcome1.predict(x_test))
+
+
+
+    forest_outcome2 = RandomForestRegressor(n_estimators=1000, max_depth=2, min_samples_split=4)
+    forest_outcome2.fit(x, y2)
+
+    filename = data_directory + '/models/forest_outcome2_' + serie + str(seasonYear) + '.sav'
+
+    pickle.dump(forest_outcome2, open(filename, 'wb'))
+
+    test_outcome2 = pd.DataFrame(forest_outcome2.predict(x_test))
+
+
+
+    forest_outcome45 = RandomForestClassifier(n_estimators=1000, max_depth=2, min_samples_split=4)
+    forest_outcome45.fit(x, y45)
+
+    filename = data_directory + '/models/forest_outcome45_' + serie + str(seasonYear) + '.sav'
+
+    pickle.dump(forest_outcome45, open(filename, 'wb'))
+
+    test_outcome45 = pd.DataFrame(forest_outcome45.predict_proba(x_test))
+
+
+def get_outcome_model_forest_1(serie, seasonYear, inputs, c):
+
+    filename1 = data_directory + '/models/forest_outcome1_' + serie + str(seasonYear) + '.sav'
+    filename2 = data_directory + '/models/forest_outcome2_' + serie + str(seasonYear) + '.sav'
+    filename3 = data_directory + '/models/forest_outcome45_' + serie + str(seasonYear) + '.sav'
+
+    forest_outcome1 = pickle.load(open(filename1, 'rb'))
+    forest_outcome2 = pickle.load(open(filename2, 'rb'))
+    forest_outcome45 = pickle.load(open(filename3, 'rb'))
+
+    inputs.columns = ['SC1','SC2', 'OSH', 'DSH', 'OSA', 'DSA']
+
+    g1 = pd.DataFrame(forest_outcome1.predict(inputs))
+    g2 = pd.DataFrame(forest_outcome2.predict(inputs))
     odds45 = pd.DataFrame(forest_outcome45.predict_proba(inputs))
 
-    return odds1X2, odds45
+    return g1[0][0], g2[0][0], odds45
 
 
-update_forest_data('SHL')
-update_shots_model_forest(2019,"SHL",c)
 
-update_forest_data('HA')
-update_shots_model_forest(2019,"HA",c)
+
+
+def get_outcome_model_forest_2(serie, seasonYear, inputs, c):
+
+    filename1 = data_directory + '/models/forest_outcome1_' + serie + str(seasonYear) + '.sav'
+    filename2 = data_directory + '/models/forest_outcome2_' + serie + str(seasonYear) + '.sav'
+    filename3 = data_directory + '/models/forest_outcome45_' + serie + str(seasonYear) + '.sav'
+
+    forest_outcome1 = pickle.load(open(filename1, 'rb'))
+    forest_outcome2 = pickle.load(open(filename2, 'rb'))
+    forest_outcome45 = pickle.load(open(filename3, 'rb'))
+
+    inputs.columns = ['SC1','SC2', 'OSH', 'DSH', 'OSA', 'DSA']
+
+    g1 = pd.DataFrame(forest_outcome1.predict(inputs))
+    g2 = pd.DataFrame(forest_outcome2.predict(inputs))
+    odds45 = pd.DataFrame(forest_outcome45.predict_proba(inputs))
+
+    return g1[0][0], g2[0][0], odds45
+
+
+update_forest_data_1('SHL', c, conn)
+update_shots_model_forest_1(2019,"SHL",c)
+
+#update_forest_data2('SHL')
+update_shots_model_forest_1(2019,"SHL",c)
+
+#update_forest_data('HA')
+#update_shots_model_forest(2019,"HA",c)
