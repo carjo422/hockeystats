@@ -271,19 +271,22 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
     inputs = pd.DataFrame([[comb_score_home, comb_score_away]])
 
     # Get odds model 2
-    home_goals3, away_goals3, odds45_3 = get_outcome_model_forest_2(serie, 2019, inputs, c)  # seasonYear = 2019
+    home_goals3, away_goals3, odds45_3 = get_outcome_model_forest_2(serie, seasonYear, inputs, c)  # seasonYear = 2019
 
-    #print(home_goals1, home_goals2)
-    #print(away_goals1, away_goals2)
+    print("Model 3 expected goals:", home_goals3, away_goals3)
 
     ####################################################################################################################################################################
     ###                                                                       COMBINE MODELS                                                                         ###
     ####################################################################################################################################################################
 
 
-    home_goals = home_goals1 / 6 * 3 + home_goals2 / 6 * 3# + home_goals3 / 6 * 2
-    away_goals = away_goals1 / 6 * 3 + away_goals2 / 6 * 3# + home_goals3 / 6 * 2
+    home_goals = home_goals1 / 8 * 4 + home_goals2 / 6 * 1 + home_goals3 / 6 * 3
+    away_goals = away_goals1 / 8 * 4 + away_goals2 / 6 * 1 + away_goals3 / 6 * 3
 
+    results, odds1X2, odds45 = get_result_matrix(home_goals, away_goals)
+
+    c.execute("UPDATE EXP_SHOTS_TABLE SET EXP_SHOTS1 = ?, EXP_SHOTS2 = ?, EXP_GOALS1 = ?, EXP_GOALS2 = ?, ODDS1 = ?, ODDSX = ?, ODDS2 = ? WHERE GAMEID = ?",[home_shots, away_shots, home_goals, away_goals, odds1X2['1'][0], odds1X2['X'][0], odds1X2['2'][0], gameid])
+    conn.commit()
 
     c.execute("SELECT SUM(ACT_GOALS1 + ACT_GOALS2), SUM(EXP_GOALS1 + EXP_GOALS2) FROM EXP_SHOTS_TABLE WHERE SEASON = ? AND GAMEDATE < ? AND SERIE = ?",[seasonYear, gamedate, serie])
     goals_year = c.fetchall()
@@ -298,7 +301,7 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
             if goals_year[0][0] < 100:
                 exp_ratio = exp_ratio ** (goals_year[0][0]/100)
 
-    print("EXP RATIO", exp_ratio)
+    print("Exp ratio", exp_ratio)
 
     home_goals /= exp_ratio  # Adjustment based on expectency ratio
     away_goals /= exp_ratio  # Adjustment based on expectency ratio
@@ -310,9 +313,6 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
     results, odds1X2, odds45 = get_result_matrix(home_goals, away_goals)
 
     print(odds1X2)
-
-    c.execute("UPDATE EXP_SHOTS_TABLE SET EXP_SHOTS1 = ?, EXP_SHOTS2 = ?, EXP_GOALS1 = ?, EXP_GOALS2 = ?, ODDS1 = ?, ODDSX = ?, ODDS2 = ? WHERE GAMEID = ?",[home_shots, away_shots, home_goals, away_goals, odds1X2['1'][0], odds1X2['X'][0], odds1X2['2'][0], gameid])
-    conn.commit()
 
     ####################################################################################################################################################################
     ###                                                               TIME FOR PLAYERS DATA NOW                                                                      ###

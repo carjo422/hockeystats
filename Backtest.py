@@ -43,7 +43,7 @@ if backtest == 1:
     for i in range(0,len(lst)):
 
 
-        results, odds1X2, odds45, exp_hg, exp_ag, hg, ag, ks_home, ks_away  = create_pre_match_analysis(lst[i][0],lst[i][1],lst[i][2],lst[i][3],lst[i][4])
+        results, odds1X2, odds45, exp_hg, exp_ag, hg, ag, ks_home, ks_away  = create_pre_match_analysis(lst[i][0],lst[i][1],lst[i][2],lst[i][3],lst[i][4],c,conn)
 
         nGames += 1
 

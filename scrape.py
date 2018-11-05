@@ -483,7 +483,7 @@ def scrape_sh(seasonID, seasonYear, serie, score_update):
             c.execute("SELECT HOMETEAM, AWAYTEAM FROM STATS WHERE GAMEID = ?",[gameVector[j][0]])
             teams = c.fetchall()
 
-            create_pre_match_analysis(dateVector[j][0], serie, teams[0][0], teams[0][1], gameVector[j][0])
+            create_pre_match_analysis(dateVector[j][0], serie, teams[0][0], teams[0][1], gameVector[j][0], c, conn)
 
 #scrape_sh(7157, 2017, "HA", "New")
 #scrape_sh(6053, 2016, "HA", "New")

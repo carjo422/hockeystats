@@ -7,17 +7,30 @@ from pandas import ExcelWriter
 import matplotlib.pyplot as plt
 from calcFunctions import calculate_team_strength
 
-print("Örebro HK",calculate_team_strength("Örebro HK",'2018-10-29',c))
-print("Frölunda HC",calculate_team_strength("Frölunda HC",'2018-10-29',c))
-print("Brynäs IF",calculate_team_strength("Brynäs IF",'2018-10-29',c))
-print("HV 71",calculate_team_strength("HV 71",'2018-10-29',c))
-print("Linköping HC",calculate_team_strength("Linköping HC",'2018-10-29',c))
-print("Djurgårdens IF",calculate_team_strength("Djurgårdens IF",'2018-10-29',c))
-print("Växjö Lakers HC",calculate_team_strength("Växjö Lakers HC",'2018-10-29',c))
-print("Färjestad BK",calculate_team_strength("Färjestad BK",'2018-10-29',c))
-print("Skellefteå AIK",calculate_team_strength("Skellefteå AIK",'2018-10-29',c))
-print("Rögle BK",calculate_team_strength("Rögle BK",'2018-10-29',c))
-print("Mora IK",calculate_team_strength("Mora IK",'2018-10-29',c))
+#print("Örebro HK",calculate_team_strength("Örebro HK",'2018-10-29',c))
+#print("Frölunda HC",calculate_team_strength("Frölunda HC",'2018-10-29',c))
+#print("Brynäs IF",calculate_team_strength("Brynäs IF",'2018-10-29',c))
+#print("HV 71",calculate_team_strength("HV 71",'2018-10-29',c))
+#print("Linköping HC",calculate_team_strength("Linköping HC",'2018-10-29',c))
+#print("Djurgårdens IF",calculate_team_strength("Djurgårdens IF",'2018-10-29',c))
+#print("Växjö Lakers HC",calculate_team_strength("Växjö Lakers HC",'2018-10-29',c))
+#print("Färjestad BK",calculate_team_strength("Färjestad BK",'2018-10-29',c))
+#print("Skellefteå AIK",calculate_team_strength("Skellefteå AIK",'2018-10-29',c))
+#print("Rögle BK",calculate_team_strength("Rögle BK",'2018-10-29',c))
+#print("Mora IK",calculate_team_strength("Mora IK",'2018-10-29',c))
+
+c.execute("SELECT GAMEID, GAMEDATE FROM GOALS_FOREST_TABLE_2")
+tst = c.fetchall()
+
+for i in range(0,len(tst)):
+
+    seasonYear = int(tst[i][1][0:4])
+    if int(tst[i][1][5:7]) > 6:
+        seasonYear += 1
+
+    c.execute("UPDATE GOALS_FOREST_TABLE_2 SET SEASONID = ? WHERE GAMEID = ?",[seasonYear, tst[i][0]])
+
+conn.commit()
 
 
 
