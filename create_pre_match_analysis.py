@@ -5,6 +5,9 @@ from model_game_shots import get_shots_goals_linreg
 from model_shot_efficiency import get_efficiency_model_linreg
 from create_pre_match_tables import get_team_players
 from pandas import ExcelWriter
+import openpyxl
+from openpyxl import load_workbook
+
 from create_pre_match_tables import get_ANN_odds
 from create_pre_match_tables import update_model1_data
 from create_pre_match_tables import update_model2_data
@@ -311,6 +314,7 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
 
     results, odds1X2, odds45 = get_result_matrix(home_goals, away_goals)
 
+
     c.execute("UPDATE EXP_SHOTS_TABLE SET EXP_SHOTS1 = ?, EXP_SHOTS2 = ?, EXP_GOALS1 = ?, EXP_GOALS2 = ?, ODDS1 = ?, ODDSX = ?, ODDS2 = ? WHERE GAMEID = ?",[home_shots, away_shots, home_goals, away_goals, odds1X2['1'][0], odds1X2['X'][0], odds1X2['2'][0], gameid])
     conn.commit()
 
@@ -327,6 +331,8 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
             if goals_year[0][0] < 100:
                 exp_ratio = exp_ratio ** (goals_year[0][0]/100)
 
+    exp_ratio = (exp_ratio-1)/4+1
+
     print("Exp ratio", exp_ratio)
 
     home_goals /= exp_ratio  # Adjustment based on expectency ratio
@@ -337,6 +343,9 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
     # Get result matrix and match odds
 
     results, odds1X2, odds45 = get_result_matrix(home_goals, away_goals)
+    result_odds = 1 / results
+
+    #print(result_odds)
 
     print(odds1X2)
     print(odds45)
@@ -347,8 +356,11 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
 
     # Get all players that played last three games
 
-    keeper_stat_home, player_stat = get_team_players(hometeam, gamedate, seasonYear, c, conn)
-    keeper_stat_away, player_stat = get_team_players(awayteam, gamedate, seasonYear, c, conn)
+    keeper_stat_home = get_team_players(hometeam, gamedate, seasonYear, c, conn)
+    keeper_stat_away = get_team_players(awayteam, gamedate, seasonYear, c, conn)
+
+    #print(keeper_stat_home)
+    #print(keeper_stat_away)
 
     return results, odds1X2, odds45, home_goals, away_goals, act_home_goals, act_away_goals, keeper_stat_home, keeper_stat_away
 

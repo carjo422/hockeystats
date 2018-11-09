@@ -27,11 +27,12 @@ from create_pre_match_analysis import create_pre_match_analysis
 #create_pre_match_analysis('2018-11-07','HA',"IK Oskarshamn","Västerviks IK","",c, conn)
 #create_pre_match_analysis('2018-11-07','HA',"Tingsryds AIF","Leksands IF","",c, conn)
 create_pre_match_analysis('2018-11-13','SHL',"IF Malmö Redhawks","Brynäs IF","",c, conn)
-create_pre_match_analysis('2018-11-13','SHL',"Frölunda HC","Skellefteå AIK","",c, conn)
-create_pre_match_analysis('2018-11-13','SHL',"Linköping HC","Växjö Lakers HC","",c, conn)
+#create_pre_match_analysis('2018-11-13','SHL',"Frölunda HC","Skellefteå AIK","",c, conn)
+#create_pre_match_analysis('2018-11-13','SHL',"Linköping HC","Växjö Lakers HC","",c, conn)
 create_pre_match_analysis('2018-11-13', 'SHL', "Mora IK", "Örebro HK", "", c, conn)
-create_pre_match_analysis('2018-11-13', 'SHL', "Rögle BK", "Färjestad BK", "", c, conn)
-create_pre_match_analysis('2018-11-13', 'SHL', "Timrå IK", "Djurgårdens IF", "", c, conn)
+#create_pre_match_analysis('2018-11-13', 'SHL', "Rögle BK", "Färjestad BK", "", c, conn)
+#create_pre_match_analysis('2018-11-13', 'SHL', "Timrå IK", "Djurgårdens IF", "", c, conn)
+#create_pre_match_analysis('2018-11-13', 'SHL', "Timrå IK", "Djurgårdens IF", "", c, conn)
 
 
 

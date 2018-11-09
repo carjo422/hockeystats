@@ -275,19 +275,6 @@ def create_pre_match_table(gamedate, serie, team, homeaway, c, conn):
     return [base_table, full_data, home_data, away_data, last_five_data, last_match_data, streak_table, score_data]
 
 
-def create_pre_match_players(gamedate, serie, team, homeaway):
-    pass
-
-    # GOALS
-    # PPGOALS
-    # SHGOALS
-    # ASSISTS
-    # PLUS
-    # MINUS
-    # PENALTY
-    # SHOTSAT
-    # SAVES
-    # SCORE
 
 def get_expected_shots(full_data1, home_data1, away_data2, full_data2, home_data2, score_table1, score_table2, serie, c, conn, gameid, gamedate, season):
 
@@ -542,9 +529,7 @@ def get_team_players(team, gamedate, seasonYear, c, conn):
     keeper_sum = keeper_stat['Start%'].sum()
     keeper_stat['Start%'] = keeper_stat['Start%'] / keeper_sum
 
-    player_stat = []
-
-    return keeper_stat, player_stat
+    return keeper_stat
 
 
 def get_ANN_odds(gameid, serie, gamedate, seasonYear, c, conn):
