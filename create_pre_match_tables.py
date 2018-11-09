@@ -557,6 +557,24 @@ def get_ANN_odds(gameid, serie, gamedate, seasonYear, c, conn):
         c.execute("SELECT GAMEID FROM GOALS_FOREST_TABLE_1 WHERE GAMEID = ?",[gameid])
         chk = c.fetchall()
 
+        if len(exp_table_data) == 0:
+
+            c.execute("SELECT HOMETEAM, AWAYTEAM FROM STATS WHERE GAMEID = ?",[gameid])
+            teams = c.fetchall()
+
+            [base_table1, full_data1, home_data1, away_data1, last_five_data1, last_match_data1, streak_table1,score_data1] = create_pre_match_table(gamedate, serie, teams[0][0], "H", c, conn)
+            [base_table2, full_data2, home_data2, away_data2, last_five_data2, last_match_data2, streak_table2,score_data2] = create_pre_match_table(gamedate, serie, teams[0][1], "A", c, conn)
+
+            get_expected_shots(full_data1, home_data1, away_data2, full_data2, home_data2, score_data1, score_data2,serie, c, conn, gameid, gamedate, seasonYear)
+
+            c.execute("SELECT HOMETEAM, AWAYTEAM, SCORE1, SCORE2, ACT_SHOTS1, ACT_SHOTS2, ACT_GOALS1, ACT_GOALS2 FROM EXP_SHOTS_TABLE WHERE GAMEID = ?",[gameid])
+            exp_table_data = c.fetchall()
+
+            conn.commit()
+
+            print(gameid, "added to Exp_Shots_Table")
+
+
         score1 = exp_table_data[0][2] ** (1 / 2)
         score2 = exp_table_data[0][3] ** (1 / 2)
 
@@ -596,7 +614,7 @@ def get_ANN_odds(gameid, serie, gamedate, seasonYear, c, conn):
         conn.commit()
 
 
-def update_forest_data_1(serie,c, conn):
+def update_model1_data(serie, c, conn):
 
     c.execute("SELECT GAMEDATE, SERIE, TEAM, OPPONENT, GAMEID, SEASONID FROM TEAMGAMES WHERE (SEASONID = ? OR SEASONID = ? OR SEASONID = ?) AND SERIE = ? AND HOMEAWAY = ? ORDER BY GAMEDATE ",[2019, 2018, 2017, serie, 'H'])
     lst = c.fetchall()
@@ -670,7 +688,7 @@ def update_forest_data_1(serie,c, conn):
 
         conn.commit()
 
-def update_forest_data_2(serie, seasonYear, c, conn):
+def update_model2_data(serie, seasonYear, c, conn):
 
     c.execute("SELECT GAMEID, GAMEDATE, HOMETEAM, AWAYTEAM FROM STATS WHERE SEASONID < ? AND SERIE = ?", [seasonYear, serie])
     lst = c.fetchall()
@@ -686,8 +704,15 @@ def update_forest_data_2(serie, seasonYear, c, conn):
         [base_table1, full_data1, home_data1, away_data1, last_five_data1, last_match_data1, streak_table1, score_data1] = create_pre_match_table(gamedate, serie, hometeam, "H", c, conn)
         [base_table2, full_data2, home_data2, away_data2, last_five_data2, last_match_data2, streak_table2, score_data2] = create_pre_match_table(gamedate, serie, awayteam, "A", c, conn)
 
-        comb_score_home = get_inputs_forest_model_2(score_data1[3], full_data1, home_data1, last_five_data1, last_match_data1, "H")
-        comb_score_away = get_inputs_forest_model_2(score_data2[3], full_data2, away_data2, last_five_data2, last_match_data2, "A")
+        score1 = score_data1[3]
+        score2 = score_data2[3]
+
+        if serie == 'HA':
+            score1 *= 2
+            score2 *= 2
+
+        comb_score_home = get_model1_data(score1, full_data1, home_data1, last_five_data1, last_match_data1, "H")
+        comb_score_away = get_model2_data(score2, full_data2, away_data2, last_five_data2, last_match_data2, "A")
 
         c.execute("SELECT HSCORE1+HSCORE2+HSCORE3, ASCORE1+ASCORE2+ASCORE3, HSHOTS1+HSHOTS2+HSHOTS3, ASHOTS1+ASHOTS2+ASHOTS3 FROM STATS WHERE GAMEID = ?",[gameid])
         sts = c.fetchall()
@@ -708,19 +733,19 @@ def update_forest_data_2(serie, seasonYear, c, conn):
         chk = c.fetchall()
 
         if len(chk) > 0:
-            c.execute("UPDATE GOALS_FOREST_TABLE_2 SET COMB_SCORE_HOME = ?, COMB_SCORE_AWAY = ? WHERE GAMEID = ?",[comb_score_home, comb_score_away, gameid])
+            c.execute("UPDATE GOALS_FOREST_TABLE_2 SET SERIE = ?, COMB_SCORE_HOME = ?, COMB_SCORE_AWAY = ? WHERE GAMEID = ?",[serie, comb_score_home, comb_score_away, gameid])
         else:
             c.execute("INSERT INTO GOALS_FOREST_TABLE_2 (GAMEID, GAMEDATE, SEASONID, SERIE, HOMETEAM, AWAYTEAM, SCORE1, SCORE2, COMB_SCORE_HOME, COMB_SCORE_AWAY, ACT_SHOTS1, ACT_SHOTS2, ACT_GOALS1, ACT_GOALS2, OUTCOME1X2, OUTCOME45) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
                       ,[gameid, gamedate, seasonYear, serie, hometeam, awayteam, score_data1[3], score_data2[3], comb_score_home, comb_score_away, sts[0][2], sts[0][3], sts[0][0], sts[0][1], outcome, outcome45])
 
     conn.commit()
 
-def get_inputs_forest_model_1(serie, seasonYear, gamedate, home_team, away_team, c, conn):
+def get_model1_data(serie, seasonYear, gamedate, home_team, away_team, c, conn):
 
     from calcFunctions import calculate_team_strength
 
-    score1 = calculate_team_strength(home_team, gamedate, c)[0]
-    score2 = calculate_team_strength(away_team, gamedate, c)[0]
+    score1 = calculate_team_strength(home_team, gamedate, c)[3]
+    score2 = calculate_team_strength(away_team, gamedate, c)[3]
 
     c.execute("SELECT HOMETEAM, COUNT(GAMEID), AVG(SCORE1), AVG(OFF_SCORE_GAME1), AVG(DEF_SCORE_GAME1) FROM (SELECT * FROM GOALS_FOREST_TABLE_1 WHERE  GAMEDATE < ? AND SEASONID = ? AND (HOMETEAM = ?) ORDER BY GAMEDATE DESC LIMIT 6)",[gamedate, seasonYear, home_team])
     hth_data = c.fetchall()
@@ -762,7 +787,7 @@ def get_inputs_forest_model_1(serie, seasonYear, gamedate, home_team, away_team,
     return home_team_off, home_team_def, away_team_off, away_team_def
 
 
-def get_inputs_forest_model_2(score, full_data, ven_data, last_five_data, last_match_data,v):
+def get_model2_data(score, full_data, ven_data, last_five_data, last_match_data,v):
 
 
     total_weight = 0

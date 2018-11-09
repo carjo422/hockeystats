@@ -485,9 +485,10 @@ def scrape_sh(seasonID, seasonYear, serie, score_update):
 
             create_pre_match_analysis(dateVector[j][0], serie, teams[0][0], teams[0][1], gameVector[j][0], c, conn)
 
-#scrape_sh(7157, 2017, "HA", "New")
+
 #scrape_sh(6053, 2016, "HA", "New")
 #scrape_sh(5057, 2015, "HA", "New")
+scrape_sh(9168, 2019, "HA", "New")
 
 #scrape_sh(6053, 2016, "HA", "New")
 #scrape_sh(5057, 2015, "HA", "New")

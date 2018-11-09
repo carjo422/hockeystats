@@ -6,12 +6,13 @@ from model_shot_efficiency import get_efficiency_model_linreg
 from create_pre_match_tables import get_team_players
 from pandas import ExcelWriter
 from create_pre_match_tables import get_ANN_odds
-from create_pre_match_tables import update_forest_data_1
-from create_pre_match_tables import update_forest_data_2
-from create_pre_match_tables import get_inputs_forest_model_1
-from model_outcome import get_outcome_model_forest_1
-from create_pre_match_tables import get_inputs_forest_model_2
-from model_outcome import get_outcome_model_forest_2
+from create_pre_match_tables import update_model1_data
+from create_pre_match_tables import update_model2_data
+from create_pre_match_tables import get_model1_data
+from model_outcome import get_outcome_model1
+from create_pre_match_tables import get_model2_data
+from model_outcome import get_outcome_model2
+from model_nGoals import get_nGoals_model
 
 import pandas as pd
 import numpy as np
@@ -174,6 +175,9 @@ def get_result_matrix(home_goals, away_goals):
     odds45['O45'][1] = 1 / odds45['O45'][0]
     odds45['U45'][1] = 1 / odds45['U45'][0]
 
+
+    #print("Expected goals after matrix: ", exp_goals1, exp_goals2)
+
     return results, odds1X2, odds45
 
 
@@ -214,6 +218,18 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
         act_home_goals = scores[0][0]
         act_away_goals = scores[0][1]
 
+
+    ####################################################################################################################################################################
+    ###                                                                  MODEL nGOALS FOR 1 & 2                                                                      ###
+    ####################################################################################################################################################################
+
+    home_team_off, home_team_def, away_team_off, away_team_def = get_model1_data(serie, seasonYear, gamedate, hometeam, awayteam, c, conn)
+    inputs = pd.DataFrame([[abs(score1/score2-1), home_team_off, away_team_off, home_team_def, away_team_def]])
+
+    nGoals = get_nGoals_model(2019, inputs, c)
+
+    print("nGoals: ", nGoals)
+
     ####################################################################################################################################################################
     ###                                                                         MODEL 1                                                                              ###
     ####################################################################################################################################################################
@@ -227,7 +243,7 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
 
     #home_shots, away_shots = get_adjusted_shots_against(home_shots_temp2, away_shots_temp2, hometeam, awayteam, gamedate,seasonYear, c, conn)
 
-    print("Expected shots:", home_shots, away_shots)
+    #print("Expected shots:", home_shots, away_shots)
 
 
     # Get goals from shots, first base function then basic adjustment
@@ -247,12 +263,17 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
     # Update model data
     #update_forest_data_1(serie, c, conn) #(If historic values need to be rerun for model)
 
-    home_team_off, home_team_def, away_team_off, away_team_def = get_inputs_forest_model_1(serie, seasonYear, gamedate, hometeam, awayteam, c, conn)
+    home_team_off, home_team_def, away_team_off, away_team_def = get_model1_data(serie, seasonYear, gamedate, hometeam, awayteam, c, conn)
 
-    inputs = pd.DataFrame([[score1, score2, home_team_off, home_team_def, away_team_off, away_team_def]])  #
+    inputs = pd.DataFrame([[home_team_off, home_team_def, away_team_off, away_team_def]])  #
+    #print(inputs)
 
     # Get odds model 2
-    home_goals2, away_goals2, odds45_2 = get_outcome_model_forest_1(serie, 2019, inputs, c)  # seasonYear = 2019
+    diff1 = get_outcome_model1(serie, 2019, inputs, c)  # seasonYear = 2019
+    #print(diff1)
+
+    home_goals2 = nGoals/2+diff1/2
+    away_goals2 = nGoals/2-diff1/2
 
     print("Model 2 expected goals:", home_goals2, away_goals2)
 
@@ -265,13 +286,18 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
     # Update model data
     #update_forest_data_2(serie, seasonYear, c, conn) #(If historic values need to be rerun for model)
 
-    comb_score_home = get_inputs_forest_model_2(score1, full_data1, home_data1, last_five_data1, last_match_data1,'H')
-    comb_score_away = get_inputs_forest_model_2(score2, full_data2, away_data2, last_five_data2, last_match_data2,'A')
+    comb_score_home = get_model2_data(score1, full_data1, home_data1, last_five_data1, last_match_data1,'H')
+    comb_score_away = get_model2_data(score2, full_data2, away_data2, last_five_data2, last_match_data2,'A')
+
+    #print("Comb scores:", comb_score_home, comb_score_away)
 
     inputs = pd.DataFrame([[comb_score_home, comb_score_away]])
 
-    # Get odds model 2
-    home_goals3, away_goals3, odds45_3 = get_outcome_model_forest_2(serie, seasonYear, inputs, c)  # seasonYear = 2019
+    # Get odds model 3
+    diff2 = get_outcome_model2(serie, seasonYear, inputs, c)  # seasonYear = 2019
+
+    home_goals3 = nGoals/2+diff2/2
+    away_goals3 = nGoals/2-diff2/2
 
     print("Model 3 expected goals:", home_goals3, away_goals3)
 
@@ -280,8 +306,8 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
     ####################################################################################################################################################################
 
 
-    home_goals = home_goals1 / 8 * 4 + home_goals2 / 6 * 1 + home_goals3 / 6 * 3
-    away_goals = away_goals1 / 8 * 4 + away_goals2 / 6 * 1 + away_goals3 / 6 * 3
+    home_goals = home_goals1*5/9+home_goals2*2/9+home_goals3*2/9
+    away_goals = away_goals1*5/9+away_goals2*2/9+away_goals3*2/9
 
     results, odds1X2, odds45 = get_result_matrix(home_goals, away_goals)
 
@@ -313,6 +339,7 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
     results, odds1X2, odds45 = get_result_matrix(home_goals, away_goals)
 
     print(odds1X2)
+    print(odds45)
 
     ####################################################################################################################################################################
     ###                                                               TIME FOR PLAYERS DATA NOW                                                                      ###

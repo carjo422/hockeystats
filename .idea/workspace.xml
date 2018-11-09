@@ -2,11 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="34d2bf4b-fd4c-4039-8ec7-45fbb538b0f4" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/model_nGoals.py" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/models/forest_outcome_SHL2019.sav" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hockeystats.db" afterPath="$PROJECT_DIR$/hockeystats.db" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Backtest.py" afterPath="$PROJECT_DIR$/Backtest.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/adhoc/analysis.py" afterPath="$PROJECT_DIR$/adhoc/analysis.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/create_pre_match_analysis.py" afterPath="$PROJECT_DIR$/create_pre_match_analysis.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/create_pre_match_tables.py" afterPath="$PROJECT_DIR$/create_pre_match_tables.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model_outcome.py" afterPath="$PROJECT_DIR$/model_outcome.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scrape.py" afterPath="$PROJECT_DIR$/scrape.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/website_output.py" afterPath="$PROJECT_DIR$/website_output.py" />
@@ -30,39 +31,47 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="create_pre_match_analysis.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="create_pre_match_analysis.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/create_pre_match_analysis.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1950">
-              <caret line="283" column="80" selection-start-line="283" selection-start-column="80" selection-end-line="283" selection-end-column="80" />
+            <state relative-caret-position="150">
+              <caret line="325" column="0" selection-start-line="325" selection-start-column="0" selection-end-line="325" selection-end-column="0" />
               <folding>
                 <element signature="e#1#59#0" expanded="true" />
-                <element signature="e#864#2645#0" expanded="false" />
-                <element signature="e#2759#4540#0" expanded="false" />
-                <element signature="e#4593#6711#0" expanded="false" />
+                <element signature="e#866#2647#0" expanded="false" />
+                <element signature="e#2761#4542#0" expanded="false" />
+                <element signature="e#4595#6783#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="website_output.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/website_output.py">
+      <file leaf-file-name="Backtest.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Backtest.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="465">
-              <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+            <state relative-caret-position="255">
+              <caret line="17" column="226" selection-start-line="17" selection-start-column="226" selection-end-line="17" selection-end-column="226" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="create_pre_match_tables.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/create_pre_match_tables.py">
+      <file leaf-file-name="model_nGoals.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/model_nGoals.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="11505">
-              <caret line="772" column="15" selection-start-line="772" selection-start-column="15" selection-end-line="772" selection-end-column="15" />
-              <folding>
-                <element signature="e#0#41#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="900">
+              <caret line="60" column="52" selection-start-line="60" selection-start-column="52" selection-end-line="60" selection-end-column="52" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="website_output.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/website_output.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="495">
+              <caret line="33" column="74" selection-start-line="33" selection-start-column="74" selection-end-line="33" selection-end-column="74" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -77,22 +86,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Backtest.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Backtest.py">
+      <file leaf-file-name="create_pre_match_tables.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/create_pre_match_tables.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="615">
-              <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="model_game_shots.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/model_game_shots.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2025">
-              <caret line="135" column="0" selection-start-line="135" selection-start-column="0" selection-end-line="135" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="11130">
+              <caret line="747" column="62" selection-start-line="747" selection-start-column="62" selection-end-line="747" selection-end-column="62" />
+              <folding>
+                <element signature="e#0#41#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -110,8 +111,8 @@
       <file leaf-file-name="scrape.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scrape.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="7140">
-              <caret line="493" column="0" selection-start-line="493" selection-start-column="0" selection-end-line="493" selection-end-column="0" />
+            <state relative-caret-position="7095">
+              <caret line="490" column="34" selection-start-line="490" selection-start-column="34" selection-end-line="490" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -120,8 +121,8 @@
       <file leaf-file-name="model_outcome.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model_outcome.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1635">
-              <caret line="109" column="35" selection-start-line="109" selection-start-column="35" selection-end-line="109" selection-end-column="35" />
+            <state relative-caret-position="1965">
+              <caret line="131" column="25" selection-start-line="131" selection-start-column="25" selection-end-line="131" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -182,13 +183,14 @@
         <option value="$PROJECT_DIR$/adhoc/ANN.py" />
         <option value="$PROJECT_DIR$/model_shot_efficiency.py" />
         <option value="$PROJECT_DIR$/model_game_shots.py" />
-        <option value="$PROJECT_DIR$/create_pre_match_tables.py" />
         <option value="$PROJECT_DIR$/adhoc/analysis.py" />
-        <option value="$PROJECT_DIR$/model_outcome.py" />
         <option value="$PROJECT_DIR$/scrape.py" />
-        <option value="$PROJECT_DIR$/Backtest.py" />
-        <option value="$PROJECT_DIR$/create_pre_match_analysis.py" />
+        <option value="$PROJECT_DIR$/model_nGoals.py" />
         <option value="$PROJECT_DIR$/website_output.py" />
+        <option value="$PROJECT_DIR$/Backtest.py" />
+        <option value="$PROJECT_DIR$/create_pre_match_tables.py" />
+        <option value="$PROJECT_DIR$/model_outcome.py" />
+        <option value="$PROJECT_DIR$/create_pre_match_analysis.py" />
       </list>
     </option>
   </component>
@@ -222,7 +224,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -251,17 +252,18 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="adhoc" />
+              <option name="myItemId" value="models" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
       <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/website_output.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/model_nGoals.py" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
@@ -442,6 +444,23 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="hockeystats" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/website_output.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="model_nGoals" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/Library/Frameworks/Python.framework/Versions/3.6/bin/python3.6" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="hockeystats" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/model_nGoals.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -667,22 +686,23 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
-    <list size="15">
+    <list size="16">
       <item index="0" class="java.lang.String" itemvalue="Python.scrape" />
       <item index="1" class="java.lang.String" itemvalue="Python.website_output" />
-      <item index="2" class="java.lang.String" itemvalue="Python.update_schedules" />
-      <item index="3" class="java.lang.String" itemvalue="Python.delete" />
-      <item index="4" class="java.lang.String" itemvalue="Python.update_rosters" />
-      <item index="5" class="java.lang.String" itemvalue="Python.update_code" />
-      <item index="6" class="java.lang.String" itemvalue="Python.create_pre_match_analysis" />
-      <item index="7" class="java.lang.String" itemvalue="Python.Backtest" />
-      <item index="8" class="java.lang.String" itemvalue="Python.model_evaluation" />
-      <item index="9" class="java.lang.String" itemvalue="Python.model_outcome" />
-      <item index="10" class="java.lang.String" itemvalue="Python.model_shot_efficiency" />
-      <item index="11" class="java.lang.String" itemvalue="Python.ANN" />
-      <item index="12" class="java.lang.String" itemvalue="Python.add_extra_data" />
-      <item index="13" class="java.lang.String" itemvalue="Python.analysis" />
-      <item index="14" class="java.lang.String" itemvalue="Python.official_roster" />
+      <item index="2" class="java.lang.String" itemvalue="Python.model_nGoals" />
+      <item index="3" class="java.lang.String" itemvalue="Python.update_schedules" />
+      <item index="4" class="java.lang.String" itemvalue="Python.delete" />
+      <item index="5" class="java.lang.String" itemvalue="Python.update_rosters" />
+      <item index="6" class="java.lang.String" itemvalue="Python.update_code" />
+      <item index="7" class="java.lang.String" itemvalue="Python.create_pre_match_analysis" />
+      <item index="8" class="java.lang.String" itemvalue="Python.Backtest" />
+      <item index="9" class="java.lang.String" itemvalue="Python.model_evaluation" />
+      <item index="10" class="java.lang.String" itemvalue="Python.model_outcome" />
+      <item index="11" class="java.lang.String" itemvalue="Python.model_shot_efficiency" />
+      <item index="12" class="java.lang.String" itemvalue="Python.ANN" />
+      <item index="13" class="java.lang.String" itemvalue="Python.add_extra_data" />
+      <item index="14" class="java.lang.String" itemvalue="Python.analysis" />
+      <item index="15" class="java.lang.String" itemvalue="Python.official_roster" />
     </list>
   </component>
   <component name="ShelveChangesManager" show_recycled="false">
@@ -965,19 +985,26 @@
       <option name="project" value="LOCAL" />
       <updated>1541356887428</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="Fix the forest">
+      <created>1541412834052</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1541412834053</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="819" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23467231" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17477097" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901296" sideWeight="0.19905214" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901296" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19639935" sideWeight="0.49605057" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24970461" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24947146" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -985,9 +1012,9 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2027972" sideWeight="0.80094784" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31505483" sideWeight="0.80094784" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31968033" sideWeight="0.49815693" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31904286" sideWeight="0.49815693" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39809194" sideWeight="0.49815693" order="3" side_tool="false" content_ui="tabs" />
     </layout>
@@ -1048,13 +1075,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/scfiles/get_actions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scrape.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
@@ -1312,13 +1332,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model_evaluation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="726">
-          <caret line="85" column="0" selection-start-line="85" selection-start-column="0" selection-end-line="91" selection-end-column="60" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/adhoc/ANN.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
@@ -1326,34 +1339,54 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/model_game_shots.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2025">
+          <caret line="135" column="0" selection-start-line="135" selection-start-column="0" selection-end-line="135" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model_evaluation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1410">
+          <caret line="94" column="13" selection-start-line="94" selection-start-column="13" selection-end-line="94" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/create_pre_match_analysis.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1950">
-          <caret line="283" column="80" selection-start-line="283" selection-start-column="80" selection-end-line="283" selection-end-column="80" />
+        <state relative-caret-position="150">
+          <caret line="325" column="0" selection-start-line="325" selection-start-column="0" selection-end-line="325" selection-end-column="0" />
           <folding>
             <element signature="e#1#59#0" expanded="true" />
-            <element signature="e#864#2645#0" expanded="false" />
-            <element signature="e#2759#4540#0" expanded="false" />
-            <element signature="e#4593#6711#0" expanded="false" />
+            <element signature="e#866#2647#0" expanded="false" />
+            <element signature="e#2761#4542#0" expanded="false" />
+            <element signature="e#4595#6783#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Backtest.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="226" selection-start-line="17" selection-start-column="226" selection-end-line="17" selection-end-column="226" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model_nGoals.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="900">
+          <caret line="60" column="52" selection-start-line="60" selection-start-column="52" selection-end-line="60" selection-end-column="52" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/website_output.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+        <state relative-caret-position="495">
+          <caret line="33" column="74" selection-start-line="33" selection-start-column="74" selection-end-line="33" selection-end-column="74" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/create_pre_match_tables.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="11505">
-          <caret line="772" column="15" selection-start-line="772" selection-start-column="15" selection-end-line="772" selection-end-column="15" />
-          <folding>
-            <element signature="e#0#41#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1365,19 +1398,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Backtest.py">
+    <entry file="file://$PROJECT_DIR$/create_pre_match_tables.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="615">
-          <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model_game_shots.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2025">
-          <caret line="135" column="0" selection-start-line="135" selection-start-column="0" selection-end-line="135" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="11130">
+          <caret line="747" column="62" selection-start-line="747" selection-start-column="62" selection-end-line="747" selection-end-column="62" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1391,16 +1418,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/scrape.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="7140">
-          <caret line="493" column="0" selection-start-line="493" selection-start-column="0" selection-end-line="493" selection-end-column="0" />
+        <state relative-caret-position="7095">
+          <caret line="490" column="34" selection-start-line="490" selection-start-column="34" selection-end-line="490" selection-end-column="34" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/model_outcome.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1635">
-          <caret line="109" column="35" selection-start-line="109" selection-start-column="35" selection-end-line="109" selection-end-column="35" />
+        <state relative-caret-position="1965">
+          <caret line="131" column="25" selection-start-line="131" selection-start-column="25" selection-end-line="131" selection-end-column="25" />
           <folding />
         </state>
       </provider>
