@@ -16,6 +16,7 @@ from model_outcome import get_outcome_model1
 from create_pre_match_tables import get_model2_data
 from model_outcome import get_outcome_model2
 from model_nGoals import get_nGoals_model
+from create_player_tables import get_player_data
 
 import pandas as pd
 import numpy as np
@@ -358,6 +359,9 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
 
     keeper_stat_home = get_team_players(hometeam, gamedate, seasonYear, c, conn)
     keeper_stat_away = get_team_players(awayteam, gamedate, seasonYear, c, conn)
+
+    player_stat_home = get_player_data(hometeam, gamedate, seasonYear, c, conn)
+    player_stat_away = get_player_data(awayteam, gamedate, seasonYear, c, conn)
 
     #print(keeper_stat_home)
     #print(keeper_stat_away)

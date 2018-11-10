@@ -229,9 +229,7 @@ def calculate_team_strength(team,gamedate,c):
 
         ####################################################### CODE TO GET AVERAGE SCORE FROM LAST SEASONS #############################################################
 
-        c.execute(
-            "SELECT SEASONID, SERIE, COUNT(OUTCOME), SUM(4-OUTCOME) as POINTS FROM TEAMGAMES WHERE TEAM = ? and GAMEDATE < ? GROUP BY SEASONID, SERIE ORDER BY SEASONID",
-            [team, gamedate])
+        c.execute("SELECT SEASONID, SERIE, COUNT(OUTCOME), SUM(4-OUTCOME) as POINTS FROM TEAMGAMES WHERE TEAM = ? and GAMEDATE < ? GROUP BY SEASONID, SERIE ORDER BY SEASONID",[team, gamedate])
         seasons = np.array(c.fetchall())
 
         n_seasons = len(seasons)
