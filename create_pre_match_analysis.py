@@ -360,8 +360,8 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
     keeper_stat_home = get_team_players(hometeam, gamedate, seasonYear, c, conn)
     keeper_stat_away = get_team_players(awayteam, gamedate, seasonYear, c, conn)
 
-    player_stat_home = get_player_data(hometeam, gamedate, seasonYear, c, conn)
-    player_stat_away = get_player_data(awayteam, gamedate, seasonYear, c, conn)
+    player_stat_home = get_player_data(hometeam, gamedate, seasonYear, serie,  c, conn)
+    player_stat_away = get_player_data(awayteam, gamedate, seasonYear, serie,  c, conn)
 
     #print(keeper_stat_home)
     #print(keeper_stat_away)
