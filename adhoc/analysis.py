@@ -6,6 +6,7 @@ import pandas as pd
 from pandas import ExcelWriter
 import matplotlib.pyplot as plt
 from calcFunctions import calculate_team_strength
+from create_player_tables import create_goal_scorer_characteristics
 
 #print("Örebro HK",calculate_team_strength("Örebro HK",'2018-10-29',c))
 #print("Frölunda HC",calculate_team_strength("Frölunda HC",'2018-10-29',c))
@@ -19,19 +20,7 @@ from calcFunctions import calculate_team_strength
 #print("Rögle BK",calculate_team_strength("Rögle BK",'2018-10-29',c))
 #print("Mora IK",calculate_team_strength("Mora IK",'2018-10-29',c))
 
-c.execute("SELECT GAMEID, GAMEDATE FROM GOALS_FOREST_TABLE_2")
-tst = c.fetchall()
-
-for i in range(0,len(tst)):
-
-    seasonYear = int(tst[i][1][0:4])
-    if int(tst[i][1][5:7]) > 6:
-        seasonYear += 1
-
-    c.execute("UPDATE GOALS_FOREST_TABLE_2 SET SEASONID = ? WHERE GAMEID = ?",[seasonYear, tst[i][0]])
-
-conn.commit()
-
+create_goal_scorer_characteristics(c,conn)
 
 
 
