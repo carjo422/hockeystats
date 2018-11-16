@@ -4,7 +4,7 @@ import openpyxl
 from pandas import ExcelWriter
 
 
-def get_player_data(team, gamedate, seasonYear, serie, c, conn):
+def get_player_data(team, gamedate, odds, seasonYear, serie, c, conn):
 
     #Get all players in current team
 
@@ -171,33 +171,43 @@ def get_player_data(team, gamedate, seasonYear, serie, c, conn):
         ##Percentage goals lines - 1st (33.5%), 2nd (30%), 3rd (23%), 4th (13%)
         ##Percentage goals poisitions - CE (27.25%), RW (27.25%), LW (29.5%), D (8%)
 
+        if odds < 0.2:
+            odds = 0.2
+        if odds > 0.65:
+            ODDS = 0.65
+
         #Base scoring
         if position_new == 'CE':
-            base_scoring = 0.2725
+
+            base_scoring = 0.20-odds*0.225
         elif position_new == 'RW':
-            base_scoring = 0.2725
+            base_scoring = 0.2725-odds*0.1125
         elif position_new == 'LW':
-            base_scoring = 0.295
+            base_scoring = 0.295-odds*0.1125
         elif position_new in ["LD","RD"]:
             base_scoring = 0.08
 
         #Line scoring
-        line_scoring = games_new * (line1_new*0.335+line2_new*0.30+line3_new*0.23+line4_new*0.13) + games_old/3 * (line1_old*0.335+line2_old*0.30+line3_old*0.23+line4_old*0.13)
-        line_scoring /= (games_new+games_old/3)
+        line_scoring = games_new * (line1_new*0.335+line2_new*0.30+line3_new*0.23+line4_new*0.13) + games_old/4 * (line1_old*0.335+line2_old*0.30+line3_old*0.23+line4_old*0.13)
+        line_scoring /= (games_new+games_old/4)
 
         base_scoring *= line_scoring
 
+        #inPP adjustment
+        inPP = inPP_new * games_new + inPP_old * games_old / 4
+        inPP /= (games_new + games_old / 4)
+
+
+
         #History scoring
-        hist_scoring = (goals_new + goals_old/3) / (games_new + games_old/3) / 2.5
+        hist_scoring = (goals_new + goals_old/4) / (games_new + games_old/4) / 2.5
         if hist_scoring > 0.25:
             hist_scoring = 0.25
 
         #History plus
-        hist_plus = (plus_new + plus_old / 3) / (games_new + games_old / 3) / 2.5
+        hist_plus = (plus_new + plus_old / 4) / (games_new + games_old / 4) / 2.5
 
-        #inPP
-        inPP = inPP_new * games_new + inPP_old * games_old/3
-        inPP /= (games_new+games_old/3)
+
 
 
         print(current_season['Forname'][i],current_season['Surname'][i],base_scoring, hist_scoring, hist_plus, inPP)
@@ -363,17 +373,14 @@ def create_goal_scorer_characteristics(c,conn):
     #anl5 = anl5.sort_values(['Mål%'], ascending = [0])
     #print(anl5)
 
-    c.execute("SELECT b.POSITION, COUNT(a.ID) FROM EVENTS a LEFT JOIN ROSTERS b ON a.SEASONID = b.SEASONID AND a.FORNAME = b.FORNAME and a.SURNAME = b.SURNAME and a.PERSONNR = b.PERSONNR LEFT JOIN EXP_SHOTS_TABLE c ON a.gameid = c.gameid WHERE a.EVENT = ? AND a.TEAM = c.HOMETEAM AND b.POSITION in (?,?,?,?,?) AND c.ODDS1 < 0.25 GROUP BY b.POSITION",['Goal', 'CE', 'LD', 'LW', 'RD', 'RW'])
+    c.execute("SELECT b.POSITION, COUNT(a.ID) FROM EVENTS a LEFT JOIN ROSTERS b ON a.SEASONID = b.SEASONID AND a.FORNAME = b.FORNAME and a.SURNAME = b.SURNAME and a.PERSONNR = b.PERSONNR LEFT JOIN EXP_SHOTS_TABLE c ON a.gameid = c.gameid WHERE a.EVENT = ? AND a.TEAM = c.AWAYTEAM AND b.POSITION in (?,?,?,?,?) AND c.ODDS2 < 0.25 GROUP BY b.POSITION",['Goal', 'CE', 'LD', 'LW', 'RD', 'RW'])
     anl5 = pd.DataFrame(c.fetchall(), columns=["Position", "Goals"])
     anl5["Goals%"] = anl5["Goals"] / anl5["Goals"].sum()
     print(anl5)
 
 
-
-
     #Basic distrubution is set
     #Adjustment based on specific line strength
-    #Adjustment based on specific player strength
 
     #Adjust for keeper weakness vs D/F and L/R
     #Adjust for player strenght vs defenders
@@ -382,6 +389,7 @@ def create_goal_scorer_characteristics(c,conn):
 
     #Does different players score for favourites/underdogs (LOTS OF FUCKING CENTER GOALS IN FAVOURITES, WINGS IN UNDERDOGS) (ANL5)
     #Is form important? // NO IT DOESNT MATTER IF THE PLAYER SCORED LAST GAME
+    #Adjustment based on specific player strength (ready in code)
 
     #First/last analysis
 

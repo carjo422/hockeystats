@@ -4,10 +4,8 @@
     <list default="true" id="34d2bf4b-fd4c-4039-8ec7-45fbb538b0f4" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hockeystats.db" afterPath="$PROJECT_DIR$/hockeystats.db" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/adhoc/analysis.py" afterPath="$PROJECT_DIR$/adhoc/analysis.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/create_player_tables.py" afterPath="$PROJECT_DIR$/create_player_tables.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/create_pre_match_analysis.py" afterPath="$PROJECT_DIR$/create_pre_match_analysis.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/create_pre_match_tables.py" afterPath="$PROJECT_DIR$/create_pre_match_tables.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/website_output.py" afterPath="$PROJECT_DIR$/website_output.py" />
     </list>
     <ignored path="hockeystats.iws" />
@@ -32,8 +30,8 @@
       <file leaf-file-name="create_pre_match_analysis.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/create_pre_match_analysis.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="765">
-              <caret line="362" column="20" selection-start-line="362" selection-start-column="4" selection-end-line="362" selection-end-column="20" />
+            <state relative-caret-position="524">
+              <caret line="363" column="74" selection-start-line="363" selection-start-column="74" selection-end-line="363" selection-end-column="74" />
               <folding>
                 <element signature="e#1#59#0" expanded="true" />
                 <element signature="e#963#2744#0" expanded="false" />
@@ -46,8 +44,8 @@
       <file leaf-file-name="website_output.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/website_output.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="28" column="80" selection-start-line="28" selection-start-column="80" selection-end-line="28" selection-end-column="80" />
+            <state relative-caret-position="435">
+              <caret line="29" column="72" selection-start-line="29" selection-start-column="72" selection-end-line="29" selection-end-column="72" />
               <folding />
             </state>
           </provider>
@@ -56,7 +54,7 @@
       <file leaf-file-name="create_pre_match_tables.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/create_pre_match_tables.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3015">
+            <state relative-caret-position="5850">
               <caret line="395" column="267" selection-start-line="395" selection-start-column="267" selection-end-line="395" selection-end-column="267" />
               <folding>
                 <element signature="e#0#41#0" expanded="true" />
@@ -68,8 +66,8 @@
       <file leaf-file-name="create_player_tables.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/create_player_tables.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="301">
-              <caret line="382" column="130" selection-start-line="382" selection-start-column="130" selection-end-line="382" selection-end-column="130" />
+            <state relative-caret-position="360">
+              <caret line="199" column="0" selection-start-line="199" selection-start-column="0" selection-end-line="199" selection-end-column="0" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -77,21 +75,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="website_content.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/website_content.py">
+      <file leaf-file-name="analysis.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/adhoc/analysis.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="885">
-              <caret line="104" column="17" selection-start-line="104" selection-start-column="17" selection-end-line="104" selection-end-column="17" />
+            <state relative-caret-position="164">
+              <caret line="22" column="41" selection-start-line="22" selection-start-column="41" selection-end-line="22" selection-end-column="41" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="model_evaluation.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/model_evaluation.py">
+      <file leaf-file-name="website_content.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/website_content.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1275">
-              <caret line="85" column="0" selection-start-line="85" selection-start-column="0" selection-end-line="94" selection-end-column="13" />
+            <state relative-caret-position="1560">
+              <caret line="104" column="17" selection-start-line="104" selection-start-column="17" selection-end-line="104" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -187,9 +185,9 @@
         <option value="$PROJECT_DIR$/model_outcome.py" />
         <option value="$PROJECT_DIR$/calcFunctions.py" />
         <option value="$PROJECT_DIR$/create_pre_match_tables.py" />
-        <option value="$PROJECT_DIR$/create_pre_match_analysis.py" />
         <option value="$PROJECT_DIR$/adhoc/analysis.py" />
         <option value="$PROJECT_DIR$/website_output.py" />
+        <option value="$PROJECT_DIR$/create_pre_match_analysis.py" />
         <option value="$PROJECT_DIR$/create_player_tables.py" />
       </list>
     </option>
@@ -197,7 +195,7 @@
   <component name="ProjectFrameBounds">
     <option name="y" value="23" />
     <option name="width" value="1920" />
-    <option name="height" value="1116" />
+    <option name="height" value="1119" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -225,7 +223,6 @@
     </navigator>
     <panes>
       <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -288,6 +285,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -307,7 +305,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.analysis">
+  <component name="RunManager" selected="Python.website_output">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -1048,11 +1046,18 @@
       <option name="project" value="LOCAL" />
       <updated>1541893807960</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="Fix the forest">
+      <created>1542319097989</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1542319097989</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1920" height="1116" extended-state="6" />
+    <frame x="0" y="23" width="1920" height="1119" extended-state="6" />
     <editor active="false" />
     <layout>
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1269089" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -1060,7 +1065,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901296" sideWeight="0.19905214" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901296" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19639935" sideWeight="0.49605057" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.299" sideWeight="0.80094784" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2987013" sideWeight="0.80094784" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24947146" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -1399,14 +1404,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/adhoc/analysis.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="22" column="41" selection-start-line="22" selection-start-column="41" selection-end-line="22" selection-end-column="41" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/model_evaluation.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1275">
@@ -1449,7 +1446,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/create_pre_match_tables.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3015">
+        <state relative-caret-position="5850">
           <caret line="395" column="267" selection-start-line="395" selection-start-column="267" selection-end-line="395" selection-end-column="267" />
           <folding>
             <element signature="e#0#41#0" expanded="true" />
@@ -1457,10 +1454,34 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/website_content.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1560">
+          <caret line="104" column="17" selection-start-line="104" selection-start-column="17" selection-end-line="104" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/website_output.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="29" column="72" selection-start-line="29" selection-start-column="72" selection-end-line="29" selection-end-column="72" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/adhoc/analysis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="164">
+          <caret line="22" column="41" selection-start-line="22" selection-start-column="41" selection-end-line="22" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/create_pre_match_analysis.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="362" column="20" selection-start-line="362" selection-start-column="4" selection-end-line="362" selection-end-column="20" />
+        <state relative-caret-position="524">
+          <caret line="363" column="74" selection-start-line="363" selection-start-column="74" selection-end-line="363" selection-end-column="74" />
           <folding>
             <element signature="e#1#59#0" expanded="true" />
             <element signature="e#963#2744#0" expanded="false" />
@@ -1469,26 +1490,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/website_content.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="885">
-          <caret line="104" column="17" selection-start-line="104" selection-start-column="17" selection-end-line="104" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/website_output.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="28" column="80" selection-start-line="28" selection-start-column="80" selection-end-line="28" selection-end-column="80" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/create_player_tables.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="301">
-          <caret line="382" column="130" selection-start-line="382" selection-start-column="130" selection-end-line="382" selection-end-column="130" />
+        <state relative-caret-position="360">
+          <caret line="199" column="0" selection-start-line="199" selection-start-column="0" selection-end-line="199" selection-end-column="0" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
