@@ -4,7 +4,7 @@ import openpyxl
 from pandas import ExcelWriter
 
 
-def get_player_data(team, gamedate, odds, seasonYear, serie, c, conn):
+def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, c, conn):
 
     #Get all players in current team
 
@@ -136,6 +136,8 @@ def get_player_data(team, gamedate, odds, seasonYear, serie, c, conn):
     for i in range(0,len(current_season)):
 
         personnr = current_season['Personnr'][i]
+        forname = current_season['Forname'][i]
+        surname = current_season['Surname'][i]
 
         position_new = current_season['Position'][i]
         line1_new = current_season['Line1%'][i]
@@ -157,7 +159,7 @@ def get_player_data(team, gamedate, odds, seasonYear, serie, c, conn):
         plus_old = 0
 
         for j in range(0,len(past_seasons)):
-            if past_seasons['Personnr'][j] == personnr:
+            if past_seasons['Personnr'][j] == personnr and past_seasons['Forname'][j] == forname:
 
                 line1_old = past_seasons['Line1%'][j]
                 line2_old = past_seasons['Line2%'][j]
@@ -195,24 +197,47 @@ def get_player_data(team, gamedate, odds, seasonYear, serie, c, conn):
 
         #inPP adjustment
         inPP = inPP_new * games_new + inPP_old * games_old / 4
-        inPP /= (games_new + games_old / 4)
+        inPP /= (games_new + games_old / 4)/2.25
+
+        if inPP > 0.25:
+            inPP = 0.25
 
 
-
-        #History scoring
+        #History scoring adjustment
         hist_scoring = (goals_new + goals_old/4) / (games_new + games_old/4) / 2.5
         if hist_scoring > 0.25:
             hist_scoring = 0.25
 
+        adjusted_scoring = base_scoring*0.4+hist_scoring*0.4+inPP*0.2
+
         #History plus
-        hist_plus = (plus_new + plus_old / 4) / (games_new + games_old / 4) / 2.5
+        #hist_plus = (plus_new + plus_old / 4) / (games_new + games_old / 4) / 2.5
 
+        c.execute("SELECT * FROM EXP_GOAL_SCORER WHERE GAMEID = ? AND FORNAME = ? AND SURNAME = ? AND PERSONNR = ?",[gameid, forname, surname, personnr])
+        chk = c.fetchall()
 
+        if len(chk) > 0:
+            pass
+        else:
 
+            c.execute("SELECT SUM(1), SUM(CASE WHEN FORNAME = ? AND SURNAME = ? AND PERSONNR = ? THEN 1 ELSE 0 END) FROM EVENTS WHERE EVENT = ? AND TEAM = ? AND GAMEID = ?",[forname,surname,personnr,'Goal', team, gameid])
+            gls = c.fetchall()
 
-        print(current_season['Forname'][i],current_season['Surname'][i],base_scoring, hist_scoring, hist_plus, inPP)
+            print("GLS",gls)
 
-    return current_season, past_seasons
+            if len(gls) > 0 and gls[0][0] != None:
+
+                act_goal = gls[0][1] / gls[0][0]
+
+                c.execute("INSERT INTO EXP_GOAL_SCORER (SERIE, SEASONID, TEAM, GAMEID, GAMEDATE, FORNAME, SURNAME, PERSONNR, POSITION, BASE_SCORING, HIST_SCORING, IN_PP, ACT_GOAL) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",[serie, seasonYear, team, gameid, gamedate, forname, surname, personnr, position_new, base_scoring, hist_scoring, inPP, act_goal])
+
+        #print(current_season['Forname'][i],current_season['Surname'][i],position_new,round(adjusted_scoring,3),round(1/adjusted_scoring,1))
+
+        #odds = round(adjusted_scoring,3),round(1/adjusted_scoring,1)
+
+        conn.commit()
+
+    return current_season
 
 
 
