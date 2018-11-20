@@ -20,8 +20,23 @@ from create_player_tables import create_goal_scorer_characteristics
 #print("Rögle BK",calculate_team_strength("Rögle BK",'2018-10-29',c))
 #print("Mora IK",calculate_team_strength("Mora IK",'2018-10-29',c))
 
-create_goal_scorer_characteristics(c,conn)
+#create_goal_scorer_characteristics(c,conn)
 
+c.execute("SELECT * FROM EXP_GOAL_SCORER WHERE POSITION = ? OR POSITION = ?",['LD','RD'])
+upd = c.fetchall()
+print(upd)
+
+for i in range(0,len(upd)):
+    gameid = upd[i][3]
+    forname = upd[i][5]
+    surname = upd[i][6]
+    personnr = upd[i][7]
+
+    new_pp = upd[i][11]/3.5
+
+    c.execute("UPDATE EXP_GOAL_SCORER SET IN_PP = ? WHERE GAMEID = ? AND FORNAME = ? AND SURNAME = ? AND PERSONNR = ?",[new_pp, gameid, forname, surname, personnr])
+
+conn.commit()
 
 
 #c.execute("SELECT FORNAME, SURNAME, PERSONNR, SUM(CASE WHEN EVENT = ? THEN 1 ELSE 0 END) AS N_GOALS FROM EVENTS WHERE GAMEID IN (SELECT GAMEID FROM STATS WHERE SERIE = ?) GROUP BY FORNAME, SURNAME, PERSONNR ORDER BY N_GOALS DESC",["Goal","SHL"])

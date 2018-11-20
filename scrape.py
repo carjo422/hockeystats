@@ -478,7 +478,7 @@ def scrape_sh(seasonID, seasonYear, serie, score_update):
         c.execute("SELECT GAMEID FROM EXP_SHOTS_TABLE WHERE GAMEID = ?", [gameVector[j][0]])
         check = c.fetchall()
 
-        if len(check) == 0:
+        if 1==1:#len(check) == 0:
 
             c.execute("SELECT HOMETEAM, AWAYTEAM FROM STATS WHERE GAMEID = ?",[gameVector[j][0]])
             teams = c.fetchall()
@@ -488,8 +488,10 @@ def scrape_sh(seasonID, seasonYear, serie, score_update):
 
 #scrape_sh(6053, 2016, "HA", "New")
 #scrape_sh(5057, 2015, "HA", "New")
-scrape_sh(9168, 2019, "HA", "New")
+#scrape_sh(9168, 2019, "HA", "New")
 
 #scrape_sh(6053, 2016, "HA", "New")
 #scrape_sh(5057, 2015, "HA", "New")
+#scrape_sh(7132, 2017, "SHL", "New")
+#scrape_sh(8121, 2018, "SHL", "New")
 scrape_sh(9171, 2019, "SHL", "New")
