@@ -357,8 +357,8 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
 
     # Get all players that played last three games
 
-    keeper_stat_home = get_keeper_data(hometeam, gamedate, seasonYear, c, conn)
-    keeper_stat_away = get_keeper_data(awayteam, gamedate, seasonYear, c, conn)
+    #keeper_stat_home = get_keeper_data(hometeam, gamedate, seasonYear, c, conn)
+    #keeper_stat_away = get_keeper_data(awayteam, gamedate, seasonYear, c, conn)
 
     player_stat_home = get_player_data(hometeam, gameid, gamedate, odds1X2['1'][0], seasonYear, serie,  c, conn)
     player_stat_away = get_player_data(awayteam, gameid, gamedate, odds1X2['2'][0], seasonYear, serie,  c, conn)
@@ -366,5 +366,5 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
     #print(keeper_stat_home)
     #print(keeper_stat_away)
 
-    return results, odds1X2, odds45, home_goals, away_goals, act_home_goals, act_away_goals, keeper_stat_home, keeper_stat_away
+    return results, odds1X2, odds45, home_goals, away_goals, act_home_goals, act_away_goals#, keeper_stat_home, keeper_stat_away
 

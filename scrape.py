@@ -16,6 +16,7 @@ from scfiles.get_year_statistics import get_year_statistics
 from scfiles.official_roster import get_official_roster
 from calcFunctions import calculate_team_strength
 from create_pre_match_analysis import create_pre_match_analysis
+from adhoc.update_rosters import update_rosters
 
 
 #To get feedback on how many games to update
@@ -66,6 +67,11 @@ def scrape_sh(seasonID, seasonYear, serie, score_update):
     page_source = page_source.replace("\\xc3\\x96", "Ö")
     page_source = page_source.replace("\\r", " ")
     page_source = page_source.replace("\\n", " ")
+
+    #Update rosters
+
+    update_rosters(9168, 2019, 'HA', c, conn)
+    update_rosters(9171, 2019, 'SHL', c, conn)
 
     for i in range(1,len(page_source)-10):
 
@@ -478,7 +484,7 @@ def scrape_sh(seasonID, seasonYear, serie, score_update):
         c.execute("SELECT GAMEID FROM EXP_SHOTS_TABLE WHERE GAMEID = ?", [gameVector[j][0]])
         check = c.fetchall()
 
-        if 1==1:#len(check) == 0:
+        if len(check) == 0:
 
             c.execute("SELECT HOMETEAM, AWAYTEAM FROM STATS WHERE GAMEID = ?",[gameVector[j][0]])
             teams = c.fetchall()
@@ -488,7 +494,7 @@ def scrape_sh(seasonID, seasonYear, serie, score_update):
 
 #scrape_sh(6053, 2016, "HA", "New")
 #scrape_sh(5057, 2015, "HA", "New")
-#scrape_sh(9168, 2019, "HA", "New")
+scrape_sh(9168, 2019, "HA", "New")
 
 #scrape_sh(6053, 2016, "HA", "New")
 #scrape_sh(5057, 2015, "HA", "New")

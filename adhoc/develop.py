@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import openpyxl
 from pandas import ExcelWriter
+from functions import linreg
 
 import sqlite3
 conn = sqlite3.connect('/Users/carljonsson/PycharmProjects/GetHockeyData/hockeystats/hockeystats.db')
@@ -44,22 +45,22 @@ def get_player_position(forname, surname, gamedate, team, seasonYear):
 
             if len(pos) > 0:
                 for j in range(0,len(pos)):
-                    if pos[i][0] == 'CE':
+                    if pos[j][0] == 'CE':
                         nO += 1
                         nCE += 1
-                    if pos[i][0] == 'RW':
+                    if pos[j][0] == 'RW':
                         nO += 1
                         nRW += 1
-                    if pos[i][0] == 'LW':
+                    if pos[j][0] == 'LW':
                         nO += 1
                         nLW += 1
-                    if pos[i][0] == 'LD':
+                    if pos[j][0] == 'LD':
                         nD += 1
                         nLD += 1
-                    if pos[i][0] == 'RD':
+                    if pos[j][0] == 'RD':
                         nD += 1
                         nRD += 1
-                    if pos[i][0] == 'GK':
+                    if pos[j][0] == 'GK':
                         nGK += 1
 
             if nO == 3:
@@ -111,13 +112,13 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, c, conn):
     if len(lst) > 0:
         last_id = lst[0][0]
 
-    c.execute("SELECT DISTINCT FORNAME, SURNAME, PERSONNR FROM LINEUPS WHERE TEAM = ? AND SEASONID = ? AND gameid = ?",[team, seasonYear, last_id])
-    players = pd.DataFrame(c.fetchall(), columns = ['Forname','Surname','Personnr'])
+    c.execute("SELECT  FORNAME, SURNAME, PERSONNR, POSITION FROM LINEUPS WHERE TEAM = ? AND SEASONID = ? AND gameid = ?",[team, seasonYear, last_id])
+    players = pd.DataFrame(c.fetchall(), columns = ['Forname','Surname','Personnr','Line'])
 
     #If first game
     if len(players) == 0:
         c.execute("SELECT DISTINCT FORNAME, SURNAME, PERSONNR FROM LINEUPS WHERE TEAM = ? AND SEASONID = ? AND gamedate = ?",[team, seasonYear, gamedate])
-        players = pd.DataFrame(c.fetchall(), columns=['Forname', 'Surname', 'Personnr'])
+        players = pd.DataFrame(c.fetchall(), columns=['Forname', 'Surname', 'Personnr','Line'])
 
 
     tot1 = 0
@@ -125,9 +126,14 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, c, conn):
 
     for i in range(0,len(players)):
 
+        #############################################################################################################################
+        #####                                              BASIC DATA + LINE                                                    #####
+        #############################################################################################################################
+
         forname = players['Forname'][i]
         surname = players['Surname'][i]
         personnr = players['Personnr'][i]
+        line = players['Line'][i]
 
         c.execute("SELECT POSITION, HANDLE, LENGHT, WEIGHT FROM ROSTERS WHERE FORNAME = ? AND SURNAME = ? AND PERSONNR = ? ORDER BY SEASONID DESC",[forname, surname, personnr])
         rst = c.fetchall()
@@ -217,10 +223,14 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, c, conn):
             else:
                 age = 30
 
+        #FIND POSITION IF NOT AVAILABLE IN ROSTER
+
         if position == '':
             if line_score_old > 0.02 and plus_minus > 0.02:
 
                 position, handle = get_player_position(forname, surname, gamedate, team, seasonYear)
+
+        # ADJUST GK - THEY DONT SCORE
 
         if position == "GK":
             line_score_old = 0
@@ -229,13 +239,115 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, c, conn):
         tot1 += line_score_old
         tot2 += plus_minus
 
-        print(forname, surname, position, handle, personnr, round(n_games_old,1), round(line_score_old,3), round(plus_minus,2), age)
+        #ADJUST PLAYERS WITHOUT GAME HISTORY
 
-        #CURRENT SEASON SCORE TREND
-        #LAST SEASON SCORE TREND
-        #SECOND LAST SEASON SCORE TREND
-        #THIRD LAST SEASON SCORE TREND
+        if n_games_old == 0:
+            if age <= 18:
+                line_score_old = 0.025
+                plus_minus = 0.025
+            elif age <= 21:
+                line_score_old = 0.06
+                plus_minus = 0.06
+            elif age <= 24:
+                line_score_old = 0.1
+                plus_minus = 0.1
+            else:
+                line_score_old = 0.18
+                plus_minus = 0.18
 
-    print("TOT", tot1, tot2)
+        #NO ADJUSTMENT ON AGE AT THIS STAGE
 
-get_player_data('Linköping HC', 393304, '2018-09-15', 0.65, 2019, 'SHL', c, conn)
+
+        #############################################################################################################################
+        #####                                               HISTORIC SCORING                                                    #####
+        #############################################################################################################################
+
+        if personnr == '':
+            c.execute("SELECT SEASONID, SERIE, COUNT(GAMEID), SUM(GOALS), SUM(ASSISTS), SUM(PLUS) FROM LINEUPS WHERE FORNAME = ? AND SURNAME = ? AND TEAM = ? GROUP BY SEASONID ORDER by SEASONID",[forname, surname, team])
+            hist = c.fetchall()
+        else:
+            c.execute("SELECT SEASONID, SERIE, COUNT(GAMEID), SUM(GOALS), SUM(ASSISTS), SUM(PLUS) FROM LINEUPS WHERE FORNAME = ? AND SURNAME = ? AND PERSONNR = ? GROUP BY SEASONID ORDER by SEASONID",[forname, surname, personnr])
+            hist = c.fetchall()
+
+        if len(hist) > 0:
+
+            score_trend = pd.DataFrame(columns=['Year','nGames','goalsTeam','goalsPlayer','assistPlayer','plusPlayer','goalPercent','Weight'])
+
+            for j in range(0,len(hist)):
+
+                if personnr == '':
+                    c.execute("SELECT COUNT(a.gameid), SUM(b.SCORE1) FROM LINEUPS a LEFT JOIN TEAMGAMES b ON a.gameid = b.gameid WHERE b.TEAM = a.TEAM AND a.SEASONID = ? AND forname = ? AND surname = ? AND a.team = ?",[hist[j][0], forname, surname, team])
+                    goals = c.fetchall()
+                else:
+                    c.execute("SELECT COUNT(a.gameid), SUM(b.SCORE1) FROM LINEUPS a LEFT JOIN TEAMGAMES b ON a.gameid = b.gameid WHERE b.TEAM = a.TEAM AND a.SEASONID = ? AND forname = ? AND surname = ? AND personnr = ?",[hist[j][0], forname, surname, personnr])
+                    goals = c.fetchall()
+
+                if len(goals) > 0:
+                    total_goals = goals[0][1]
+                else:
+                    total_goals = 0
+
+                goalPercent = hist[j][3]/total_goals
+
+                score_trend = score_trend.append({
+                     'Year': seasonYear-hist[j][0],
+                     'nGames': hist[j][2],
+                     'goalsTeam': total_goals,
+                     'goalsPlayer': hist[j][3],
+                     'assistPlayer': hist[j][4],
+                     'plusPlayer': hist[j][5],
+                     'goalPercent': goalPercent,
+                     'Weight': hist[j][2]/(seasonYear-hist[j][0]+1)
+                }, ignore_index=True)
+
+
+            #Calculate average scoring of player
+
+            average_score_percent = 0
+            average_assist_percent = 0
+            average_plus_percent = 0
+            total_weight = 0
+
+            score_trend['s_weight'] = score_trend['goalPercent'] * score_trend['Weight']
+            average_score_percent += score_trend['s_weight'].sum() / score_trend['Weight'].sum()
+
+            score_trend['a_weight'] = score_trend['assistPlayer'] / score_trend['goalsTeam'] * score_trend['Weight']
+            average_assist_percent += score_trend['a_weight'].sum() / score_trend['Weight'].sum()
+
+            score_trend['p_weight'] = score_trend['plusPlayer'] / score_trend['goalsTeam'] * score_trend['Weight']
+            average_plus_percent += score_trend['p_weight'].sum() / score_trend['Weight'].sum()
+
+            total_weight = score_trend['Weight'].sum()
+
+            #Calculate trend of scoring
+            a=0
+            b=0
+
+            if len(hist) > 3:
+
+                x = score_trend['goalPercent'].tolist()
+
+                if hist[j][2] < 7:
+                    x = (x[0:len(x)-1])
+
+                a, b = linreg(range(len(x)), x)
+            else:
+                valid_trend = 0
+
+            valid_trend = 1
+
+            for t in range(0,len(hist)):
+                if score_trend['Weight'][t] < 2:
+                    valid_trend = 0
+
+            if valid_trend == 1:
+                trend = a
+
+            st = str(score_trend.to_string())
+
+            #print(forname, surname, position, handle, personnr, round(n_games_old, 1), round(line_score_old / 2 + plus_minus / 2, 3), line, age)
+
+            #return forname, surname, position, handle, personnr, line, age, total_weight, round(line_score_old / 2 + plus_minus / 2, 3), average_score_percent, average_assist_percent, average_plus_percent, trend
+
+
+get_player_data('Linköping HC', 393304, '2018-11-20', 0.65, 2019, 'SHL', c, conn)

@@ -9,11 +9,11 @@ import datetime
 import sqlite3
 
 
-conn = sqlite3.connect('/Users/carljonsson/Python/hockeystats/hockeystats.db')
-c = conn.cursor()
+#conn = sqlite3.connect('/Users/carljonsson/Python/hockeystats/hockeystats.db')
+#c = conn.cursor()
 
 
-def update_rosters(seasonID,seasonYear,serie):
+def update_rosters(seasonID,seasonYear,serie, c, conn):
 
     #Get the seasons roster
     rosters = get_official_roster(seasonID,seasonYear,serie)
@@ -86,7 +86,7 @@ def update_rosters(seasonID,seasonYear,serie):
     c.execute("SELECT SEASONID, TEAM, SUM(PLUS-MINUS) AS TSCORE FROM ROSTERS WHERE SEASONID = ? AND SERIE = ? AND POSITION != ? GROUP BY SEASONID, TEAM ORDER BY TSCORE",[seasonYear,serie, 'GK'])
     ave_score = c.fetchall()
 
-    print(ave_score)
+    #print(ave_score)
 
     max_value = ave_score[len(ave_score) - 1][2]
     min_value = ave_score[0][2]
@@ -110,15 +110,16 @@ def update_rosters(seasonID,seasonYear,serie):
     print(str(seasonYear) + " " + serie + " roster updated")
 
 #update_rosters(3905, 2014, 'SHL')
-update_rosters(5056, 2015, 'SHL')
-update_rosters(6052, 2016, 'SHL')
-update_rosters(7132, 2017, 'SHL')
-update_rosters(8121, 2018, 'SHL')
-update_rosters(9171, 2019, 'SHL')
+#update_rosters(5056, 2015, 'SHL')
+#update_rosters(6052, 2016, 'SHL')
+#update_rosters(7132, 2017, 'SHL')
+#update_rosters(8121, 2018, 'SHL')
+#update_rosters(9171, 2019, 'SHL')
 
 #update_rosters(3906, 2014, 'HA')
-update_rosters(5057, 2015, 'HA')
-update_rosters(6053, 2016, 'HA')
-update_rosters(7157, 2017, 'HA')
-update_rosters(8122, 2018, 'HA')
-update_rosters(9168, 2019, 'HA')
+#update_rosters(5057, 2015, 'HA')
+#update_rosters(6053, 2016, 'HA')
+#update_rosters(7157, 2017, 'HA')
+#update_rosters(8122, 2018, 'HA')
+#update_rosters(9168, 2019, 'HA')
+#update_rosters(9171, 2019, 'SHL')

@@ -112,8 +112,8 @@ def get_efficiency_model_linreg(seasonYear, inputs, gameid, serie, c):
 #update_efficiency_model_linreg(2016,'SHL',c)
 
 
-update_efficiency_model_linreg(2019,'SHL',c)
-update_efficiency_model_linreg(2018,'SHL',c)
+#update_efficiency_model_linreg(2019,'SHL',c)
+#update_efficiency_model_linreg(2018,'SHL',c)
 
 #update_efficiency_model_linreg(2018,'SHL',c)
 #update_efficiency_model_linreg(2017,'SHL',c)
