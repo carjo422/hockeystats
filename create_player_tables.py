@@ -116,7 +116,7 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, c, conn):
 
     #If first game
     if len(players) == 0:
-        c.execute("SELECT DISTINCT FORNAME, SURNAME, PERSONNR FROM LINEUPS WHERE TEAM = ? AND SEASONID = ? AND GAMEDATE = ? AND POSITION != ?",[team, seasonYear, gamedate,'Goalies'])
+        c.execute("SELECT DISTINCT FORNAME, SURNAME, PERSONNR, POSITION FROM LINEUPS WHERE TEAM = ? AND SEASONID = ? AND GAMEDATE = ? AND POSITION != ?",[team, seasonYear, gamedate,'Goalies'])
         players = pd.DataFrame(c.fetchall(), columns=['Forname', 'Surname', 'Personnr','Line'])
 
 
@@ -263,10 +263,10 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, c, conn):
         #############################################################################################################################
 
         if personnr == '':
-            c.execute("SELECT SEASONID, SERIE, COUNT(GAMEID), SUM(GOALS), SUM(ASSISTS), SUM(PLUS) FROM LINEUPS WHERE FORNAME = ? AND SURNAME = ? AND TEAM = ? GROUP BY SEASONID ORDER by SEASONID",[forname, surname, team])
+            c.execute("SELECT SEASONID, SERIE, COUNT(GAMEID), SUM(GOALS), SUM(ASSISTS), SUM(PLUS) FROM LINEUPS WHERE FORNAME = ? AND SURNAME = ? AND TEAM = ? AND GAMEDATE < ? GROUP BY SEASONID ORDER by SEASONID",[forname, surname, team, gamedate])
             hist = c.fetchall()
         else:
-            c.execute("SELECT SEASONID, SERIE, COUNT(GAMEID), SUM(GOALS), SUM(ASSISTS), SUM(PLUS) FROM LINEUPS WHERE FORNAME = ? AND SURNAME = ? AND PERSONNR = ? GROUP BY SEASONID ORDER by SEASONID",[forname, surname, personnr])
+            c.execute("SELECT SEASONID, SERIE, COUNT(GAMEID), SUM(GOALS), SUM(ASSISTS), SUM(PLUS) FROM LINEUPS WHERE FORNAME = ? AND SURNAME = ? AND PERSONNR = ? AND GAMEDATE < ? GROUP BY SEASONID ORDER by SEASONID",[forname, surname, personnr, gamedate])
             hist = c.fetchall()
 
         if len(hist) > 0:
@@ -287,7 +287,10 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, c, conn):
                 else:
                     total_goals = 0
 
-                goalPercent = hist[j][3]/total_goals
+                if total_goals == 0:
+                    goal_percent = 0
+                else:
+                    goalPercent = hist[j][3]/total_goals
 
                 score_trend = score_trend.append({
                      'Year': seasonYear-hist[j][0],
@@ -325,6 +328,7 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, c, conn):
             #Calculate trend of scoring
             a=0
             b=0
+            trend = 0
 
             if len(hist) > 3:
 
@@ -424,21 +428,22 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, c, conn):
             if total_games < 5:
                 inPP = inPP * total_games/5 + 0.2 * (5-total_games)/5
 
-            #c.execute("SELECT * FROM EXP_GOAL_SCORER WHERE GAMEID = ? AND FORNAME = ? AND SURNAME = ? AND PERSONNR = ?",[gameid, forname, surname, personnr])
-            #chk = c.fetchall()
+            c.execute("SELECT * FROM EXP_GOAL_SCORER WHERE GAMEID = ? AND FORNAME = ? AND SURNAME = ? AND PERSONNR = ?",[gameid, forname, surname, personnr])
+            chk = c.fetchall()
 
-            #if len(chk) > 0:
-            #    pass
-            #else:
+            if len(chk) > 0:
+                pass
+            else:
 
-            #    c.execute("SELECT SUM(1), SUM(CASE WHEN FORNAME = ? AND SURNAME = ? AND PERSONNR = ? THEN 1 ELSE 0 END) FROM EVENTS WHERE EVENT = ? AND TEAM = ? AND GAMEID = ?",[forname,surname,personnr,'Goal', team, gameid])
-            #    gls = c.fetchall()
+                c.execute("SELECT SUM(1), SUM(CASE WHEN FORNAME = ? AND SURNAME = ? AND PERSONNR = ? THEN 1 ELSE 0 END) FROM EVENTS WHERE EVENT = ? AND TEAM = ? AND GAMEID = ?",[forname,surname,personnr,'Goal', team, gameid])
+                gls = c.fetchall()
 
-            #    if len(gls) > 0 and gls[0][0] != None:
+                if len(gls) > 0 and gls[0][0] != None:
 
-            #        act_goal = gls[0][1] / gls[0][0]
+                    act_goal = gls[0][1] / gls[0][0]
 
-            #        c.execute("INSERT INTO EXP_GOAL_SCORER (SERIE, SEASONID, TEAM, GAMEID, GAMEDATE, FORNAME, SURNAME, PERSONNR, POSITION, BASE_SCORING, HIST_SCORING, IN_PP, ACT_GOAL) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",[serie, seasonYear, team, gameid, gamedate, forname, surname, personnr, position_new, base_scoring, hist_scoring, inPP, act_goal])
+                    c.execute("INSERT INTO EXP_GOAL_SCORER (SERIE, SEASONID, TEAM, GAMEID, GAMEDATE, FORNAME, SURNAME, PERSONNR, AGE, POSITION, LAST_LINE, HANDLE, POS_SCORE, POS_SCORE_LAST, POS_MULTIPLIER, HIST_SCORING, IN_PP, TREND, WEIGHT, ACT_GOAL) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                              [serie, seasonYear, team, gameid, gamedate, forname, surname, personnr, age, position, line, handle, base_scoring, base_score_last, pos_score_percent, average_score_percent, inPP, trend, total_weight, act_goal])
 
             goal_scorer = goal_scorer.append({'Forname': forname, 'Surname': surname, 'Age': age, 'Position': position, 'Last Line': line, 'Handle': handle, 'Pos Score': base_scoring, 'Pos Score Last': base_score_last, 'Pos multiplier': pos_score_percent, 'Hist Score': average_score_percent, 'PP Score': inPP, 'Trend%': trend, 'Weight': total_weight}, ignore_index = True)
 

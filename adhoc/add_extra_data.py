@@ -43,6 +43,28 @@ def add_rosters(seasonID, seasonYear, serie):
     # Add roster statistics
     get_year_statistics(seasonID, seasonYear, serie)
 
+    c.execute(
+        "SELECT GAMEDATE, SERIE, HOMETEAM, AWAYTEAM, GAMEID FROM stats WHERE (SEASONID = ? OR SEASONID = ?) AND SERIE = ? ORDER BY GAMEID",
+        [2018, 2019, 'SHL'])
+    games = c.fetchall()
+
+    print(games)
+
+    count = 0
+
+    for i in range(0, len(games)):
+        count += 1
+
+        gamedate = games[i][0]
+        serie = games[i][1]
+        hometeam = games[i][2]
+        awayteam = games[i][3]
+        gameid = games[i][4]
+
+        create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, conn)
+
+        print(count, "/", len(games))
+
 
 def add_team_games(seasonID, seasonYear, serie):
 

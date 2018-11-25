@@ -20,8 +20,11 @@ from create_player_tables import create_goal_scorer_characteristics
 #print("Rögle BK",calculate_team_strength("Rögle BK",'2018-10-29',c))
 #print("Mora IK",calculate_team_strength("Mora IK",'2018-10-29',c))
 
-c.execute("SELECT SEASONID, TEAM, FORNAME, SURNAME, GOALS, POSITION FROM ROSTERS WHERE POSITION = ? OR POSITION = ? ORDER BY GOALS",['LD','RD'])
-print(pd.DataFrame(c.fetchall()))
+#c.execute("SELECT SEASONID, TEAM, FORNAME, SURNAME, GOALS, POSITION FROM ROSTERS WHERE POSITION = ? OR POSITION = ? ORDER BY GOALS",['LD','RD'])
+#print(pd.DataFrame(c.fetchall()))
+
+#c.execute("SELECT SUM(GOALS), SUM(PPGOALS) FROM lineups WHERE FORNAME = 'Kodie' AND SURNAME = 'Curran'")
+#print(c.fetchall())
 
 #create_goal_scorer_characteristics(c,conn)
 
@@ -63,9 +66,23 @@ print(pd.DataFrame(c.fetchall()))
 #
 #    print(players[i][0], players[i][1], players[i][3], total_d, total_w / total_d)
 
-if 1 == 5:
+c.execute("SELECT * FROM EXP_GOAL_SCORER")
+anl = pd.DataFrame(c.fetchall(), columns=['Serie','Season','Team','Gameid','Gamedate','Forname','Surname','Personnr','Age','Position','Last_Line','Handle','Pos_Score','Pos_Score_Last','Pos_Multiplier','Hist_Scoring','In_PP','Trend','Weight','Act_Goal','Exp_Goal'])
 
-    tst = pd.DataFrame(c.fetchall())
-    writer = ExcelWriter('efficiency.xlsx')
-    tst.to_excel(writer,'Sheet1')
-    writer.save()
+print(anl.to_string)
+
+data1 = anl[['Pos_Score','Act_Goal']]
+print("Pos Score Correlation",data1.corr())
+
+data2 = anl[['Pos_Score_Last','Act_Goal']]
+print("Pos Score Last Correlation",data2.corr())
+
+data3 = anl[['Hist_Scoring','Act_Goal']]
+print("Hist Scoreing Correlation",data3.corr())
+
+data4 = anl[['In_PP','Act_Goal']]
+print("In PP Correlation",data4.corr())
+
+from model_evaluation_scoring import evaluate_scoring_model
+
+evaluate_scoring_model((data3))
