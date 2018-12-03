@@ -208,11 +208,11 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, c, conn):
 
             plus_minus /= n_games_old
 
-        line_score_old += oldLine[0] * 0.335
-        line_score_old += oldLine[1] * 0.300
-        line_score_old += oldLine[2] * 0.230
-        line_score_old += oldLine[3] * 0.130
-        line_score_old += oldLine[4] * 0.005
+        line_score_old += oldLine[0] * 0.3175
+        line_score_old += oldLine[1] * 0.2950
+        line_score_old += oldLine[2] * 0.2350
+        line_score_old += oldLine[3] * 0.1450
+        line_score_old += oldLine[4] * 0.0075
 
         if personnr != '':
             age = int(gamedate[0:4])-int(personnr[0:4])
@@ -263,15 +263,15 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, c, conn):
         #############################################################################################################################
 
         if personnr == '':
-            c.execute("SELECT SEASONID, SERIE, COUNT(GAMEID), SUM(GOALS), SUM(ASSISTS), SUM(PLUS) FROM LINEUPS WHERE FORNAME = ? AND SURNAME = ? AND TEAM = ? AND GAMEDATE < ? GROUP BY SEASONID ORDER by SEASONID",[forname, surname, team, gamedate])
+            c.execute("SELECT SEASONID, SERIE, COUNT(GAMEID), SUM(GOALS), SUM(ASSISTS), SUM(PLUS), SUM(PPGOALS) FROM LINEUPS WHERE FORNAME = ? AND SURNAME = ? AND TEAM = ? AND GAMEDATE < ? GROUP BY SEASONID ORDER by SEASONID",[forname, surname, team, gamedate])
             hist = c.fetchall()
         else:
-            c.execute("SELECT SEASONID, SERIE, COUNT(GAMEID), SUM(GOALS), SUM(ASSISTS), SUM(PLUS) FROM LINEUPS WHERE FORNAME = ? AND SURNAME = ? AND PERSONNR = ? AND GAMEDATE < ? GROUP BY SEASONID ORDER by SEASONID",[forname, surname, personnr, gamedate])
+            c.execute("SELECT SEASONID, SERIE, COUNT(GAMEID), SUM(GOALS), SUM(ASSISTS), SUM(PLUS), SUM(PPGOALS) FROM LINEUPS WHERE FORNAME = ? AND SURNAME = ? AND PERSONNR = ? AND GAMEDATE < ? GROUP BY SEASONID ORDER by SEASONID",[forname, surname, personnr, gamedate])
             hist = c.fetchall()
 
         if len(hist) > 0:
 
-            score_trend = pd.DataFrame(columns=['Year','nGames','goalsTeam','goalsPlayer','assistPlayer','plusPlayer','goalPercent','Weight'])
+            score_trend = pd.DataFrame(columns=['Year','nGames','goalsTeam','goalsPlayer','assistPlayer','plusPlayer','goalPercent','regGoalPercent','PPGoalPercent','Weight'])
 
             for j in range(0,len(hist)):
 
@@ -290,7 +290,9 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, c, conn):
                 if total_goals == 0:
                     goal_percent = 0
                 else:
-                    goalPercent = hist[j][3]/total_goals
+                    goalPercent = hist[j][3] / total_goals
+                    regGoalPercent = (hist[j][3]-hist[j][6]) * 4/3 / total_goals #4/3 since 75% goals non PP
+                    PPGoalPercent = hist[j][6]* 4 / total_goals # 4 since 25% goals PP
 
                 score_trend = score_trend.append({
                      'Year': seasonYear-hist[j][0],
@@ -300,7 +302,9 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, c, conn):
                      'assistPlayer': hist[j][4],
                      'plusPlayer': hist[j][5],
                      'goalPercent': goalPercent,
-                     'Weight': hist[j][2]/(seasonYear-hist[j][0]+1)
+                    'regGoalPercent': regGoalPercent,
+                    'PPGoalPercent': PPGoalPercent,
+                    'Weight': hist[j][2]/(seasonYear-hist[j][0]+1)
                 }, ignore_index=True)
 
 
@@ -309,6 +313,9 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, c, conn):
             average_score_percent = 0
             average_assist_percent = 0
             average_plus_percent = 0
+            average_score_percent_regular = 0
+            average_score_percent_PP = 0
+
             total_weight = 0
 
             score_trend['s_weight'] = score_trend['goalPercent'] * score_trend['Weight']
@@ -320,6 +327,11 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, c, conn):
             score_trend['p_weight'] = score_trend['plusPlayer'] / score_trend['goalsTeam'] * score_trend['Weight']
             average_plus_percent += score_trend['p_weight'].sum() / score_trend['Weight'].sum()
 
+            score_trend['sr_weight'] = score_trend['regGoalPercent'] * score_trend['Weight']
+            average_score_percent_regular += score_trend['sr_weight'].sum() / score_trend['Weight'].sum()
+
+            score_trend['sp_weight'] = score_trend['PPGoalPercent'] * score_trend['Weight']
+            average_score_percent_PP += score_trend['sp_weight'].sum() / score_trend['Weight'].sum()
 
             #Total weight
 
@@ -368,28 +380,33 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, c, conn):
             base_score_last= 0
 
             if line == '1st Line':
-                base_score_last = 0.335
+                base_score_last = 0.3175
             elif line == '2nd Line':
-                base_score_last = 0.300
+                base_score_last = 0.2950
             elif line == '3rd Line':
-                base_score_last = 0.230
+                base_score_last = 0.2350
             elif line == '4th Line':
-                base_score_last = 0.130
+                base_score_last = 0.1450
             elif line == 'Extra players':
-                base_score_last = 0.01
+                base_score_last = 0.0075
 
             # Add goal % based on position in line
 
             pos_score_percent = 0
+            score_ratio = 1
 
             if position == "CE":
                 pos_score_percent = 0.17+odds*0.30
+                score_ratio = pos_score_percent / 0.26
             elif position == "LW":
                 pos_score_percent = 0.3450-odds*0.15
+                score_ratio = pos_score_percent / 0.30
             elif position == "RW":
                 pos_score_percent = 0.3250-odds*0.15
+                score_ratio = pos_score_percent / 0.28
             elif position in ["LD","RD"]:
                 pos_score_percent = 0.08
+                score_ratio = 1
 
             #############################################################################################################################
             #####                                                GET the in PP                                                      #####
@@ -441,9 +458,9 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, c, conn):
                 if len(gls) > 0 and gls[0][0] != None:
 
                     act_goal = gls[0][1] / gls[0][0]
-
-                    c.execute("INSERT INTO EXP_GOAL_SCORER (SERIE, SEASONID, TEAM, GAMEID, GAMEDATE, FORNAME, SURNAME, PERSONNR, AGE, POSITION, LAST_LINE, HANDLE, POS_SCORE, POS_SCORE_LAST, POS_MULTIPLIER, HIST_SCORING, IN_PP, TREND, WEIGHT, ACT_GOAL) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                              [serie, seasonYear, team, gameid, gamedate, forname, surname, personnr, age, position, line, handle, base_scoring, base_score_last, pos_score_percent, average_score_percent, inPP, trend, total_weight, act_goal])
+                    #Insert new variables to analysis
+                    c.execute("INSERT INTO EXP_GOAL_SCORER (SERIE, SEASONID, TEAM, GAMEID, GAMEDATE, FORNAME, SURNAME, PERSONNR, AGE, POSITION, LAST_LINE, HANDLE, POS_SCORE, SCORE_RATIO, POS_SCORE_LAST, POS_MULTIPLIER, HIST_SCORING, HIST_SCORING_REG, HIST_SCORING_PP, IN_PP, TREND, WEIGHT, ACT_GOAL) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                              [serie, seasonYear, team, gameid, gamedate, forname, surname, personnr, age, position, line, handle, base_scoring, base_score_last, pos_score_percent, score_ratio, average_score_percent, average_score_percent_regular, average_score_percent_PP, inPP, trend, total_weight, act_goal])
 
             goal_scorer = goal_scorer.append({'Forname': forname, 'Surname': surname, 'Age': age, 'Position': position, 'Last Line': line, 'Handle': handle, 'Pos Score': base_scoring, 'Pos Score Last': base_score_last, 'Pos multiplier': pos_score_percent, 'Hist Score': average_score_percent, 'PP Score': inPP, 'Trend%': trend, 'Weight': total_weight}, ignore_index = True)
 
@@ -596,12 +613,12 @@ def create_goal_scorer_characteristics(c,conn):
     anl1["Goals%"] = anl1["Goals"]/anl1["Goals"].sum()
     print(anl1)
 
-    c.execute("SELECT b.POSITION, COUNT(a.ID) FROM EVENTS a LEFT JOIN lineups b ON a.GAMEID = b.GAMEID AND a.FORNAME = b.FORNAME and a.SURNAME = b.SURNAME and a.PERSONNR = b.PERSONNR WHERE EVENT = ? AND b.POSITION in (?,?,?,?,?) GROUP BY b.POSITION",['Goal','1st Line','2nd Line','3rd Line','4th Line','Extra players'])
+    c.execute("SELECT b.POSITION, COUNT(a.ID) FROM EVENTS a LEFT JOIN lineups b ON a.GAMEID = b.GAMEID AND a.FORNAME = b.FORNAME and a.SURNAME = b.SURNAME and a.PERSONNR = b.PERSONNR WHERE EVENT = ? AND EXTRA1 NOT IN (?) AND b.POSITION in (?,?,?,?,?) GROUP BY b.POSITION",['Goal','PP','1st Line','2nd Line','3rd Line','4th Line','Extra players'])
     anl2 = pd.DataFrame(c.fetchall(), columns = ["Line","Goals"])
     anl2["Goals%"] = anl2["Goals"]/anl2["Goals"].sum()
     print(anl2)
 
-    c.execute("SELECT b.POSITION, COUNT(a.ID) FROM EVENTS a LEFT JOIN ROSTERS b ON a.SEASONID = b.SEASONID AND a.FORNAME = b.FORNAME and a.SURNAME = b.SURNAME and a.PERSONNR = b.PERSONNR WHERE EVENT = ? AND b.POSITION in (?,?,?,?,?) GROUP BY b.POSITION",['Goal','CE','LD','LW','RD','RW'])
+    c.execute("SELECT b.POSITION, COUNT(a.ID) FROM EVENTS a LEFT JOIN ROSTERS b ON a.SEASONID = b.SEASONID AND a.FORNAME = b.FORNAME and a.SURNAME = b.SURNAME and a.PERSONNR = b.PERSONNR WHERE EVENT = ? AND EXTRA1 NOT IN (?) AND b.POSITION in (?,?,?,?,?) GROUP BY b.POSITION",['Goal','PP','CE','LD','LW','RD','RW'])
     anl3 = pd.DataFrame(c.fetchall(), columns=["Position", "Goals"])
     anl3["Goals%"] = anl3["Goals"] / anl3["Goals"].sum()
     print(anl3)
@@ -613,7 +630,7 @@ def create_goal_scorer_characteristics(c,conn):
     #anl5 = anl5.sort_values(['Mål%'], ascending = [0])
     #print(anl5)
 
-    c.execute("SELECT b.POSITION, COUNT(a.ID) FROM EVENTS a LEFT JOIN ROSTERS b ON a.SEASONID = b.SEASONID AND a.FORNAME = b.FORNAME and a.SURNAME = b.SURNAME and a.PERSONNR = b.PERSONNR LEFT JOIN EXP_SHOTS_TABLE c ON a.gameid = c.gameid WHERE a.EVENT = ? AND a.TEAM = c.HOMETEAM AND b.POSITION in (?,?,?,?,?) AND c.ODDS1 < 0.28 GROUP BY b.POSITION",['Goal', 'CE', 'LD', 'LW', 'RD', 'RW'])
+    c.execute("SELECT b.POSITION, COUNT(a.ID) FROM EVENTS a LEFT JOIN ROSTERS b ON a.SEASONID = b.SEASONID AND a.FORNAME = b.FORNAME and a.SURNAME = b.SURNAME and a.PERSONNR = b.PERSONNR LEFT JOIN EXP_SHOTS_TABLE c ON a.gameid = c.gameid WHERE a.EVENT = ? AND a.TEAM = c.AWAYTEAM AND EXTRA1 NOT IN (?) AND b.POSITION in (?,?,?,?,?) AND c.ODDS2 > 0.5 GROUP BY b.POSITION",['Goal', 'PP', 'CE', 'LD', 'LW', 'RD', 'RW'])
     anl5 = pd.DataFrame(c.fetchall(), columns=["Position", "Goals"])
     anl5["Goals%"] = anl5["Goals"] / anl5["Goals"].sum()
     print(anl5)

@@ -10,8 +10,52 @@ from functions import get_td_content
 from functions import isnumber
 from scfiles.get_year_statistics import get_year_statistics
 
+
+
+
 conn = sqlite3.connect('hockeystats.db')
 c = conn.cursor()
+
+c.execute("SELECT * FROM EXP_GOAL_SCORER")
+add = c.fetchall()
+
+for i in range(0,len(add)):
+
+    if add[i][9] == 'CE':
+        score_ratio = add[i][14] / 0.26
+    elif add[i][9] == 'LW':
+        score_ratio = add[i][14] / 0.30
+    elif add[i][9] == 'RW':
+        score_ratio = add[i][14] / 0.28
+    else:
+        score_ratio = 1
+
+    c.execute("UPDATE EXP_GOAL_SCORER SET SCORE_RATIO = ? WHERE FORNAME = ? AND SURNAME = ? AND PERSONNR = ? AND GAMEDATE = ?",[score_ratio,add[i][5],add[i][6],add[i][7],add[i][4]])
+
+conn.commit()
+
+
+#from create_pre_match_analysis import create_pre_match_analysis
+
+#c.execute( "SELECT GAMEDATE, SERIE, HOMETEAM, AWAYTEAM, GAMEID FROM stats WHERE (SEASONID = ? OR SEASONID = ? OR SEASONID = ? OR SEASONID = ?) AND SERIE = ? ORDER BY GAMEID",[2016, 2017, 2018, 2019, 'SHL'])
+#games = c.fetchall()
+
+#print(games)
+
+#count = 0
+
+#for i in range(0, len(games)):
+#    count += 1
+#
+#    gamedate = games[i][0]
+#    serie = games[i][1]
+#    hometeam = games[i][2]
+#    awayteam = games[i][3]
+#    gameid = games[i][4]
+
+#    create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, conn)
+
+#    print(count, "/", len(games))
 
 def add_rosters(seasonID, seasonYear, serie):
 
@@ -43,27 +87,7 @@ def add_rosters(seasonID, seasonYear, serie):
     # Add roster statistics
     get_year_statistics(seasonID, seasonYear, serie)
 
-    c.execute(
-        "SELECT GAMEDATE, SERIE, HOMETEAM, AWAYTEAM, GAMEID FROM stats WHERE (SEASONID = ? OR SEASONID = ?) AND SERIE = ? ORDER BY GAMEID",
-        [2018, 2019, 'SHL'])
-    games = c.fetchall()
 
-    print(games)
-
-    count = 0
-
-    for i in range(0, len(games)):
-        count += 1
-
-        gamedate = games[i][0]
-        serie = games[i][1]
-        hometeam = games[i][2]
-        awayteam = games[i][3]
-        gameid = games[i][4]
-
-        create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, conn)
-
-        print(count, "/", len(games))
 
 
 def add_team_games(seasonID, seasonYear, serie):
@@ -185,13 +209,13 @@ def add_team_games(seasonID, seasonYear, serie):
     create_teamgames(seasonYear, serie)
 
 
-c.execute("DELETE FROM rosters where seasonID = ? and serie = ?",['2019','SHL'])
-c.execute("DELETE FROM schedule where seasonID = ? and serie = ?",['2019','SHL'])
-c.execute("DELETE FROM teamgames where seasonID = ? and serie = ?",['2019','SHL'])
-c.execute("DELETE FROM lineups where seasonID = ? and serie = ?",['2019','SHL'])
-c.execute("DELETE FROM events where seasonID = ?",['2019'])
-c.execute("DELETE FROM stats where seasonID = ?",['2019'])
-conn.commit()
+#c.execute("DELETE FROM rosters where seasonID = ? and serie = ?",['2019','SHL'])
+#c.execute("DELETE FROM schedule where seasonID = ? and serie = ?",['2019','SHL'])
+#c.execute("DELETE FROM teamgames where seasonID = ? and serie = ?",['2019','SHL'])
+#c.execute("DELETE FROM lineups where seasonID = ? and serie = ?",['2019','SHL'])
+#c.execute("DELETE FROM events where seasonID = ?",['2019'])
+#c.execute("DELETE FROM stats where seasonID = ?",['2019'])
+#conn.commit()
 
 #c.execute("UPDATE lineups SET GAMEDATE = SUBSTR(GAMEDATE,1,10)")
 #c.execute("UPDATE teamgames SET GAMEDATE = SUBSTR(GAMEDATE,1,10)")
