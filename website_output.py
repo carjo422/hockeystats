@@ -21,10 +21,10 @@ from create_pre_match_analysis import create_pre_match_analysis
 #create_pre_match_analysis('2018-10-31','HA',"BIK Karlskoga","Leksands IF","")
 
 
-create_pre_match_analysis('2018-11-29','SHL',"Luleå HF","Linköping HC","", c, conn)
-create_pre_match_analysis('2018-11-29','SHL',"Skellefteå AIK","Mora IK","", c, conn)
-create_pre_match_analysis('2018-11-29','SHL',"Rögle BK","HV 71","", c, conn)
-create_pre_match_analysis('2018-11-29','SHL',"Frölunda HC","Brynäs IF","", c, conn)
-#create_pre_match_analysis('2018-11-24','SHL',"IF Malmö Redhawks","HV 71","", c, conn)
-#create_pre_match_analysis('2018-11-24','SHL',"Mora IK","Linköping HC","", c, conn)
-#create_pre_match_analysis('2018-11-27','SHL',"Frölunda HC","Rögle BK","", c, conn)
+create_pre_match_analysis('2018-12-08','SHL',"Rögle BK","Skellefteå AIK","", c, conn)
+create_pre_match_analysis('2018-12-08','SHL',"Linköping HC","Färjestad BK","", c, conn)
+create_pre_match_analysis('2018-12-08','SHL',"Frölunda HC","Växjö Lakers HC","", c, conn)
+create_pre_match_analysis('2018-12-08','SHL',"Luleå HF","Djurgårdens IF","", c, conn)
+create_pre_match_analysis('2018-12-08','SHL',"Mora IK","HV 71","", c, conn)
+create_pre_match_analysis('2018-12-08','SHL',"Örebro HK","IF Malmö Redhawks","", c, conn)
+create_pre_match_analysis('2018-12-08','SHL',"Brynäs IF","Timrå IK","", c, conn)

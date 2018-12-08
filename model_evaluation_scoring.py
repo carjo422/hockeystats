@@ -2,14 +2,14 @@ import pandas as pd
 
 def evaluate_scoring_model(indata, positions):
 
-    ev = [[0] * 3 for i in range(12)]
+    ev = [[0] * 3 for i in range(15)]
 
-    for j in range(0,12):
+    for j in range(0,15):
         ev[j][0]=j/100+1/100
 
     for i in range(0,len(indata)):
 
-        for j in range(0,12):
+        for j in range(0,15):
 
             if indata.iloc[i][1] in positions:
 
@@ -28,3 +28,6 @@ def evaluate_scoring_model(indata, positions):
 
     print(evd['err'].sum())
 
+
+def evaluate_on_groups(indata,string):
+    print(indata.groupby(string)['Act_Goal','Final_Scoring'].sum())

@@ -122,12 +122,12 @@ def get_outcome_model2(serie, seasonYear, inputs, c):
 
 
 #update_model1_data(serie, c, conn)
-update_outcome_model1(2017,"SHL",c)
-#update_outcome_model1(2019,"HA",c)
+#update_outcome_model1(2016,"SHL",c)
+#update_outcome_model1(2016,"HA",c)
 
 #update_model2_data(serie, seasonYear, c, conn)
-update_outcome_model2(2017,"SHL",c)
-#update_outcome_model2(2019,"HA",c)
+#update_outcome_model2(2016,"SHL",c)
+#update_outcome_model2(2016,"HA",c)
 
 #update_forest_data('HA')
 

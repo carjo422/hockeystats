@@ -7,6 +7,17 @@ if os.path.exists('/Users/carljonsson/PycharmProjects/GetHockeyData/hockeystats/
 else:
     data_directory = '/Users/carljonsson/Python/hockeystats/'
 
+import sqlite3
+conn = sqlite3.connect(data_directory + '/hockeystats.db')
+c = conn.cursor()
+
+import os
+
+if os.path.exists('/Users/carljonsson/PycharmProjects/GetHockeyData/hockeystats/'):
+    data_directory = '/Users/carljonsson/PycharmProjects/GetHockeyData/hockeystats/'
+else:
+    data_directory = '/Users/carljonsson/Python/hockeystats/'
+
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
@@ -157,7 +168,7 @@ def get_shots_goals_forest(seasonYear, inputs, gameid, serie, c, conn):
 
 #update_shots_model_linreg(2019,'SHL',c)
 #update_shots_model_linreg(2018,'SHL',c)
-#update_shots_model_linreg(2017,'SHL',c)
+update_shots_model_linreg(2017,'SHL',c)
 #update_shots_model_linreg(2016,'SHL',c)
 
 #update_shots_model_linreg(2019,'SHL',c)

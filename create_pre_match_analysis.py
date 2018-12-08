@@ -17,6 +17,7 @@ from model_outcome import get_outcome_model2
 from model_nGoals import get_nGoals_model
 from create_player_tables import get_player_data
 from create_player_tables import get_keeper_data
+from model_goal_scorer import get_goal_scorer
 
 import pandas as pd
 import numpy as np
@@ -183,6 +184,31 @@ def get_result_matrix(home_goals, away_goals):
     #print("Expected goals after matrix: ", exp_goals1, exp_goals2)
 
     return results, odds1X2, odds45
+
+
+def get_player_info(player_stat, c):
+
+    player_stat['Pos_Score_Final'] = player_stat['Pos Score'] * player_stat['Pos multiplier']
+    player_stat['Pos_Score_Final_Last'] = player_stat['Pos Score Last'] * player_stat['Pos multiplier']
+    player_stat['Hist_Scoring_Reg_Final'] = (player_stat['Score ratio'] * player_stat['Hist Score Reg'] * player_stat['Weight'] +
+                                             player_stat['Pos_Score_Final'] * 5) / (player_stat['Weight'] + 5)
+    player_stat['Hist_Scoring_PP_Final'] = (player_stat['Hist Score PP'] * player_stat['Weight'] + player_stat[
+        'Pos_Score_Final'] * 5) / (player_stat['Weight'] + 5)
+
+    model_data = player_stat[['Pos_Score_Final', 'Pos_Score_Final_Last', 'Hist Score']]
+    model_data = model_data.sort_index()
+
+    score_percent = get_goal_scorer(model_data,c)
+
+    player_output = player_stat[['Forname','Surname','Pos_Score_Final','Pos_Score_Final_Last', 'Hist Score']]
+    player_output = player_output.sort_index()
+
+    player_output['Goal percent'] = score_percent
+    #player_output.sort_values(['Goal percent'], ascending = [0])
+
+    print(player_output.to_string())
+    print(player_output['Goal percent'].sum())
+
 
 
 
@@ -360,11 +386,13 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
     #keeper_stat_home = get_keeper_data(hometeam, gamedate, seasonYear, c, conn)
     #keeper_stat_away = get_keeper_data(awayteam, gamedate, seasonYear, c, conn)
 
-    player_stat_home = get_player_data(hometeam, gameid, gamedate, odds1X2['1'][0], seasonYear, serie,  c, conn)
-    player_stat_away = get_player_data(awayteam, gameid, gamedate, odds1X2['2'][0], seasonYear, serie,  c, conn)
+    home_player_stat = get_player_data(hometeam, gameid, gamedate, odds1X2['1'][0], seasonYear, serie,  c, conn)
+    away_player_stat = get_player_data(awayteam, gameid, gamedate, odds1X2['2'][0], seasonYear, serie,  c, conn)
 
-    #print(keeper_stat_home)
-    #print(keeper_stat_away)
+    print("Player goal scorer %")
+
+    get_player_info(home_player_stat, c)
+    get_player_info(away_player_stat, c)
 
     return results, odds1X2, odds45, home_goals, away_goals, act_home_goals, act_away_goals#, keeper_stat_home, keeper_stat_away
 

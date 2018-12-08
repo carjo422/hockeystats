@@ -35,27 +35,27 @@ for i in range(0,len(add)):
 conn.commit()
 
 
-#from create_pre_match_analysis import create_pre_match_analysis
+from create_pre_match_analysis import create_pre_match_analysis
 
-#c.execute( "SELECT GAMEDATE, SERIE, HOMETEAM, AWAYTEAM, GAMEID FROM stats WHERE (SEASONID = ? OR SEASONID = ? OR SEASONID = ? OR SEASONID = ?) AND SERIE = ? ORDER BY GAMEID",[2016, 2017, 2018, 2019, 'SHL'])
-#games = c.fetchall()
+c.execute( "SELECT GAMEDATE, SERIE, HOMETEAM, AWAYTEAM, GAMEID FROM stats WHERE (SEASONID = ? OR SEASONID = ? OR SEASONID = ? OR SEASONID = ?) AND SERIE = ? ORDER BY GAMEID",[2017, 2017, 2018, 2019, 'SHL'])
+games = c.fetchall()
 
-#print(games)
+print(games)
 
-#count = 0
+count = 0
 
-#for i in range(0, len(games)):
-#    count += 1
-#
-#    gamedate = games[i][0]
-#    serie = games[i][1]
-#    hometeam = games[i][2]
-#    awayteam = games[i][3]
-#    gameid = games[i][4]
+for i in range(0, len(games)):
+    count += 1
 
-#    create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, conn)
+    gamedate = games[i][0]
+    serie = games[i][1]
+    hometeam = games[i][2]
+    awayteam = games[i][3]
+    gameid = games[i][4]
 
-#    print(count, "/", len(games))
+    create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, conn)
+
+    print(count, "/", len(games))
 
 def add_rosters(seasonID, seasonYear, serie):
 
