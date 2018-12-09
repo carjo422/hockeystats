@@ -4,8 +4,8 @@ from create_pre_match_tables import get_expected_shots
 from model_game_shots import get_shots_goals_linreg
 from model_shot_efficiency import get_efficiency_model_linreg
 from pandas import ExcelWriter
-import openpyxl
-from openpyxl import load_workbook
+#import openpyxl
+#from openpyxl import load_workbook
 
 from create_pre_match_tables import get_ANN_odds
 from create_pre_match_tables import update_model1_data
@@ -18,6 +18,7 @@ from model_nGoals import get_nGoals_model
 from create_player_tables import get_player_data
 from create_player_tables import get_keeper_data
 from model_goal_scorer import get_goal_scorer
+from scfiles.get_lineups import get_lineups
 
 import pandas as pd
 import numpy as np
@@ -236,6 +237,19 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
 
     print("Scores:", score1, score2)
 
+    if gameid == "":
+        gameid_new = 393506
+
+    #Get the correct lineup if available
+
+    curr_lineup = get_lineups(gameid_new, 0, "", seasonYear, hometeam, awayteam)
+    print(curr_lineup)
+
+    new_score1 = 0
+    new_score2 = 0
+
+    print("Scores:", new_score1, new_score2)
+
     # Get actual scores
 
     act_home_goals = 0
@@ -383,8 +397,10 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
 
     # Get all players that played last three games
 
-    #keeper_stat_home = get_keeper_data(hometeam, gamedate, seasonYear, c, conn)
-    #keeper_stat_away = get_keeper_data(awayteam, gamedate, seasonYear, c, conn)
+    keeper_stat_home = get_keeper_data(hometeam, gamedate, seasonYear, c, conn)
+    keeper_stat_away = get_keeper_data(awayteam, gamedate, seasonYear, c, conn)
+    print(keeper_stat_home.to_string())
+    print(keeper_stat_away.to_string())
 
     home_player_stat = get_player_data(hometeam, gameid, gamedate, odds1X2['1'][0], seasonYear, serie,  c, conn)
     away_player_stat = get_player_data(awayteam, gameid, gamedate, odds1X2['2'][0], seasonYear, serie,  c, conn)

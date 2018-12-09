@@ -621,9 +621,9 @@ def get_keeper_data(team, gamedate, seasonYear, c, conn):
 
 
             c.execute("SELECT COUNT(GAMEID) FROM TEAMGAMES WHERE TEAM = ? AND SEASONID = ? AND GAMEDATE < ?",[teamplayers[5][i], seasonYear, gamedate])
-            n_games = c.fetchall()[0][0]+0.5
+            n_games = c.fetchall()[0][0]+0.25
             c.execute("SELECT COUNT(GAMEID) FROM LINEUPS WHERE SUBSTR(FORNAME,1,3) = ? AND SUBSTR(SURNAME,1,2) = ? AND PERSONNR = ? AND TEAM = ? AND START_PLAYER = ? AND SEASONID = ? AND GAMEDATE < ?",[teamplayers[0][i][0:3],teamplayers[1][i][0:2],teamplayers[2][i],teamplayers[5][i],1,seasonYear, gamedate])
-            n_games_keeper = c.fetchall()[0][0]+0.5
+            n_games_keeper = c.fetchall()[0][0]+0.25
 
             pL = 0
             pR = 0
@@ -643,6 +643,22 @@ def get_keeper_data(team, gamedate, seasonYear, c, conn):
 
     keeper_sum = keeper_stat['Start%'].sum()
     keeper_stat['Start%'] = keeper_stat['Start%'] / keeper_sum
+
+    keeper_stat['L'] = keeper_stat['L%']*keeper_stat['nCon']
+    keeper_stat['R'] = keeper_stat['R%']*keeper_stat['nCon']
+    keeper_stat['D'] = keeper_stat['D%']*keeper_stat['nCon']
+    keeper_stat['F'] = keeper_stat['F%']*keeper_stat['nCon']
+
+    n_con_total = keeper_stat['nCon'].sum()
+
+
+    L_Total = keeper_stat['L'].sum()/n_con_total
+    R_Total = keeper_stat['R'].sum()/n_con_total
+    D_Total = keeper_stat['D'].sum()/n_con_total
+    F_Total = keeper_stat['F'].sum()/n_con_total
+
+
+    keeper_stat = keeper_stat.append({'Forname' : "GK", 'Surname' : "Total", 'nCon' : n_con_total, 'L%' : L_Total, 'R%' : R_Total, 'D%' : D_Total, 'F%' : F_Total, 'Start%' : 1}, ignore_index = True)
 
     return keeper_stat
 
