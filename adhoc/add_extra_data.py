@@ -19,20 +19,20 @@ c = conn.cursor()
 c.execute("SELECT * FROM EXP_GOAL_SCORER")
 add = c.fetchall()
 
-for i in range(0,len(add)):
-
-    if add[i][9] == 'CE':
-        score_ratio = add[i][14] / 0.26
-    elif add[i][9] == 'LW':
-        score_ratio = add[i][14] / 0.30
-    elif add[i][9] == 'RW':
-        score_ratio = add[i][14] / 0.28
-    else:
-        score_ratio = 1
-
-    c.execute("UPDATE EXP_GOAL_SCORER SET SCORE_RATIO = ? WHERE FORNAME = ? AND SURNAME = ? AND PERSONNR = ? AND GAMEDATE = ?",[score_ratio,add[i][5],add[i][6],add[i][7],add[i][4]])
-
-conn.commit()
+#for i in range(0,len(add)):
+#
+#    if add[i][9] == 'CE':
+#        score_ratio = add[i][14] / 0.26
+#    elif add[i][9] == 'LW':
+#        score_ratio = add[i][14] / 0.30
+#    elif add[i][9] == 'RW':
+#        score_ratio = add[i][14] / 0.28
+#    else:
+#        score_ratio = 1
+#
+#    c.execute("UPDATE EXP_GOAL_SCORER SET SCORE_RATIO = ? WHERE FORNAME = ? AND SURNAME = ? AND PERSONNR = ? AND GAMEDATE = ?",[score_ratio,add[i][5],add[i][6],add[i][7],add[i][4]])
+#
+#conn.commit()
 
 
 from create_pre_match_analysis import create_pre_match_analysis
@@ -42,9 +42,9 @@ games = c.fetchall()
 
 print(games)
 
-count = 0
+count = 785
 
-for i in range(0, len(games)):
+for i in range(785, len(games)):
     count += 1
 
     gamedate = games[i][0]

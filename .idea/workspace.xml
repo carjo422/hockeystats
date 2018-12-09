@@ -2,18 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="34d2bf4b-fd4c-4039-8ec7-45fbb538b0f4" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/website_content.py" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hockeystats.db" afterPath="$PROJECT_DIR$/hockeystats.db" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/adhoc/add_extra_data.py" afterPath="$PROJECT_DIR$/adhoc/add_extra_data.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/adhoc/analysis.py" afterPath="$PROJECT_DIR$/adhoc/analysis.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/create_player_tables.py" afterPath="$PROJECT_DIR$/create_player_tables.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/create_pre_match_analysis.py" afterPath="$PROJECT_DIR$/create_pre_match_analysis.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model_evaluation_scoring.py" afterPath="$PROJECT_DIR$/model_evaluation_scoring.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model_game_shots.py" afterPath="$PROJECT_DIR$/model_game_shots.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model_goal_scorer.py" afterPath="$PROJECT_DIR$/model_goal_scorer.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model_outcome.py" afterPath="$PROJECT_DIR$/model_outcome.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model_shot_efficiency.py" afterPath="$PROJECT_DIR$/model_shot_efficiency.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/website_output.py" afterPath="$PROJECT_DIR$/website_output.py" />
     </list>
     <ignored path="hockeystats.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -44,11 +38,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ANN.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ANN.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/adhoc/ANN.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="27" column="129" selection-start-line="27" selection-start-column="129" selection-end-line="27" selection-end-column="129" />
+            <state relative-caret-position="525">
+              <caret line="41" column="14" selection-start-line="41" selection-start-column="14" selection-end-line="41" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -57,8 +51,8 @@
       <file leaf-file-name="create_pre_match_analysis.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/create_pre_match_analysis.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2435">
-              <caret line="202" column="95" selection-start-line="202" selection-start-column="95" selection-end-line="202" selection-end-column="95" />
+            <state relative-caret-position="400">
+              <caret line="391" column="18" selection-start-line="391" selection-start-column="18" selection-end-line="391" selection-end-column="18" />
               <folding>
                 <element signature="e#1#59#0" expanded="true" />
                 <element signature="e#1009#2790#0" expanded="false" />
@@ -69,31 +63,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="model_outcome.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/model_outcome.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="129" column="1" selection-start-line="129" selection-start-column="1" selection-end-line="129" selection-end-column="1" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="model_goal_scorer.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/model_goal_scorer.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="43" column="19" selection-start-line="43" selection-start-column="19" selection-end-line="43" selection-end-column="19" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="add_extra_data.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/adhoc/add_extra_data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2265">
-              <caret line="39" column="179" selection-start-line="39" selection-start-column="179" selection-end-line="39" selection-end-column="179" />
+            <state relative-caret-position="502">
+              <caret line="60" column="0" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -101,21 +75,31 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="model_evaluation_scoring.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/model_evaluation_scoring.py">
+      <file leaf-file-name="update_schedules.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/adhoc/update_schedules.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="35" selection-start-line="4" selection-start-column="35" selection-end-line="4" selection-end-column="35" />
+            <state relative-caret-position="135">
+              <caret line="25" column="17" selection-start-line="25" selection-start-column="17" selection-end-line="25" selection-end-column="17" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="website_content.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/website_content.py">
+      <file leaf-file-name="update_rosters.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/adhoc/update_rosters.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="542">
-              <caret line="104" column="17" selection-start-line="104" selection-start-column="17" selection-end-line="104" selection-end-column="17" />
+            <state relative-caret-position="309">
+              <caret line="88" column="18" selection-start-line="88" selection-start-column="16" selection-end-line="88" selection-end-column="18" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="update_code.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/adhoc/update_code.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-105">
+              <caret line="14" column="49" selection-start-line="14" selection-start-column="49" selection-end-line="14" selection-end-column="49" />
               <folding />
             </state>
           </provider>
@@ -124,11 +108,21 @@
       <file leaf-file-name="create_player_tables.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/create_player_tables.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="78">
-              <caret line="462" column="63" selection-start-line="462" selection-start-column="63" selection-end-line="462" selection-end-column="63" />
+            <state relative-caret-position="7530">
+              <caret line="502" column="354" selection-start-line="502" selection-start-column="354" selection-end-line="502" selection-end-column="354" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="scrape.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/scrape.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="592">
+              <caret line="70" column="19" selection-start-line="70" selection-start-column="19" selection-end-line="70" selection-end-column="19" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -196,11 +190,11 @@
         <option value="$PROJECT_DIR$/model_shot_efficiency.py" />
         <option value="$PROJECT_DIR$/model_game_shots.py" />
         <option value="$PROJECT_DIR$/model_evaluation_scoring.py" />
-        <option value="$PROJECT_DIR$/create_pre_match_analysis.py" />
         <option value="$PROJECT_DIR$/model_goal_scorer.py" />
+        <option value="$PROJECT_DIR$/website_output.py" />
+        <option value="$PROJECT_DIR$/create_pre_match_analysis.py" />
         <option value="$PROJECT_DIR$/create_player_tables.py" />
         <option value="$PROJECT_DIR$/adhoc/add_extra_data.py" />
-        <option value="$PROJECT_DIR$/website_output.py" />
       </list>
     </option>
   </component>
@@ -256,6 +250,20 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hockeystats" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hockeystats" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="adhoc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
       <pane id="Scope" />
@@ -279,7 +287,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.website_output">
+  <component name="RunManager" selected="Python.scrape">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -791,13 +799,6 @@
       <option name="presentableId" value="Default" />
       <updated>1535901308728</updated>
     </task>
-    <task id="LOCAL-00002" summary="Test">
-      <created>1536183722339</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1536183722339</updated>
-    </task>
     <task id="LOCAL-00003" summary="Test">
       <created>1536304167590</created>
       <option name="number" value="00003" />
@@ -1134,7 +1135,14 @@
       <option name="project" value="LOCAL" />
       <updated>1543836505662</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="Fix the forest">
+      <created>1544255206362</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1544255206363</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1145,7 +1153,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901296" sideWeight="0.19905214" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31593794" sideWeight="0.49815693" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31589538" sideWeight="0.49815693" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901296" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19639935" sideWeight="0.49605057" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.34607646" sideWeight="0.80094784" order="2" side_tool="false" content_ui="tabs" />
@@ -1409,24 +1417,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/adhoc/update_schedules.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="25" column="17" selection-start-line="25" selection-start-column="17" selection-end-line="25" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/adhoc/delete_game.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/adhoc/update_rosters.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1260">
-          <caret line="88" column="5" selection-start-line="88" selection-start-column="5" selection-end-line="88" selection-end-column="5" />
         </state>
       </provider>
     </entry>
@@ -1442,24 +1436,6 @@
         <state relative-caret-position="1710">
           <caret line="119" column="17" selection-start-line="119" selection-start-column="17" selection-end-line="119" selection-end-column="17" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/adhoc/update_code.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="49" selection-start-line="14" selection-start-column="49" selection-end-line="14" selection-end-column="49" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/scrape.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="780">
-          <caret line="70" column="19" selection-start-line="70" selection-start-column="19" selection-end-line="70" selection-end-column="19" />
-          <folding>
-            <element signature="e#0#15#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1543,10 +1519,55 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/adhoc/ANN.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="525">
+          <caret line="41" column="14" selection-start-line="41" selection-start-column="14" selection-end-line="41" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/adhoc/update_code.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-105">
+          <caret line="14" column="49" selection-start-line="14" selection-start-column="49" selection-end-line="14" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/adhoc/update_schedules.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="25" column="17" selection-start-line="25" selection-start-column="17" selection-end-line="25" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/adhoc/update_rosters.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="309">
+          <caret line="88" column="18" selection-start-line="88" selection-start-column="16" selection-end-line="88" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/create_pre_match_analysis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="400">
+          <caret line="391" column="18" selection-start-line="391" selection-start-column="18" selection-end-line="391" selection-end-column="18" />
+          <folding>
+            <element signature="e#1#59#0" expanded="true" />
+            <element signature="e#1009#2790#0" expanded="false" />
+            <element signature="e#2904#4685#0" expanded="false" />
+            <element signature="e#4738#6926#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/create_player_tables.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="78">
-          <caret line="462" column="63" selection-start-line="462" selection-start-column="63" selection-end-line="462" selection-end-column="63" />
+        <state relative-caret-position="7530">
+          <caret line="502" column="354" selection-start-line="502" selection-start-column="354" selection-end-line="502" selection-end-column="354" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
@@ -1555,23 +1576,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/adhoc/add_extra_data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2265">
-          <caret line="39" column="179" selection-start-line="39" selection-start-column="179" selection-end-line="39" selection-end-column="179" />
+        <state relative-caret-position="502">
+          <caret line="60" column="0" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/create_pre_match_analysis.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2435">
-          <caret line="202" column="95" selection-start-line="202" selection-start-column="95" selection-end-line="202" selection-end-column="95" />
-          <folding>
-            <element signature="e#1#59#0" expanded="true" />
-            <element signature="e#1009#2790#0" expanded="false" />
-            <element signature="e#2904#4685#0" expanded="false" />
-            <element signature="e#4738#6926#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1584,10 +1592,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/adhoc/ANN.py">
+    <entry file="file://$PROJECT_DIR$/scrape.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="27" column="129" selection-start-line="27" selection-start-column="129" selection-end-line="27" selection-end-column="129" />
+        <state relative-caret-position="592">
+          <caret line="70" column="19" selection-start-line="70" selection-start-column="19" selection-end-line="70" selection-end-column="19" />
           <folding />
         </state>
       </provider>
