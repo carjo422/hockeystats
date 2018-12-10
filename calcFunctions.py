@@ -67,7 +67,7 @@ def create_game_rating(lineup,team,c,conn):
 
     # How good is the competition
 
-    opp_score_simple = calculate_team_strength_simple(opponent,gamedate,c)
+    opp_score_simple = calculate_team_strength_simple(opponent,gamedate,"",c)
 
     #Check if score is already in team score table
     c.execute("Update TEAMGAMES SET OPP_SCORE_SIMPLE = ? WHERE GAMEID = ? AND TEAM = ?",[opp_score_simple, lineup[0][1], lineup[0][8]])
@@ -192,9 +192,10 @@ def create_teamgames(seasonYear, serie,c):
             pass
 
 
-def calculate_team_strength(team,gamedate,c):
+def calculate_team_strength(team,gamedate,lineup_in,c):
 
     ######################################################## CODE TO GET AVERAGE SCORE FROM LAST GAMES ##############################################################
+
 
     c.execute("SELECT * from lineups where gamedate < ? and TEAM = ? order by gamedate DESC",[gamedate,team])
     lineup = c.fetchall()
@@ -272,8 +273,12 @@ def calculate_team_strength(team,gamedate,c):
         ####################################################### CODE TO GET SCORE BASED ON PLAYERS #############################################################
 
 
-        c.execute("SELECT FORNAME, SURNAME, PERSONNR, POSITION FROM lineups where gameid = ? and team = ?", [lineup[1], team])
-        lineup_team = np.array(c.fetchall())
+        if lineup_in == "":
+            c.execute("SELECT FORNAME, SURNAME, PERSONNR, POSITION FROM lineups where gameid = ? and team = ?", [lineup[1], team])
+            lineup_team = np.array(c.fetchall())
+        else:
+            c.execute("SELECT FORNAME, SURNAME, PERSONNR, POSITION FROM lineups where gameid = ? and team = ?",[lineup[1], team])
+            lineup_team = lineup_in
 
         if len(lineup_team) > 0:
 
@@ -281,17 +286,42 @@ def calculate_team_strength(team,gamedate,c):
             n_players = 0
 
             for i in range(0, len(lineup_team)):
-                p_score = get_player_score(lineup_team[i][0], lineup_team[i][1], lineup_team[i][2], gamedate, gameid, c)
 
-                if lineup_team[i][3] in ["Goalies","3rd Line","4th Line"]:
+
+                if lineup_in == "":
+                    forname = lineup_team[i][0]
+                    surname = lineup_team[i][1]
+                    personnr = lineup_team[i][2]
+                    position = lineup_team[i][3]
+                else:
+                    forname = lineup_team[i][3]
+                    surname = lineup_team[i][4]
+
+                    c.execute("SELECT personnr FROM ROSTERS WHERE TEAM = ? AND SEASONID = ? AND FORNAME = ? AND SURNAME = ?",[team,seasonid,forname,surname])
+                    pr = c.fetchall()
+
+                    if len(pr) > 0:
+                        personnr = pr[0][0]
+                    else:
+                        personnr = ""
+
+                    position = lineup_team[i][5]
+
+                p_score = get_player_score(forname, surname, personnr, gamedate, gameid, c)
+
+                if position in ["Goalies","3rd Line","4th Line"]:
                     player_score_sum += p_score/2
-                elif lineup_team[i][3] in ["1st Line", "2nd Line"]:
+                    print(team,forname, surname, p_score/2)
+                elif position in ["1st Line", "2nd Line"]:
                     player_score_sum += p_score
+                    print(team,forname, surname, p_score)
+
                 else:
                     p_score = 0
 
                 if p_score != 0:
                     n_players+=1
+
 
         else:
             player_score_final = -999

@@ -19,6 +19,7 @@ from create_player_tables import get_player_data
 from create_player_tables import get_keeper_data
 from model_goal_scorer import get_goal_scorer
 from scfiles.get_lineups import get_lineups
+from calcFunctions import calculate_team_strength
 
 import pandas as pd
 import numpy as np
@@ -243,12 +244,14 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
     #Get the correct lineup if available
 
     curr_lineup = get_lineups(gameid_new, 0, "", seasonYear, hometeam, awayteam)
-    print(curr_lineup)
 
     new_score1 = 0
     new_score2 = 0
 
-    print("Scores:", new_score1, new_score2)
+    new_score1 = calculate_team_strength(hometeam, gamedate, curr_lineup, c)
+    new_score2 = calculate_team_strength(awayteam, gamedate, curr_lineup, c)
+
+    print("Scores:", new_score1[3], new_score2[3])
 
     # Get actual scores
 

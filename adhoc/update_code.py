@@ -36,7 +36,7 @@ def re_score(seasonYear,serie):
             tgt = c.fetchall()
 
 
-            [final_team_score, points, season_points, player_score_final] = calculate_team_strength(tgt[0][0],tgt[0][1],c)
+            [final_team_score, points, season_points, player_score_final] = calculate_team_strength(tgt[0][0],tgt[0][1],"", c)
 
             c.execute("SELECT * FROM TEAMSCORE WHERE GAMEID = ? AND TEAM = ?",[gameVector[j][0],tgt[0][0]])
             ts = c.fetchall()
@@ -47,7 +47,7 @@ def re_score(seasonYear,serie):
                 c.execute("INSERT INTO TEAMSCORE (SEASONID, SERIE, GAMEID, GAMEDATE, TEAM, SCORE, FORM_SCORE, LAST_SEASONS_SCORE, PLAYER_SCORE) VALUES (?,?,?,?,?,?,?,?,?)",[seasonYear, serie, gameVector[j][0], tgt[0][1], tgt[0][0], final_team_score, points, season_points, player_score_final])
 
 
-            [final_team_score, points, season_points, player_score_final] = calculate_team_strength(tgt[1][0],tgt[1][1], c)
+            [final_team_score, points, season_points, player_score_final] = calculate_team_strength(tgt[1][0],tgt[1][1], "", c)
 
             c.execute("SELECT * FROM TEAMSCORE WHERE GAMEID = ? AND TEAM = ?", [gameVector[j][0], tgt[1][0]])
             ts = c.fetchall()
@@ -65,7 +65,7 @@ def re_score(seasonYear,serie):
             conn.commit()
 
 
-            [final_team_score, points, season_points, player_score_final] = calculate_team_strength(tgt[1][0],tgt[1][1], c)
+            [final_team_score, points, season_points, player_score_final] = calculate_team_strength(tgt[1][0],tgt[1][1], "", c)
 
 
             # Add score to lineups
@@ -112,8 +112,8 @@ upd = c.fetchall()
 count=0
 
 for i in range(0,len(upd)):
-    [a, b, d, hts] = calculate_team_strength(upd[i][0], upd[i][2], c)
-    [a, b, d, ats] = calculate_team_strength(upd[i][1], upd[i][2], c)
+    [a, b, d, hts] = calculate_team_strength(upd[i][0], upd[i][2], "", c)
+    [a, b, d, ats] = calculate_team_strength(upd[i][1], upd[i][2], "", c)
 
     c.execute("UPDATE EXP_SHOTS_TABLE SET SCORE1 = ?, SCORE2 = ? WHERE HOMETEAM = ? AND AWAYTEAM = ? AND GAMEDATE = ?",[hts, ats, upd[i][0], upd[i][1], upd[i][2]])
     count+=1

@@ -264,7 +264,7 @@ def create_pre_match_table(gamedate, serie, team, homeaway, c, conn):
 
     #SCORE DATA
 
-    [score1, form_score1, last_seasons_score1, player_score1] = calculate_team_strength(team, gamedate, c)
+    [score1, form_score1, last_seasons_score1, player_score1] = calculate_team_strength(team, gamedate,"", c)
 
     score_data.append(score1)
     score_data.append(form_score1)
@@ -593,8 +593,8 @@ def get_model1_data(serie, seasonYear, gamedate, home_team, away_team, c, conn):
 
     from calcFunctions import calculate_team_strength
 
-    score1 = calculate_team_strength(home_team, gamedate, c)[3]
-    score2 = calculate_team_strength(away_team, gamedate, c)[3]
+    score1 = calculate_team_strength(home_team, gamedate, "", c)[3]
+    score2 = calculate_team_strength(away_team, gamedate, "", c)[3]
 
     c.execute("SELECT HOMETEAM, COUNT(GAMEID), AVG(SCORE1), AVG(OFF_SCORE_GAME1), AVG(DEF_SCORE_GAME1) FROM (SELECT * FROM GOALS_FOREST_TABLE_1 WHERE  GAMEDATE < ? AND SEASONID = ? AND (HOMETEAM = ?) ORDER BY GAMEDATE DESC LIMIT 6)",[gamedate, seasonYear, home_team])
     hth_data = c.fetchall()

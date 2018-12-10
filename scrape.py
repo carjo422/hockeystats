@@ -445,7 +445,7 @@ def scrape_sh(seasonID, seasonYear, serie, score_update):
 
                 # Check score home team
 
-                [team_strenght, form_score, last_seasons_score, player_score] = calculate_team_strength(lineups[0][5], lineups[0][4], c)
+                [team_strenght, form_score, last_seasons_score, player_score] = calculate_team_strength(lineups[0][5], lineups[0][4], "", c)
 
                 c.execute("SELECT * FROM TEAMSCORE WHERE GAMEDATE = ? AND TEAM = ?", [lineups[0][4],lineups[0][5]])
                 chk = c.fetchall()
@@ -458,7 +458,7 @@ def scrape_sh(seasonID, seasonYear, serie, score_update):
 
                 #Check score away team
 
-                [team_strenght, form_score, last_seasons_score, player_score] = calculate_team_strength(lineups[0][6], lineups[0][4], c)
+                [team_strenght, form_score, last_seasons_score, player_score] = calculate_team_strength(lineups[0][6], lineups[0][4], "", c)
 
                 c.execute("SELECT * FROM TEAMSCORE WHERE GAMEDATE = ? AND TEAM = ?", [lineups[0][4], lineups[0][6]])
                 chk = c.fetchall()
