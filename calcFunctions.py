@@ -272,14 +272,14 @@ def calculate_team_strength(team,gamedate,lineup_in,c):
 
         ####################################################### CODE TO GET SCORE BASED ON PLAYERS #############################################################
 
-
+        # If lineup is sent into the function, use that one otherwise get data from the lineup table
         if lineup_in == "":
             c.execute("SELECT FORNAME, SURNAME, PERSONNR, POSITION FROM lineups where gameid = ? and team = ?", [lineup[1], team])
             lineup_team = np.array(c.fetchall())
         else:
-            c.execute("SELECT FORNAME, SURNAME, PERSONNR, POSITION FROM lineups where gameid = ? and team = ?",[lineup[1], team])
             lineup_team = lineup_in
 
+        #If there is a lineup
         if len(lineup_team) > 0:
 
             player_score_sum = 0
@@ -287,34 +287,43 @@ def calculate_team_strength(team,gamedate,lineup_in,c):
 
             for i in range(0, len(lineup_team)):
 
-
+                #If lineup is not sent into the function
                 if lineup_in == "":
+
                     forname = lineup_team[i][0]
                     surname = lineup_team[i][1]
                     personnr = lineup_team[i][2]
                     position = lineup_team[i][3]
+
+                #If it is
                 else:
-                    forname = lineup_team[i][3]
-                    surname = lineup_team[i][4]
 
-                    c.execute("SELECT personnr FROM ROSTERS WHERE TEAM = ? AND SEASONID = ? AND FORNAME = ? AND SURNAME = ?",[team,seasonid,forname,surname])
-                    pr = c.fetchall()
+                    forname = ""
+                    surname = ""
+                    personnr = ""
+                    position = ""
 
-                    if len(pr) > 0:
-                        personnr = pr[0][0]
-                    else:
-                        personnr = ""
+                    if lineup_team[i][1] == team:
 
-                    position = lineup_team[i][5]
+                        forname = lineup_team[i][3]
+                        surname = lineup_team[i][4]
+
+                        c.execute("SELECT personnr FROM ROSTERS WHERE TEAM = ? AND SEASONID = ? AND FORNAME = ? AND SURNAME = ?",[team,seasonid,forname,surname]) #Get personnr from rosters
+                        pr = c.fetchall()
+
+                        if len(pr) > 0:
+                            personnr = pr[0][0]
+                        else:
+                            personnr = ""
+
+                        position = lineup_team[i][5]
 
                 p_score = get_player_score(forname, surname, personnr, gamedate, gameid, c)
 
                 if position in ["Goalies","3rd Line","4th Line"]:
                     player_score_sum += p_score/2
-                    print(team,forname, surname, p_score/2)
                 elif position in ["1st Line", "2nd Line"]:
                     player_score_sum += p_score
-                    print(team,forname, surname, p_score)
 
                 else:
                     p_score = 0
@@ -326,7 +335,8 @@ def calculate_team_strength(team,gamedate,lineup_in,c):
         else:
             player_score_final = -999
 
-        player_score_final = (player_score_sum / n_players)
+        if n_players > 0:
+            player_score_final = (player_score_sum / n_players)
 
         final_team_score = points * 0 + season_points * 0 + player_score_final * 0.5
 

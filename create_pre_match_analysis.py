@@ -187,6 +187,16 @@ def get_result_matrix(home_goals, away_goals):
 
     return results, odds1X2, odds45
 
+def get_starting_keeper(team, lineup):
+
+    starting_keeper = ["",""]
+
+    for i in range(0, len(lineup)):
+        if lineup[i][1] == team and lineup[i][5] == 'Goalies':
+            if lineup[i][6] == 1:
+                starting_keeper = [lineup[i][3], lineup[i][4]]
+
+    return starting_keeper
 
 def get_player_info(player_stat, c):
 
@@ -238,20 +248,28 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
 
     print("Scores:", score1, score2)
 
+    gameid_new = 0
+
     if gameid == "":
         gameid_new = 393506
 
-    #Get the correct lineup if available
+    #Get the correct lineup if available, recalculate scores based on lineup
+    if gameid_new > 0:
+        curr_lineup = get_lineups(gameid_new, 0, "", seasonYear, hometeam, awayteam)
 
-    curr_lineup = get_lineups(gameid_new, 0, "", seasonYear, hometeam, awayteam)
+        new_score1 = 0
+        new_score2 = 0
 
-    new_score1 = 0
-    new_score2 = 0
+        new_score1 = calculate_team_strength(hometeam, gamedate, curr_lineup, c)
+        new_score2 = calculate_team_strength(awayteam, gamedate, curr_lineup, c)
 
-    new_score1 = calculate_team_strength(hometeam, gamedate, curr_lineup, c)
-    new_score2 = calculate_team_strength(awayteam, gamedate, curr_lineup, c)
+        print("New Scores:", new_score1[3], new_score2[3])
+        score1 = new_score1[3]
+        score2 = new_score2[3]
 
-    print("Scores:", new_score1[3], new_score2[3])
+        #Get starting keeper
+        starting_keeper_home = get_starting_keeper(hometeam, curr_lineup)
+        starting_keeper_away = get_starting_keeper(awayteam, curr_lineup)
 
     # Get actual scores
 
@@ -402,6 +420,15 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
 
     keeper_stat_home = get_keeper_data(hometeam, gamedate, seasonYear, c, conn)
     keeper_stat_away = get_keeper_data(awayteam, gamedate, seasonYear, c, conn)
+
+    if starting_keeper_home[0][0] != "":
+        keeper_stat_home = keeper_stat_home[keeper_stat_home['Forname'] == starting_keeper_home[0]]
+        keeper_stat_home = keeper_stat_home[keeper_stat_home['Surname'] == starting_keeper_home[1]]
+
+    if starting_keeper_away[0][0] != "":
+        keeper_stat_away = keeper_stat_away[keeper_stat_away['Forname'] == starting_keeper_away[0]]
+        keeper_stat_away = keeper_stat_away[keeper_stat_away['Surname'] == starting_keeper_away[1]]
+
     print(keeper_stat_home.to_string())
     print(keeper_stat_away.to_string())
 
