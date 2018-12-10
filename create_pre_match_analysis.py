@@ -248,14 +248,12 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
 
     print("Scores:", score1, score2)
 
-    gameid_new = 0
-
     if gameid == "":
-        gameid_new = 393506
+        gameid = 393506
 
     #Get the correct lineup if available, recalculate scores based on lineup
-    if gameid_new > 0:
-        curr_lineup = get_lineups(gameid_new, 0, "", seasonYear, hometeam, awayteam)
+    if gameid != "":
+        curr_lineup = get_lineups(gameid, 0, "", seasonYear, hometeam, awayteam)
 
         new_score1 = 0
         new_score2 = 0
@@ -421,16 +419,29 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
     keeper_stat_home = get_keeper_data(hometeam, gamedate, seasonYear, c, conn)
     keeper_stat_away = get_keeper_data(awayteam, gamedate, seasonYear, c, conn)
 
+    #If available get the correct keepers to start
     if starting_keeper_home[0][0] != "":
         keeper_stat_home = keeper_stat_home[keeper_stat_home['Forname'] == starting_keeper_home[0]]
         keeper_stat_home = keeper_stat_home[keeper_stat_home['Surname'] == starting_keeper_home[1]]
+
+        L_ratio_home = / 0.71
+        R_ratio_home = / 0.29
+        F_ratio_home = / 0.15
+        D_ratio_home = / 0.85
 
     if starting_keeper_away[0][0] != "":
         keeper_stat_away = keeper_stat_away[keeper_stat_away['Forname'] == starting_keeper_away[0]]
         keeper_stat_away = keeper_stat_away[keeper_stat_away['Surname'] == starting_keeper_away[1]]
 
+        L_ratio_home = / 0.71
+        R_ratio_home = / 0.29
+        F_ratio_home = / 0.15
+        D_ratio_home = / 0.85
+
     print(keeper_stat_home.to_string())
     print(keeper_stat_away.to_string())
+
+
 
     home_player_stat = get_player_data(hometeam, gameid, gamedate, odds1X2['1'][0], seasonYear, serie,  c, conn)
     away_player_stat = get_player_data(awayteam, gameid, gamedate, odds1X2['2'][0], seasonYear, serie,  c, conn)

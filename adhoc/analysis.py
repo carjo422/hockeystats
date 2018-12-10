@@ -7,6 +7,7 @@ from sklearn.ensemble import GradientBoostingRegressor
 
 from create_pre_match_analysis import create_pre_match_analysis
 
+
 c.execute( "SELECT GAMEDATE, SERIE, HOMETEAM, AWAYTEAM, GAMEID FROM stats WHERE (SEASONID = ? OR SEASONID = ? OR SEASONID = ? OR SEASONID = ?) AND SERIE = ? ORDER BY GAMEID",[2017, 2017, 2017, 2017, 'SHL'])
 games = c.fetchall()
 

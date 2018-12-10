@@ -335,6 +335,8 @@ def calculate_team_strength(team,gamedate,lineup_in,c):
         else:
             player_score_final = -999
 
+        player_score_final = 0
+
         if n_players > 0:
             player_score_final = (player_score_sum / n_players)
 
