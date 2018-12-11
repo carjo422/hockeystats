@@ -414,7 +414,7 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
     ###                                                               TIME FOR PLAYERS DATA NOW                                                                      ###
     ####################################################################################################################################################################
 
-    # Get all players that played last three games
+    # Get keeper stats
 
     keeper_stat_home = get_keeper_data(hometeam, gamedate, seasonYear, c, conn)
     keeper_stat_away = get_keeper_data(awayteam, gamedate, seasonYear, c, conn)
@@ -424,27 +424,19 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
         keeper_stat_home = keeper_stat_home[keeper_stat_home['Forname'] == starting_keeper_home[0]]
         keeper_stat_home = keeper_stat_home[keeper_stat_home['Surname'] == starting_keeper_home[1]]
 
-        L_ratio_home = / 0.71
-        R_ratio_home = / 0.29
-        F_ratio_home = / 0.15
-        D_ratio_home = / 0.85
-
     if starting_keeper_away[0][0] != "":
         keeper_stat_away = keeper_stat_away[keeper_stat_away['Forname'] == starting_keeper_away[0]]
         keeper_stat_away = keeper_stat_away[keeper_stat_away['Surname'] == starting_keeper_away[1]]
 
-        L_ratio_home = / 0.71
-        R_ratio_home = / 0.29
-        F_ratio_home = / 0.15
-        D_ratio_home = / 0.85
-
     print(keeper_stat_home.to_string())
     print(keeper_stat_away.to_string())
 
-
+    # Get player stats
 
     home_player_stat = get_player_data(hometeam, gameid, gamedate, odds1X2['1'][0], seasonYear, serie,  c, conn)
     away_player_stat = get_player_data(awayteam, gameid, gamedate, odds1X2['2'][0], seasonYear, serie,  c, conn)
+
+    print(home_player_stat.to_string())
 
     #print("Player goal scorer %")
 

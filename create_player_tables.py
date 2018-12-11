@@ -536,7 +536,7 @@ def get_keeper_data(team, gamedate, seasonYear, c, conn):
     #Check rosters for all scorers
 
 
-    keeper_stat = pd.DataFrame(np.zeros((0, 8)), columns=['Forname', 'Surname', 'nCon', 'L%', 'R%', 'D%', 'F%', 'Start%'])
+    keeper_stat = pd.DataFrame(np.zeros((0, 10)), columns=['Forname', 'Surname', 'nCon', 'L%', 'R%', 'D%', 'RW%', 'LW%', 'CE%', 'Start%'])
 
 
     for i in range(0,len(output)):
@@ -579,7 +579,9 @@ def get_keeper_data(team, gamedate, seasonYear, c, conn):
             concL = 0
             concR = 0
             concD = 0
-            concF = 0
+            concLW = 0
+            concRW = 0
+            concC = 0
 
             startp = 0
 
@@ -616,9 +618,12 @@ def get_keeper_data(team, gamedate, seasonYear, c, conn):
 
                                 if LR[0][1] in ['LD','RD']:
                                     concD += 1
-                                elif LR[0][1] in ['LW','RW','CE']:
-                                    concF += 1
-
+                                elif LR[0][1] in ['LW']:
+                                    concLW += 1
+                                elif LR[0][1] in ['RW']:
+                                    concRW += 1
+                                elif LR[0][1] in ['CE']:
+                                    concC += 1
 
             c.execute("SELECT COUNT(GAMEID) FROM TEAMGAMES WHERE TEAM = ? AND SEASONID = ? AND GAMEDATE < ?",[teamplayers[5][i], seasonYear, gamedate])
             n_games = c.fetchall()[0][0]+0.25
@@ -628,18 +633,24 @@ def get_keeper_data(team, gamedate, seasonYear, c, conn):
             pL = 0
             pR = 0
             pD = 0
-            pF = 0
+            pLW = 0
+            pRW = 0
+            pC = 0
 
             if concL > 0:
                 pL = concL/(concR+concL)
             if concR > 0:
                 pR = concR / (concR + concL)
             if concR > 0:
-                pD = concD / (concD + concF)
+                pD = concD / (concD + concLW + concRW + concC)
             if concR > 0:
-                pF = concF / (concD + concF)
+                pLW = concLW / (concD + concLW + concRW + concC)
+            if concR > 0:
+                pRW = concRW / (concD + concLW + concRW + concC)
+            if concR > 0:
+                pC = concC / (concD + concLW + concRW + concC)
 
-            keeper_stat = keeper_stat.append({'Forname' : teamplayers[0][i], 'Surname' : teamplayers[1][i], 'nCon' : n_conceded, 'L%' : pL, 'R%' : pR, 'D%' : pD, 'F%' : pF, 'Start%' : n_games_keeper}, ignore_index = True)
+            keeper_stat = keeper_stat.append({'Forname' : teamplayers[0][i], 'Surname' : teamplayers[1][i], 'nCon' : n_conceded, 'L%' : pL, 'R%' : pR, 'D%' : pD, 'LW%' : pLW, 'RW%': pRW, 'CE%': pC, 'Start%' : n_games_keeper}, ignore_index = True)
 
     keeper_sum = keeper_stat['Start%'].sum()
     keeper_stat['Start%'] = keeper_stat['Start%'] / keeper_sum
@@ -647,7 +658,9 @@ def get_keeper_data(team, gamedate, seasonYear, c, conn):
     keeper_stat['L'] = keeper_stat['L%']*keeper_stat['nCon']
     keeper_stat['R'] = keeper_stat['R%']*keeper_stat['nCon']
     keeper_stat['D'] = keeper_stat['D%']*keeper_stat['nCon']
-    keeper_stat['F'] = keeper_stat['F%']*keeper_stat['nCon']
+    keeper_stat['LW'] = keeper_stat['LW%']*keeper_stat['nCon']
+    keeper_stat['RW'] = keeper_stat['RW%']*keeper_stat['nCon']
+    keeper_stat['CE'] = keeper_stat['CE%']*keeper_stat['nCon']
 
     n_con_total = keeper_stat['nCon'].sum()
 
@@ -655,10 +668,12 @@ def get_keeper_data(team, gamedate, seasonYear, c, conn):
     L_Total = keeper_stat['L'].sum()/n_con_total
     R_Total = keeper_stat['R'].sum()/n_con_total
     D_Total = keeper_stat['D'].sum()/n_con_total
-    F_Total = keeper_stat['F'].sum()/n_con_total
+    LW_Total = keeper_stat['LW'].sum()/n_con_total
+    RW_Total = keeper_stat['RW'].sum()/n_con_total
+    C_Total = keeper_stat['CE'].sum()/n_con_total
 
 
-    keeper_stat = keeper_stat.append({'Forname' : "GK", 'Surname' : "Total", 'nCon' : n_con_total, 'L%' : L_Total, 'R%' : R_Total, 'D%' : D_Total, 'F%' : F_Total, 'Start%' : 1}, ignore_index = True)
+    keeper_stat = keeper_stat.append({'Forname' : "GK", 'Surname' : "Total", 'nCon' : n_con_total, 'L%' : L_Total, 'R%' : R_Total, 'D%' : D_Total, 'LW%' : LW_Total, 'RW%': RW_Total, 'CE%': C_Total, 'Start%' : 1}, ignore_index = True)
 
     return keeper_stat
 
