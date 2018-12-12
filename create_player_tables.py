@@ -111,6 +111,8 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, players, c,
     if len(lst) > 0:
         last_id = lst[0][0]
 
+
+
     if players.empty:
 
         c.execute("SELECT  FORNAME, SURNAME, PERSONNR, POSITION FROM LINEUPS WHERE TEAM = ? AND SEASONID = ? AND GAMEID = ? AND POSITION != ?",[team, seasonYear, last_id, 'Goalies'])
@@ -125,6 +127,8 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, players, c,
     tot2 = 0
 
     players = players.reset_index()
+
+
 
     for i in range(0,len(players)):
 
@@ -304,6 +308,8 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, players, c,
             hist = c.fetchall()
             c.execute("SELECT SEASONID, SERIE, COUNT(GAMEID), SUM(GOALS), SUM(ASSISTS), SUM(PLUS), SUM(PPGOALS) FROM LINEUPS WHERE FORNAME = ? AND SURNAME = ? AND PERSONNR = ? AND GAMEDATE < ? AND GAMEDATE > ? GROUP BY SEASONID ORDER by SEASONID",[forname, surname, personnr, gamedate, transform_date(gamedate,40)])
             short_hist = c.fetchall()
+
+
 
         if len(hist) > 0:
 
@@ -525,6 +531,9 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, players, c,
                               [serie, seasonYear, team, gameid, gamedate, forname, surname, personnr, age, position, line, act_line, handle, base_scoring, base_score_last, pos_score_percent, score_ratio, average_score_percent, short_time_score_final, average_score_percent_regular, average_score_percent_PP, inPP, trend, total_weight, act_goal])
 
             goal_scorer = goal_scorer.append({'Serie': serie, 'Season': seasonYear, 'Team': team, 'Gameid': gameid, 'Gamedate': gamedate, 'Forname': forname, 'Surname': surname, 'Personnr': personnr, 'Age': age, 'Position': position, 'Last Line': line, 'Act Line': act_line, 'Handle': handle, 'Pos Score': base_scoring, 'Pos Score Last': base_score_last, 'Pos multiplier': pos_score_percent, 'Score ratio': score_ratio, 'Hist Score': average_score_percent, 'Last Ten Score': short_time_score_final, 'Last Ten Score': short_time_score,  'Hist Score Reg': average_score_percent_regular, 'Hist Score PP': average_score_percent_PP, 'PP Score': inPP, 'Trend%': trend, 'Weight': total_weight}, ignore_index = True)
+        else:
+            goal_scorer = goal_scorer.append(
+                {'Serie': serie, 'Season': seasonYear, 'Team': team, 'Gameid': gameid, 'Gamedate': gamedate,'Forname': forname, 'Surname': surname, 'Personnr': personnr, 'Age': age, 'Position': position,'Last Line': line, 'Act Line': act_line, 'Handle': handle, 'Pos Score': 0,'Pos Score Last': 0, 'Pos multiplier': 0, 'Score ratio': 0,'Hist Score': 0, 'Last Ten Score': 0,'Last Ten Score': 0, 'Hist Score Reg': 0,'Hist Score PP': 0, 'PP Score': 0, 'Trend%': 0, 'Weight': 0},ignore_index=True)
 
     goal_scorer = goal_scorer.sort_values('Hist Score',ascending=False)
     #print(goal_scorer.to_string())

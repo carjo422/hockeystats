@@ -20,6 +20,7 @@ from create_player_tables import get_keeper_data
 from model_goal_scorer import get_goal_scorer
 from scfiles.get_lineups import get_lineups
 from calcFunctions import calculate_team_strength
+from scfiles.get_live_games import get_live_games
 
 import pandas as pd
 import numpy as np
@@ -224,7 +225,7 @@ def get_player_info(player_stat, c):
 
 
 
-def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, conn):
+def create_pre_match_analysis(gamedate, seasonID, serie, hometeam, awayteam, gameid, c, conn):
 
 
     # Calculate season
@@ -249,7 +250,8 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
     print("Scores:", score1, score2)
 
     if gameid == "":
-        gameid = 393506
+        gameid = get_live_games(seasonID, gamedate, hometeam, awayteam)
+        print("DICKHEAD",gameid)
 
     curr_lineup = []
     starting_keeper_home = ["",""]

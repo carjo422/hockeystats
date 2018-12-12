@@ -27,4 +27,4 @@ from create_pre_match_analysis import create_pre_match_analysis
 #create_pre_match_analysis('2018-12-18','SHL',"Luleå HF","Djurgårdens IF","", c, conn)
 #create_pre_match_analysis('2018-12-18','SHL',"Mora IK","HV 71","", c, conn)
 #create_pre_match_analysis('2018-12-18','SHL',"Örebro HK","IF Malmö Redhawks","", c, conn)
-create_pre_match_analysis('2018-12-05','SHL',"Brynäs IF","Linköping HC","", c, conn)
+create_pre_match_analysis('2018-12-12',9168,'SHL',"Brynäs IF","Linköping HC","", c, conn)
