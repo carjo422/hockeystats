@@ -97,7 +97,7 @@ def get_player_position(forname, surname, gamedate, team, seasonYear, c, conn):
 
     return position,handle
 
-def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, c, conn):
+def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, players, c, conn):
 
     #Get all players in current team
 
@@ -111,17 +111,20 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, c, conn):
     if len(lst) > 0:
         last_id = lst[0][0]
 
-    c.execute("SELECT  FORNAME, SURNAME, PERSONNR, POSITION FROM LINEUPS WHERE TEAM = ? AND SEASONID = ? AND GAMEID = ? AND POSITION != ?",[team, seasonYear, last_id, 'Goalies'])
-    players = pd.DataFrame(c.fetchall(), columns = ['Forname','Surname','Personnr','Line'])
+    if players.empty:
 
-    #If first game
-    if len(players) == 0:
-        c.execute("SELECT DISTINCT FORNAME, SURNAME, PERSONNR, POSITION FROM LINEUPS WHERE TEAM = ? AND SEASONID = ? AND GAMEDATE = ? AND POSITION != ?",[team, seasonYear, gamedate,'Goalies'])
-        players = pd.DataFrame(c.fetchall(), columns=['Forname', 'Surname', 'Personnr','Line'])
+        c.execute("SELECT  FORNAME, SURNAME, PERSONNR, POSITION FROM LINEUPS WHERE TEAM = ? AND SEASONID = ? AND GAMEID = ? AND POSITION != ?",[team, seasonYear, last_id, 'Goalies'])
+        players = pd.DataFrame(c.fetchall(), columns = ['Forname','Surname','Personnr','Line'])
 
+        #If first game
+        if len(players) == 0:
+            c.execute("SELECT DISTINCT FORNAME, SURNAME, PERSONNR, POSITION FROM LINEUPS WHERE TEAM = ? AND SEASONID = ? AND GAMEDATE = ? AND POSITION != ?",[team, seasonYear, gamedate,'Goalies'])
+            players = pd.DataFrame(c.fetchall(), columns=['Forname', 'Surname', 'Personnr','Line'])
 
     tot1 = 0
     tot2 = 0
+
+    players = players.reset_index()
 
     for i in range(0,len(players)):
 
@@ -134,6 +137,20 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, c, conn):
         personnr = players['Personnr'][i]
         line = players['Line'][i]
 
+        #Add personnr to current lines data
+        if personnr == "":
+            c.execute("SELECT PERSONNR FROM ROSTERS WHERE FORNAME = ? AND SURNAME = ? AND SEASONID = ?",[forname, surname, seasonYear])
+            prs = c.fetchall()
+            if len(prs) > 0:
+                personnr = prs[0][0]
+
+        #If personnr still empty
+        if personnr == "":
+            personnr = "2000-01-01"
+
+
+        #Get personnr from
+
         act_line = line
 
         c.execute("SELECT POSITION FROM LINEUPS WHERE GAMEDATE = ? AND FORNAME = ? AND SURNAME = ? AND PERSONNR = ?",[gamedate, forname, surname, personnr])
@@ -141,7 +158,11 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, c, conn):
         if len(act) > 0:
             act_line = act[0][0]
         else:
-            act_line = "Out"
+            c.execute("SELECT POSITION FROM LINEUPS WHERE GAMEDATE = ? AND TEAM = ?",[gamedate,team])
+            act = c.fetchall()
+
+            if len(act) > 0:
+                act_line = "Out"
 
         c.execute("SELECT POSITION, HANDLE, LENGHT, WEIGHT FROM ROSTERS WHERE FORNAME = ? AND SURNAME = ? AND PERSONNR = ? ORDER BY SEASONID DESC",[forname, surname, personnr])
         rst = c.fetchall()

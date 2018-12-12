@@ -251,6 +251,10 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
     if gameid == "":
         gameid = 393506
 
+    curr_lineup = []
+    starting_keeper_home = ["",""]
+    starting_keeper_away = ["",""]
+
     #Get the correct lineup if available, recalculate scores based on lineup
     if gameid != "":
         curr_lineup = get_lineups(gameid, 0, "", seasonYear, hometeam, awayteam)
@@ -420,28 +424,43 @@ def create_pre_match_analysis(gamedate, serie, hometeam, awayteam, gameid, c, co
     keeper_stat_away = get_keeper_data(awayteam, gamedate, seasonYear, c, conn)
 
     #If available get the correct keepers to start
-    if starting_keeper_home[0][0] != "":
+    if starting_keeper_home[0] != "":
         keeper_stat_home = keeper_stat_home[keeper_stat_home['Forname'] == starting_keeper_home[0]]
         keeper_stat_home = keeper_stat_home[keeper_stat_home['Surname'] == starting_keeper_home[1]]
+    else:
+        keeper_stat_home = keeper_stat_home[keeper_stat_home['Forname'] == "GK"]
 
-    if starting_keeper_away[0][0] != "":
+    if starting_keeper_away[0] != "":
         keeper_stat_away = keeper_stat_away[keeper_stat_away['Forname'] == starting_keeper_away[0]]
         keeper_stat_away = keeper_stat_away[keeper_stat_away['Surname'] == starting_keeper_away[1]]
+    else:
+        keeper_stat_away = keeper_stat_away[keeper_stat_away['Forname'] == "GK"]
 
     print(keeper_stat_home.to_string())
     print(keeper_stat_away.to_string())
 
     # Get player stats
 
-    home_player_stat = get_player_data(hometeam, gameid, gamedate, odds1X2['1'][0], seasonYear, serie,  c, conn)
-    away_player_stat = get_player_data(awayteam, gameid, gamedate, odds1X2['2'][0], seasonYear, serie,  c, conn)
+    cl_home = pd.DataFrame()
+    cl_away = pd.DataFrame()
+
+    #if there are lineups ready add them here
+
+    if curr_lineup != []:
+        cl = pd.DataFrame(curr_lineup, columns=['Gameid','Team','Number','Forname', 'Surname', 'Line','Starting','Audience','Venue','Season'])
+        cl['Personnr'] = ""
+        cl_home = cl[['Forname','Surname','Personnr','Line']][cl['Team'] == hometeam]
+        cl_away = cl[['Forname', 'Surname', 'Personnr', 'Line']][cl['Team'] == awayteam]
+
+
+    home_player_stat = get_player_data(hometeam, gameid, gamedate, odds1X2['1'][0], seasonYear, serie, cl_home, c, conn)
+    away_player_stat = get_player_data(awayteam, gameid, gamedate, odds1X2['2'][0], seasonYear, serie, cl_away, c, conn)
 
     print(home_player_stat.to_string())
+    print(away_player_stat.to_string())
 
-    #print("Player goal scorer %")
-
-    #get_player_info(home_player_stat, c)
-    #get_player_info(away_player_stat, c)
+    get_player_info(home_player_stat, c)
+    get_player_info(away_player_stat, c)
 
     return results, odds1X2, odds45, home_goals, away_goals, act_home_goals, act_away_goals#, keeper_stat_home, keeper_stat_away
 
