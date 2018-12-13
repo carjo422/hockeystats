@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import openpyxl
 from pandas import ExcelWriter
 from functions import linreg
 
@@ -97,11 +96,11 @@ def get_player_position(forname, surname, gamedate, team, seasonYear, c, conn):
 
     return position,handle
 
-def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, players, c, conn):
+def get_player_data(team, gameid, gamedate, odds, opp_keeper_stat, seasonYear, serie, players, c, conn):
 
     #Get all players in current team
 
-    goal_scorer = pd.DataFrame(columns = ['Serie','Season','Team','Gameid','Gamedate','Forname','Surname','Personnr','Age','Position','Last Line', 'Act Line','Handle','Pos Score','Pos Score Last','Pos multiplier','Score ratio','Hist Score','Last Ten Score','Hist Score Reg','Hist Score PP','PP Score','Trend%','Weight'])
+    goal_scorer = pd.DataFrame(columns = ['Serie','Season','Team','Gameid','Gamedate','Forname','Surname','Personnr','Age','Position','Last Line', 'Act Line','Handle','Pos Score','Pos Score Last','Pos multiplier','Score ratio','Hist Score','Last Ten Score','Hist Score Reg','Hist Score PP','PP Score','Trend%','vs Goal Pos','vs Goal Hand','Weight'])
 
     c.execute("SELECT GAMEID FROM TEAMGAMES WHERE SEASONID = ? AND TEAM = ? AND GAMEDATE < ? ORDER BY GAMEDATE DESC LIMIT 1 ",[seasonYear, team, gamedate])
     lst = c.fetchall()
@@ -416,6 +415,9 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, players, c,
                 elif age > 32:
                     trend = -0.0075
 
+            if position == 'GK':
+                trend = 0
+
             # Get the base score from last game
 
             base_score_last= 0
@@ -485,6 +487,8 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, players, c,
 
             if total_games < 5:
                 inPP = inPP * total_games/5 + 0.2 * (5-total_games)/5
+            if position == 'GK':
+                inPP = 0
 
 
             #SHORT TERM SCORING
@@ -504,6 +508,40 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, players, c,
                 short_time_score_final = average_score_percent*weight_old/(weight+weight_old)+short_time_score*weight/(weight+weight_old)
                 #print(forname, surname, short_hist[0][3], short_time_score_final)
 
+            #PLAYER VS KEEPER ADJUSTMENT
+
+            gL = opp_keeper_stat['L%'].sum()
+            gR = opp_keeper_stat['R%'].sum()
+            gD = opp_keeper_stat['D%'].sum()/2
+            gRW = opp_keeper_stat['RW%'].sum()
+            gLW = opp_keeper_stat['LW%'].sum()
+            gCE = opp_keeper_stat['CE%'].sum()
+
+            keeper_weight = opp_keeper_stat['nCon'].sum()
+
+            gL_ratio = (0.7*(120-min(keeper_weight,120))+gL*min(keeper_weight,120))/120/0.7
+            gR_ratio = (0.3*(120-min(keeper_weight,120))+gR*min(keeper_weight,120))/120/0.3
+            gD_ratio = (0.08*(120-min(keeper_weight,120))+gD*min(keeper_weight,120))/120/0.08
+            gRW_ratio = (0.28*(120-min(keeper_weight,120))+gRW*min(keeper_weight,120))/120/0.28
+            gLW_ratio = (0.295*(120-min(keeper_weight,120))+gLW*min(keeper_weight,120))/120/0.295
+            gCE_ratio = (0.265*(120-min(keeper_weight,120))+gCE*min(keeper_weight,120))/120/0.265
+
+            vs_gol_pos = 0
+            vs_gol_hand = 0
+
+            if position == 'CE':
+                vs_gol_pos = gCE_ratio
+            elif position == 'RW':
+                vs_gol_pos = gRW_ratio
+            elif position == 'LW':
+                vs_gol_pos = gLW_ratio
+            elif position in ['LD','RD']:
+                vs_gol_pos = gD_ratio
+
+            if handle == 'L':
+                vs_gol_hand = gL_ratio
+            if handle == 'R':
+                vs_gol_hand = gR_ratio
 
             c.execute("SELECT * FROM EXP_GOAL_SCORER WHERE GAMEID = ? AND FORNAME = ? AND SURNAME = ? AND PERSONNR = ?",[gameid, forname, surname, personnr])
             chk = c.fetchall()
@@ -515,8 +553,8 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, players, c,
                 if len(gls) > 0 and gls[0][0] != None:
                     act_goal = gls[0][1] / gls[0][0]
                     # Insert new variables to analysis
-                    c.execute("UPDATE EXP_GOAL_SCORER SET SERIE=?, SEASONID=?, TEAM=?, GAMEID=?, GAMEDATE=?, FORNAME=?, SURNAME=?, PERSONNR=?, AGE=?, POSITION=?, LAST_LINE=?, ACT_LINE=?, HANDLE=?, POS_SCORE=?, SCORE_RATIO=?, POS_SCORE_LAST=?, POS_MULTIPLIER=?, HIST_SCORING=?, LAST_TEN_SCORE=?, HIST_SCORING_REG=?, HIST_SCORING_PP=?, IN_PP=?, TREND=?, WEIGHT=?, ACT_GOAL=? WHERE GAMEID = ? AND FORNAME = ? AND SURNAME = ? AND PERSONNR = ?",
-                              [serie, seasonYear, team, gameid, gamedate, forname, surname, personnr, age, position, line, act_line, handle, base_scoring, base_score_last, pos_score_percent, score_ratio, average_score_percent,short_time_score_final, average_score_percent_regular, average_score_percent_PP, inPP, trend,total_weight, act_goal, gameid, forname, surname, personnr])
+                    c.execute("UPDATE EXP_GOAL_SCORER SET SERIE=?, SEASONID=?, TEAM=?, GAMEID=?, GAMEDATE=?, FORNAME=?, SURNAME=?, PERSONNR=?, AGE=?, POSITION=?, ACT_LINE=?, HANDLE=?, POS_SCORE=?, POS_SCORE_LAST = ?, POS_MULTIPLIER=?, SCORE_RATIO=?, HIST_SCORING=?, LAST_TEN_SCORE=?, HIST_SCORING_REG=?, HIST_SCORING_PP=?, IN_PP=?, TREND=?, WEIGHT=?, ACT_GOAL=?, VS_GOL_BOAST_POS=?, VS_GOL_BOAST_HAND=? WHERE GAMEID = ? AND FORNAME = ? AND SURNAME = ? AND PERSONNR = ?",
+                              [serie, seasonYear, team, gameid, gamedate, forname, surname, personnr, age, position, line, handle, base_scoring, base_score_last, pos_score_percent, score_ratio, average_score_percent, short_time_score_final, average_score_percent_regular, average_score_percent_PP, inPP, trend,total_weight, act_goal, vs_gol_pos, vs_gol_hand, gameid, forname, surname, personnr])
 
             else:
 
@@ -527,13 +565,13 @@ def get_player_data(team, gameid, gamedate, odds, seasonYear, serie, players, c,
 
                     act_goal = gls[0][1] / gls[0][0]
                     #Insert new variables to analysis
-                    c.execute("INSERT INTO EXP_GOAL_SCORER (SERIE, SEASONID, TEAM, GAMEID, GAMEDATE, FORNAME, SURNAME, PERSONNR, AGE, POSITION, LAST_LINE, ACT_LINE, HANDLE, POS_SCORE, SCORE_RATIO, POS_SCORE_LAST, POS_MULTIPLIER, HIST_SCORING, LAST_TEN_SCORE, HIST_SCORING_REG, HIST_SCORING_PP, IN_PP, TREND, WEIGHT, ACT_GOAL) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                              [serie, seasonYear, team, gameid, gamedate, forname, surname, personnr, age, position, line, act_line, handle, base_scoring, base_score_last, pos_score_percent, score_ratio, average_score_percent, short_time_score_final, average_score_percent_regular, average_score_percent_PP, inPP, trend, total_weight, act_goal])
+                    c.execute("INSERT INTO EXP_GOAL_SCORER (SERIE, SEASONID, TEAM, GAMEID, GAMEDATE, FORNAME, SURNAME, PERSONNR, AGE, POSITION, ACT_LINE, HANDLE, POS_SCORE, SCORE_RATIO, POS_SCORE_LAST, POS_MULTIPLIER, HIST_SCORING, LAST_TEN_SCORE, HIST_SCORING_REG, HIST_SCORING_PP, IN_PP, TREND, WEIGHT, ACT_GOAL, VS_GOAL_BOAST_POS, VS_GOAL_BOAST_HAND) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                              [serie, seasonYear, team, gameid, gamedate, forname, surname, personnr, age, position, act_line, handle, base_scoring, base_score_last, pos_score_percent, score_ratio, average_score_percent, short_time_score_final, average_score_percent_regular, average_score_percent_PP, inPP, trend, total_weight, act_goal, vs_gol_pos, vs_gol_hand])
 
-            goal_scorer = goal_scorer.append({'Serie': serie, 'Season': seasonYear, 'Team': team, 'Gameid': gameid, 'Gamedate': gamedate, 'Forname': forname, 'Surname': surname, 'Personnr': personnr, 'Age': age, 'Position': position, 'Last Line': line, 'Act Line': act_line, 'Handle': handle, 'Pos Score': base_scoring, 'Pos Score Last': base_score_last, 'Pos multiplier': pos_score_percent, 'Score ratio': score_ratio, 'Hist Score': average_score_percent, 'Last Ten Score': short_time_score_final, 'Last Ten Score': short_time_score,  'Hist Score Reg': average_score_percent_regular, 'Hist Score PP': average_score_percent_PP, 'PP Score': inPP, 'Trend%': trend, 'Weight': total_weight}, ignore_index = True)
+            goal_scorer = goal_scorer.append({'Serie': serie, 'Season': seasonYear, 'Team': team, 'Gameid': gameid, 'Gamedate': gamedate, 'Forname': forname, 'Surname': surname, 'Personnr': personnr, 'Age': age, 'Position': position, 'Last Line': line, 'Act Line': act_line, 'Handle': handle, 'Pos Score': base_scoring, 'Pos Score Last': base_score_last, 'Pos multiplier': pos_score_percent, 'Score ratio': score_ratio, 'Hist Score': average_score_percent, 'Last Ten Score': short_time_score_final, 'Last Ten Score': short_time_score,  'Hist Score Reg': average_score_percent_regular, 'Hist Score PP': average_score_percent_PP, 'PP Score': inPP, 'Trend%': trend, 'vs Goal Pos': vs_gol_pos, 'vs Goal Hand': vs_gol_hand, 'Weight': total_weight}, ignore_index = True)
         else:
             goal_scorer = goal_scorer.append(
-                {'Serie': serie, 'Season': seasonYear, 'Team': team, 'Gameid': gameid, 'Gamedate': gamedate,'Forname': forname, 'Surname': surname, 'Personnr': personnr, 'Age': age, 'Position': position,'Last Line': line, 'Act Line': act_line, 'Handle': handle, 'Pos Score': 0,'Pos Score Last': 0, 'Pos multiplier': 0, 'Score ratio': 0,'Hist Score': 0, 'Last Ten Score': 0,'Last Ten Score': 0, 'Hist Score Reg': 0,'Hist Score PP': 0, 'PP Score': 0, 'Trend%': 0, 'Weight': 0},ignore_index=True)
+                {'Serie': serie, 'Season': seasonYear, 'Team': team, 'Gameid': gameid, 'Gamedate': gamedate,'Forname': forname, 'Surname': surname, 'Personnr': personnr, 'Age': age, 'Position': position,'Last Line': line, 'Act Line': act_line, 'Handle': handle, 'Pos Score': 0,'Pos Score Last': 0, 'Pos multiplier': 0, 'Score ratio': 0,'Hist Score': 0, 'Last Ten Score': 0,'Last Ten Score': 0, 'Hist Score Reg': 0,'Hist Score PP': 0, 'PP Score': 0, 'Trend%': 0, 'vs Goal Pos': 1, 'vs Goal Hand': 1, 'Weight': 0},ignore_index=True)
 
     goal_scorer = goal_scorer.sort_values('Hist Score',ascending=False)
     #print(goal_scorer.to_string())

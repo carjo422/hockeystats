@@ -199,7 +199,7 @@ def get_starting_keeper(team, lineup):
 
     return starting_keeper
 
-def get_player_info(player_stat, c):
+def get_model1_features(player_stat, c):
 
     player_stat['Pos_Score_Final'] = player_stat['Pos Score'] * player_stat['Pos multiplier']
     player_stat['Pos_Score_Final_Last'] = player_stat['Pos Score Last'] * player_stat['Pos multiplier']
@@ -219,8 +219,7 @@ def get_player_info(player_stat, c):
     player_output['Goal percent'] = score_percent
     #player_output.sort_values(['Goal percent'], ascending = [0])
 
-    print(player_output.to_string())
-    print(player_output['Goal percent'].sum())
+    return player_output
 
 
 
@@ -455,14 +454,17 @@ def create_pre_match_analysis(gamedate, seasonID, serie, hometeam, awayteam, gam
         cl_away = cl[['Forname', 'Surname', 'Personnr', 'Line']][cl['Team'] == awayteam]
 
 
-    home_player_stat = get_player_data(hometeam, gameid, gamedate, odds1X2['1'][0], seasonYear, serie, cl_home, c, conn)
-    away_player_stat = get_player_data(awayteam, gameid, gamedate, odds1X2['2'][0], seasonYear, serie, cl_away, c, conn)
+    home_player_stat = get_player_data(hometeam, gameid, gamedate, odds1X2['1'][0], keeper_stat_away, seasonYear, serie, cl_home, c, conn)
+    away_player_stat = get_player_data(awayteam, gameid, gamedate, odds1X2['2'][0], keeper_stat_home, seasonYear, serie, cl_away, c, conn)
 
     print(home_player_stat.to_string())
     print(away_player_stat.to_string())
 
-    get_player_info(home_player_stat, c)
-    get_player_info(away_player_stat, c)
+    model1_home = get_model1_features(home_player_stat, c)
+    model1_away = get_model1_features(away_player_stat, c)
+
+    print(model1_home.to_string())
+    print(model1_away.to_string())
 
     return results, odds1X2, odds45, home_goals, away_goals, act_home_goals, act_away_goals#, keeper_stat_home, keeper_stat_away
 
