@@ -3,10 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="34d2bf4b-fd4c-4039-8ec7-45fbb538b0f4" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hockeystats.db" afterPath="$PROJECT_DIR$/hockeystats.db" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_away_shots_SHL2017.sav" afterPath="$PROJECT_DIR$/models/lm_away_shots_SHL2017.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_home_shots_SHL2017.sav" afterPath="$PROJECT_DIR$/models/lm_home_shots_SHL2017.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_shot_eff_away_SHL2017.sav" afterPath="$PROJECT_DIR$/models/lm_shot_eff_away_SHL2017.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_shot_eff_home_SHL2017.sav" afterPath="$PROJECT_DIR$/models/lm_shot_eff_home_SHL2017.sav" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/adhoc/analysis.py" afterPath="$PROJECT_DIR$/adhoc/analysis.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/create_player_tables.py" afterPath="$PROJECT_DIR$/create_player_tables.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/create_pre_match_analysis.py" afterPath="$PROJECT_DIR$/create_pre_match_analysis.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/website_output.py" afterPath="$PROJECT_DIR$/website_output.py" />
     </list>
     <ignored path="hockeystats.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -31,17 +34,17 @@
         <entry file="file://$PROJECT_DIR$/website_output.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="435">
-              <caret line="29" column="37" selection-start-line="29" selection-start-column="37" selection-end-line="29" selection-end-column="37" />
+              <caret line="29" column="38" selection-start-line="29" selection-start-column="38" selection-end-line="29" selection-end-column="43" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="analysis.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="analysis.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/adhoc/analysis.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+            <state relative-caret-position="75">
+              <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -50,8 +53,8 @@
       <file leaf-file-name="create_pre_match_analysis.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/create_pre_match_analysis.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2702">
-              <caret line="201" column="40" selection-start-line="201" selection-start-column="40" selection-end-line="201" selection-end-column="40" />
+            <state relative-caret-position="287">
+              <caret line="450" column="126" selection-start-line="450" selection-start-column="125" selection-end-line="450" selection-end-column="126" />
               <folding>
                 <element signature="e#1#59#0" expanded="true" />
                 <element signature="e#1155#2936#0" expanded="false" />
@@ -86,11 +89,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="create_player_tables.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="create_player_tables.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/create_player_tables.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="555" column="388" selection-start-line="555" selection-start-column="388" selection-end-line="555" selection-end-column="388" />
+            <state relative-caret-position="225">
+              <caret line="567" column="338" selection-start-line="567" selection-start-column="338" selection-end-line="567" selection-end-column="338" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -194,11 +197,11 @@
         <option value="$PROJECT_DIR$/scrape.py" />
         <option value="$PROJECT_DIR$/adhoc/update_code.py" />
         <option value="$PROJECT_DIR$/calcFunctions.py" />
-        <option value="$PROJECT_DIR$/adhoc/analysis.py" />
         <option value="$PROJECT_DIR$/scfiles/get_live_games.py" />
         <option value="$PROJECT_DIR$/website_output.py" />
         <option value="$PROJECT_DIR$/create_pre_match_analysis.py" />
         <option value="$PROJECT_DIR$/create_player_tables.py" />
+        <option value="$PROJECT_DIR$/adhoc/analysis.py" />
       </list>
     </option>
   </component>
@@ -307,7 +310,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.website_output">
+  <component name="RunManager" selected="Python.analysis">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -837,13 +840,6 @@
       <option name="presentableId" value="Default" />
       <updated>1535901308728</updated>
     </task>
-    <task id="LOCAL-00007" summary="Test">
-      <created>1536520221466</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1536520221466</updated>
-    </task>
     <task id="LOCAL-00008" summary="Test">
       <created>1536520714756</created>
       <option name="number" value="00008" />
@@ -1180,7 +1176,14 @@
       <option name="project" value="LOCAL" />
       <updated>1544655114596</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL-00056" summary="f">
+      <created>1544742021671</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1544742021672</updated>
+    </task>
+    <option name="localTasksCounter" value="57" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1583,37 +1586,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/create_pre_match_analysis.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2702">
-          <caret line="201" column="40" selection-start-line="201" selection-start-column="40" selection-end-line="201" selection-end-column="40" />
-          <folding>
-            <element signature="e#1#59#0" expanded="true" />
-            <element signature="e#1155#2936#0" expanded="false" />
-            <element signature="e#3050#4831#0" expanded="false" />
-            <element signature="e#4884#7072#0" expanded="false" />
-            <element signature="e#7118#7368#0" expanded="false" />
-            <element signature="e#7416#8506#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/adhoc/analysis.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/website_output.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="29" column="37" selection-start-line="29" selection-start-column="37" selection-end-line="29" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scfiles/get_live_games.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="697">
@@ -1632,13 +1604,44 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/website_output.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="29" column="38" selection-start-line="29" selection-start-column="38" selection-end-line="29" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/create_pre_match_analysis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="287">
+          <caret line="450" column="126" selection-start-line="450" selection-start-column="125" selection-end-line="450" selection-end-column="126" />
+          <folding>
+            <element signature="e#1#59#0" expanded="true" />
+            <element signature="e#1155#2936#0" expanded="false" />
+            <element signature="e#3050#4831#0" expanded="false" />
+            <element signature="e#4884#7072#0" expanded="false" />
+            <element signature="e#7118#7368#0" expanded="false" />
+            <element signature="e#7416#8506#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/create_player_tables.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="555" column="388" selection-start-line="555" selection-start-column="388" selection-end-line="555" selection-end-column="388" />
+        <state relative-caret-position="225">
+          <caret line="567" column="338" selection-start-line="567" selection-start-column="338" selection-end-line="567" selection-end-column="338" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/adhoc/analysis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
