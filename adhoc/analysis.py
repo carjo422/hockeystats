@@ -9,28 +9,23 @@ from create_pre_match_analysis import create_pre_match_analysis
 
 
 
+c.execute( "SELECT GAMEDATE, SERIE, HOMETEAM, AWAYTEAM, GAMEID FROM stats WHERE (SEASONID = ? OR SEASONID = ? OR SEASONID = ? OR SEASONID = ?) AND SERIE = ? ORDER BY GAMEID",[2017, 2018, 2019, 2017, 'HA'])
+games = c.fetchall()
 
-if 2==5:
+count = 0
 
-    c.execute( "SELECT GAMEDATE, SERIE, HOMETEAM, AWAYTEAM, GAMEID FROM stats WHERE (SEASONID = ? OR SEASONID = ? OR SEASONID = ? OR SEASONID = ?) AND SERIE = ? ORDER BY GAMEID",[2017, 2018, 2019, 2017, 'SHL'])
-    games = c.fetchall()
+for i in range(0, len(games)):
+    count += 1
 
-    print(games)
+    gamedate = games[i][0]
+    serie = games[i][1]
+    hometeam = games[i][2]
+    awayteam = games[i][3]
+    gameid = games[i][4]
 
-    count = 0
+    create_pre_match_analysis(gamedate, 5555, serie, hometeam, awayteam, gameid, c, conn)
 
-    for i in range(0, len(games)):
-        count += 1
-
-        gamedate = games[i][0]
-        serie = games[i][1]
-        hometeam = games[i][2]
-        awayteam = games[i][3]
-        gameid = games[i][4]
-
-        create_pre_match_analysis(gamedate, 5555, serie, hometeam, awayteam, gameid, c, conn)
-
-        print(count, "/", len(games))
+    print(count, "/", len(games))
 
 if 2 == 3:
 

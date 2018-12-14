@@ -70,8 +70,8 @@ def scrape_sh(seasonID, seasonYear, serie, score_update):
 
     #Update rosters
 
-    update_rosters(9168, 2019, 'HA', c, conn)
-    update_rosters(9171, 2019, 'SHL', c, conn)
+    update_rosters(seasonID, seasonYear, serie, c, conn)
+
 
     for i in range(1,len(page_source)-10):
 
@@ -489,7 +489,7 @@ def scrape_sh(seasonID, seasonYear, serie, score_update):
             c.execute("SELECT HOMETEAM, AWAYTEAM FROM STATS WHERE GAMEID = ?",[gameVector[j][0]])
             teams = c.fetchall()
 
-            create_pre_match_analysis(dateVector[j][0], serie, teams[0][0], teams[0][1], gameVector[j][0], c, conn)
+            create_pre_match_analysis(dateVector[j][0], seasonID, serie, teams[0][0], teams[0][1], gameVector[j][0], c, conn)
 
 
 #scrape_sh(6053, 2016, "HA", "New")

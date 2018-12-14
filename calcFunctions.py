@@ -67,7 +67,7 @@ def create_game_rating(lineup,team,c,conn):
 
     # How good is the competition
 
-    opp_score_simple = calculate_team_strength_simple(opponent,gamedate,"",c)
+    opp_score_simple = calculate_team_strength_simple(opponent,gamedate,c)
 
     #Check if score is already in team score table
     c.execute("Update TEAMGAMES SET OPP_SCORE_SIMPLE = ? WHERE GAMEID = ? AND TEAM = ?",[opp_score_simple, lineup[0][1], lineup[0][8]])
