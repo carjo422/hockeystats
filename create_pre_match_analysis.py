@@ -234,6 +234,11 @@ def create_pre_match_analysis(gamedate, seasonID, serie, hometeam, awayteam, gam
     if int(gamedate[5:7]) > 6:
         seasonYear += 1
 
+    modelSeasonYear = seasonYear
+    #Code to use newer models on old data if no old model is available
+    if modelSeasonYear < 2017:
+        modelSeasonYear = 2017
+
     print(serie, hometeam, awayteam, gamedate)
 
     [base_table1, full_data1, home_data1, away_data1, last_five_data1, last_match_data1, streak_table1, score_data1] = create_pre_match_table(gamedate, serie, hometeam, "H", c, conn)
@@ -250,7 +255,6 @@ def create_pre_match_analysis(gamedate, seasonID, serie, hometeam, awayteam, gam
 
     if gameid == "":
         gameid = get_live_games(seasonID, gamedate, hometeam, awayteam)
-        print("DICKHEAD",gameid)
 
     curr_lineup = []
     starting_keeper_home = ["",""]
@@ -291,10 +295,10 @@ def create_pre_match_analysis(gamedate, seasonID, serie, hometeam, awayteam, gam
     ###                                                                  MODEL nGOALS FOR 1 & 2                                                                      ###
     ####################################################################################################################################################################
 
-    home_team_off, home_team_def, away_team_off, away_team_def = get_model1_data(serie, seasonYear, gamedate, hometeam, awayteam, c, conn)
+    home_team_off, home_team_def, away_team_off, away_team_def = get_model1_data(serie, modelSeasonYear, gamedate, hometeam, awayteam, c, conn)
     inputs = pd.DataFrame([[abs(score1/score2-1), home_team_off, away_team_off, home_team_def, away_team_def]])
 
-    nGoals = get_nGoals_model(2019, inputs, c)
+    nGoals = get_nGoals_model(seasonYear, inputs, c)
 
     print("nGoals: ", nGoals)
 
@@ -305,7 +309,7 @@ def create_pre_match_analysis(gamedate, seasonID, serie, hometeam, awayteam, gam
 
     # Get shots, first base function then adjusted function
 
-    home_shots_temp, away_shots_temp = get_shots_goals_linreg(seasonYear, [ave_home_shots, ave_home_shots_against, ave_away_shots, ave_away_shots_against, score_data1[3], score_data2[3]], gameid, 'SHL', c, conn)
+    home_shots_temp, away_shots_temp = get_shots_goals_linreg(modelSeasonYear, [ave_home_shots, ave_home_shots_against, ave_away_shots, ave_away_shots_against, score_data1[3], score_data2[3]], gameid, serie, c, conn)
 
     home_shots, away_shots = get_adjusted_shots(home_shots_temp, away_shots_temp, hometeam, awayteam, gamedate, seasonYear, c, conn)
 
@@ -316,7 +320,7 @@ def create_pre_match_analysis(gamedate, seasonID, serie, hometeam, awayteam, gam
 
     # Get goals from shots, first base function then basic adjustment
 
-    home_goals1, away_goals1 = get_efficiency_model_linreg(seasonYear, [home_shots, away_shots, score1-score2, average_goal_percent], gameid, 'SHL', c)
+    home_goals1, away_goals1 = get_efficiency_model_linreg(modelSeasonYear, [home_shots, away_shots, score1-score2, average_goal_percent], gameid, serie, c)
 
     home_goals1 *= 0.975 # Basic adjustment
     away_goals1 *= 0.995  # Basic adjustment
@@ -331,13 +335,13 @@ def create_pre_match_analysis(gamedate, seasonID, serie, hometeam, awayteam, gam
     # Update model data
     #update_forest_data_1(serie, c, conn) #(If historic values need to be rerun for model)
 
-    home_team_off, home_team_def, away_team_off, away_team_def = get_model1_data(serie, seasonYear, gamedate, hometeam, awayteam, c, conn)
+    home_team_off, home_team_def, away_team_off, away_team_def = get_model1_data(serie, modelSeasonYear, gamedate, hometeam, awayteam, c, conn)
 
     inputs = pd.DataFrame([[home_team_off, home_team_def, away_team_off, away_team_def]])  #
     #print(inputs)
 
     # Get odds model 2
-    diff1 = get_outcome_model1(serie, 2019, inputs, c)  # seasonYear = 2019
+    diff1 = get_outcome_model1(serie, modelSeasonYear, inputs, c)  # seasonYear = 2019
     #print(diff1)
 
     home_goals2 = nGoals/2+diff1/2
@@ -362,7 +366,7 @@ def create_pre_match_analysis(gamedate, seasonID, serie, hometeam, awayteam, gam
     inputs = pd.DataFrame([[comb_score_home, comb_score_away]])
 
     # Get odds model 3
-    diff2 = get_outcome_model2(serie, seasonYear, inputs, c)  # seasonYear = 2019
+    diff2 = get_outcome_model2(serie, modelSeasonYear, inputs, c)  # seasonYear = 2019
 
     home_goals3 = nGoals/2+diff2/2
     away_goals3 = nGoals/2-diff2/2
