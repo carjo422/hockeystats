@@ -2,28 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="34d2bf4b-fd4c-4039-8ec7-45fbb538b0f4" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/update_models.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hockeystats.db" afterPath="$PROJECT_DIR$/hockeystats.db" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_away_shots_HA2018.sav" afterPath="$PROJECT_DIR$/models/lm_away_shots_HA2018.sav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_away_shots_HA2019.sav" afterPath="$PROJECT_DIR$/models/lm_away_shots_HA2019.sav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_away_shots_SHL2016.sav" afterPath="$PROJECT_DIR$/models/lm_away_shots_SHL2016.sav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_away_shots_SHL2017.sav" afterPath="$PROJECT_DIR$/models/lm_away_shots_SHL2017.sav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_home_shots_HA2018.sav" afterPath="$PROJECT_DIR$/models/lm_home_shots_HA2018.sav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_home_shots_HA2019.sav" afterPath="$PROJECT_DIR$/models/lm_home_shots_HA2019.sav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_home_shots_SHL2016.sav" afterPath="$PROJECT_DIR$/models/lm_home_shots_SHL2016.sav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_home_shots_SHL2017.sav" afterPath="$PROJECT_DIR$/models/lm_home_shots_SHL2017.sav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_shot_eff_away_HA2018.sav" afterPath="$PROJECT_DIR$/models/lm_shot_eff_away_HA2018.sav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_shot_eff_away_HA2019.sav" afterPath="$PROJECT_DIR$/models/lm_shot_eff_away_HA2019.sav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_shot_eff_away_SHL2017.sav" afterPath="$PROJECT_DIR$/models/lm_shot_eff_away_SHL2017.sav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_shot_eff_home_HA2018.sav" afterPath="$PROJECT_DIR$/models/lm_shot_eff_home_HA2018.sav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_shot_eff_home_HA2019.sav" afterPath="$PROJECT_DIR$/models/lm_shot_eff_home_HA2019.sav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_shot_eff_home_SHL2017.sav" afterPath="$PROJECT_DIR$/models/lm_shot_eff_home_SHL2017.sav" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/outcome_model2_HA2019.sav" afterPath="$PROJECT_DIR$/models/outcome_model2_HA2019.sav" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/adhoc/analysis.py" afterPath="$PROJECT_DIR$/adhoc/analysis.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/calcFunctions.py" afterPath="$PROJECT_DIR$/calcFunctions.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scrape.py" afterPath="$PROJECT_DIR$/scrape.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/website_output.py" afterPath="$PROJECT_DIR$/website_output.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/create_pre_match_analysis.py" afterPath="$PROJECT_DIR$/create_pre_match_analysis.py" />
     </list>
     <ignored path="hockeystats.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -47,8 +29,8 @@
       <file leaf-file-name="analysis.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/adhoc/analysis.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1340">
-              <caret line="12" column="20" selection-start-line="12" selection-start-column="20" selection-end-line="12" selection-end-column="20" />
+            <state relative-caret-position="150">
+              <caret line="11" column="142" selection-start-line="11" selection-start-column="142" selection-end-line="11" selection-end-column="142" />
               <folding />
             </state>
           </provider>
@@ -127,9 +109,10 @@
       <file leaf-file-name="create_pre_match_analysis.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/create_pre_match_analysis.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" column="10" selection-start-line="3" selection-start-column="5" selection-end-line="3" selection-end-column="10" />
+            <state relative-caret-position="99">
+              <caret line="288" column="23" selection-start-line="288" selection-start-column="23" selection-end-line="288" selection-end-column="23" />
               <folding>
+                <element signature="e#1#59#0" expanded="true" />
                 <element signature="e#4884#7072#0" expanded="false" />
                 <element signature="e#7118#7368#0" expanded="false" />
                 <element signature="e#7416#8506#0" expanded="false" />
@@ -205,8 +188,8 @@
         <option value="$PROJECT_DIR$/scrape.py" />
         <option value="$PROJECT_DIR$/scfiles/get_live_games.py" />
         <option value="$PROJECT_DIR$/website_output.py" />
-        <option value="$PROJECT_DIR$/adhoc/analysis.py" />
         <option value="$PROJECT_DIR$/update_models.py" />
+        <option value="$PROJECT_DIR$/adhoc/analysis.py" />
         <option value="$PROJECT_DIR$/create_pre_match_analysis.py" />
       </list>
     </option>
@@ -863,13 +846,6 @@
       <option name="presentableId" value="Default" />
       <updated>1535901308728</updated>
     </task>
-    <task id="LOCAL-00009" summary="Test">
-      <created>1536783722953</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1536783722953</updated>
-    </task>
     <task id="LOCAL-00010" summary="Test">
       <created>1536874145341</created>
       <option name="number" value="00010" />
@@ -1206,7 +1182,14 @@
       <option name="project" value="LOCAL" />
       <updated>1544825964100</updated>
     </task>
-    <option name="localTasksCounter" value="58" />
+    <task id="LOCAL-00058" summary="f">
+      <created>1544825994769</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1544825994769</updated>
+    </task>
+    <option name="localTasksCounter" value="59" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1645,17 +1628,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/adhoc/analysis.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1340">
-          <caret line="12" column="20" selection-start-line="12" selection-start-column="20" selection-end-line="12" selection-end-column="20" />
+        <state relative-caret-position="150">
+          <caret line="11" column="142" selection-start-line="11" selection-start-column="142" selection-end-line="11" selection-end-column="142" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/create_pre_match_analysis.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="10" selection-start-line="3" selection-start-column="5" selection-end-line="3" selection-end-column="10" />
+        <state relative-caret-position="99">
+          <caret line="288" column="23" selection-start-line="288" selection-start-column="23" selection-end-line="288" selection-end-column="23" />
           <folding>
+            <element signature="e#1#59#0" expanded="true" />
             <element signature="e#4884#7072#0" expanded="false" />
             <element signature="e#7118#7368#0" expanded="false" />
             <element signature="e#7416#8506#0" expanded="false" />

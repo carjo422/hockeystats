@@ -298,7 +298,7 @@ def create_pre_match_analysis(gamedate, seasonID, serie, hometeam, awayteam, gam
     home_team_off, home_team_def, away_team_off, away_team_def = get_model1_data(serie, modelSeasonYear, gamedate, hometeam, awayteam, c, conn)
     inputs = pd.DataFrame([[abs(score1/score2-1), home_team_off, away_team_off, home_team_def, away_team_def]])
 
-    nGoals = get_nGoals_model(seasonYear, inputs, c)
+    nGoals = get_nGoals_model(modelSeasonYear, inputs, c)
 
     print("nGoals: ", nGoals)
 
