@@ -506,25 +506,19 @@ def get_player_data(team, gameid, gamedate, odds, opp_keeper_stat, seasonYear, s
                     short_time_score = (short_hist[0][3] * 0.65 + short_hist[0][6]*0.35 * 0.35)/weight/2.4
 
                 short_time_score_final = average_score_percent*weight_old/(weight+weight_old)+short_time_score*weight/(weight+weight_old)
-                #print(forname, surname, short_hist[0][3], short_time_score_final)
 
             #PLAYER VS KEEPER ADJUSTMENT
 
-            gL = opp_keeper_stat['L%'].sum()
-            gR = opp_keeper_stat['R%'].sum()
-            gD = opp_keeper_stat['D%'].sum()/2
-            gRW = opp_keeper_stat['RW%'].sum()
-            gLW = opp_keeper_stat['LW%'].sum()
-            gCE = opp_keeper_stat['CE%'].sum()
+            gL_ratio = opp_keeper_stat['L%'].sum()
+            gR_ratio = opp_keeper_stat['R%'].sum()
+            gD_ratio = opp_keeper_stat['D%'].sum()/2
+            gRW_ratio = opp_keeper_stat['RW%'].sum()
+            gLW_ratio = opp_keeper_stat['LW%'].sum()
+            gCE_ratio = opp_keeper_stat['CE%'].sum()
 
             keeper_weight = opp_keeper_stat['nCon'].sum()
-
-            gL_ratio = (0.7*(120-min(keeper_weight,120))+gL*min(keeper_weight,120))/120/0.7
-            gR_ratio = (0.3*(120-min(keeper_weight,120))+gR*min(keeper_weight,120))/120/0.3
-            gD_ratio = (0.08*(120-min(keeper_weight,120))+gD*min(keeper_weight,120))/120/0.08
-            gRW_ratio = (0.28*(120-min(keeper_weight,120))+gRW*min(keeper_weight,120))/120/0.28
-            gLW_ratio = (0.295*(120-min(keeper_weight,120))+gLW*min(keeper_weight,120))/120/0.295
-            gCE_ratio = (0.265*(120-min(keeper_weight,120))+gCE*min(keeper_weight,120))/120/0.265
+            keeper_forname = opp_keeper_stat['Forname'].iloc[0]
+            keeper_surname = opp_keeper_stat['Surname'].iloc[0]
 
             vs_gol_pos = 0
             vs_gol_hand = 0
@@ -553,8 +547,8 @@ def get_player_data(team, gameid, gamedate, odds, opp_keeper_stat, seasonYear, s
                 if len(gls) > 0 and gls[0][0] != None:
                     act_goal = gls[0][1] / gls[0][0]
                     # Insert new variables to analysis
-                    c.execute("UPDATE EXP_GOAL_SCORER SET SERIE=?, SEASONID=?, TEAM=?, GAMEID=?, GAMEDATE=?, FORNAME=?, SURNAME=?, PERSONNR=?, AGE=?, POSITION=?, ACT_LINE=?, HANDLE=?, POS_SCORE=?, POS_SCORE_LAST = ?, POS_MULTIPLIER=?, SCORE_RATIO=?, HIST_SCORING=?, LAST_TEN_SCORE=?, HIST_SCORING_REG=?, HIST_SCORING_PP=?, IN_PP=?, TREND=?, WEIGHT=?, ACT_GOAL=?, VS_GOL_BOAST_POS=?, VS_GOL_BOAST_HAND=? WHERE GAMEID = ? AND FORNAME = ? AND SURNAME = ? AND PERSONNR = ?",
-                              [serie, seasonYear, team, gameid, gamedate, forname, surname, personnr, age, position, line, handle, base_scoring, base_score_last, pos_score_percent, score_ratio, average_score_percent, short_time_score_final, average_score_percent_regular, average_score_percent_PP, inPP, trend,total_weight, act_goal, vs_gol_pos, vs_gol_hand, gameid, forname, surname, personnr])
+                    c.execute("UPDATE EXP_GOAL_SCORER SET SERIE=?, SEASONID=?, TEAM=?, GAMEID=?, GAMEDATE=?, FORNAME=?, SURNAME=?, PERSONNR=?, AGE=?, POSITION=?, ACT_LINE=?, HANDLE=?, POS_SCORE=?, POS_SCORE_LAST = ?, POS_MULTIPLIER=?, SCORE_RATIO=?, HIST_SCORING=?, LAST_TEN_SCORE=?, HIST_SCORING_REG=?, HIST_SCORING_PP=?, IN_PP=?, TREND=?, WEIGHT=?, ACT_GOAL=?, VS_GOL_BOAST_POS=?, VS_GOL_BOAST_HAND=?, KEEPER_FORNAME = ?, KEEPER_SURNAME = ?, KEEPER_WEIGHT = ? WHERE GAMEID = ? AND FORNAME = ? AND SURNAME = ? AND PERSONNR = ?",
+                              [serie, seasonYear, team, gameid, gamedate, forname, surname, personnr, age, position, line, handle, base_scoring, base_score_last, pos_score_percent, score_ratio, average_score_percent, short_time_score_final, average_score_percent_regular, average_score_percent_PP, inPP, trend,total_weight, act_goal, vs_gol_pos, vs_gol_hand, keeper_forname, keeper_surname, keeper_weight, gameid, forname, surname, personnr])
 
             else:
 
@@ -565,8 +559,8 @@ def get_player_data(team, gameid, gamedate, odds, opp_keeper_stat, seasonYear, s
 
                     act_goal = gls[0][1] / gls[0][0]
                     #Insert new variables to analysis
-                    c.execute("INSERT INTO EXP_GOAL_SCORER (SERIE, SEASONID, TEAM, GAMEID, GAMEDATE, FORNAME, SURNAME, PERSONNR, AGE, POSITION, ACT_LINE, HANDLE, POS_SCORE, SCORE_RATIO, POS_SCORE_LAST, POS_MULTIPLIER, HIST_SCORING, LAST_TEN_SCORE, HIST_SCORING_REG, HIST_SCORING_PP, IN_PP, TREND, WEIGHT, ACT_GOAL, VS_GOL_BOAST_POS, VS_GOL_BOAST_HAND) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                              [serie, seasonYear, team, gameid, gamedate, forname, surname, personnr, age, position, act_line, handle, base_scoring, base_score_last, pos_score_percent, score_ratio, average_score_percent, short_time_score_final, average_score_percent_regular, average_score_percent_PP, inPP, trend, total_weight, act_goal, vs_gol_pos, vs_gol_hand])
+                    c.execute("INSERT INTO EXP_GOAL_SCORER (SERIE, SEASONID, TEAM, GAMEID, GAMEDATE, FORNAME, SURNAME, PERSONNR, AGE, POSITION, ACT_LINE, HANDLE, POS_SCORE, SCORE_RATIO, POS_SCORE_LAST, POS_MULTIPLIER, HIST_SCORING, LAST_TEN_SCORE, HIST_SCORING_REG, HIST_SCORING_PP, IN_PP, TREND, WEIGHT, ACT_GOAL, VS_GOL_BOAST_POS, VS_GOL_BOAST_HAND, KEEPER_FORNAME, KEEPER_SURNAME, KEEPER_WEIGHT) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                              [serie, seasonYear, team, gameid, gamedate, forname, surname, personnr, age, position, act_line, handle, base_scoring, base_score_last, pos_score_percent, score_ratio, average_score_percent, short_time_score_final, average_score_percent_regular, average_score_percent_PP, inPP, trend, total_weight, act_goal, vs_gol_pos, vs_gol_hand, keeper_forname, keeper_surname, keeper_weight])
 
             goal_scorer = goal_scorer.append({'Serie': serie, 'Season': seasonYear, 'Team': team, 'Gameid': gameid, 'Gamedate': gamedate, 'Forname': forname, 'Surname': surname, 'Personnr': personnr, 'Age': age, 'Position': position, 'Last Line': line, 'Act Line': act_line, 'Handle': handle, 'Pos Score': base_scoring, 'Pos Score Last': base_score_last, 'Pos multiplier': pos_score_percent, 'Score ratio': score_ratio, 'Hist Score': average_score_percent, 'Last Ten Score': short_time_score_final, 'Last Ten Score': short_time_score,  'Hist Score Reg': average_score_percent_regular, 'Hist Score PP': average_score_percent_PP, 'PP Score': inPP, 'Trend%': trend, 'vs Goal Pos': vs_gol_pos, 'vs Goal Hand': vs_gol_hand, 'Weight': total_weight}, ignore_index = True)
         else:
@@ -582,7 +576,7 @@ def get_player_data(team, gameid, gamedate, odds, opp_keeper_stat, seasonYear, s
 
 
 
-def get_keeper_data(team, gamedate, seasonYear, c, conn):
+def get_keeper_data(team, gamedate, seasonYear, starting_keeper, c, conn):
 
     #Collect all players in the team
 
@@ -590,7 +584,7 @@ def get_keeper_data(team, gamedate, seasonYear, c, conn):
     output = c.fetchall()
     teamplayers = pd.DataFrame(output)
 
-    #print(teamplayers)
+    start_keeper_found = 0
 
     if len(output) == 0:
 
@@ -598,7 +592,21 @@ def get_keeper_data(team, gamedate, seasonYear, c, conn):
         output = c.fetchall()
         teamplayers = pd.DataFrame(output)
 
-        #print(teamplayers)
+        for t in range(0,len(output)):
+            if output[t][0] == starting_keeper[0] and output[t][1] == starting_keeper[1]:
+                start_keeper_found = 1
+
+
+    if start_keeper_found == 0:
+        c.execute("SELECT a.FORNAME, a.SURNAME, a.PERSONNR, b.POSITION, b.HANDLE, a.TEAM, SUM(1), SUM(a.GOALS), SUM(a.PPGOALS), SUM(a.ASSISTS), SUM(a.PLUS) FROM (SELECT * FROM LINEUPS) a LEFT JOIN ROSTERS b on a.FORNAME = b.forname AND a.SURNAME = b.SURNAME WHERE a.FORNAME = ? and a.SURNAME = ? GROUP BY a.FORNAME, a.SURNAME",[starting_keeper[0], starting_keeper[1]])
+        output = c.fetchall()
+
+        teamplayers = pd.DataFrame(output)
+
+    if len(output) == 0:
+        c.execute("SELECT FORNAME, SURNAME, PERSONNR, POSITION, HANDLE, TEAM, 0, 0, 0, 0, 0 FROM ROSTERS WHERE SEASONID = ? AND TEAM = ?",[seasonYear, team])
+        output = c.fetchall()
+        teamplayers = pd.DataFrame(output)
 
 
     #Check rosters for all scorers
@@ -634,9 +642,6 @@ def get_keeper_data(team, gamedate, seasonYear, c, conn):
 
             if weight > 0:
                 scoring /= weight
-
-            #print("W",weight)
-            #print("S",scoring)
 
         else:
 
@@ -719,6 +724,7 @@ def get_keeper_data(team, gamedate, seasonYear, c, conn):
                 pC = concC / (concD + concLW + concRW + concC)
 
             keeper_stat = keeper_stat.append({'Forname' : teamplayers[0][i], 'Surname' : teamplayers[1][i], 'nCon' : n_conceded, 'L%' : pL, 'R%' : pR, 'D%' : pD, 'LW%' : pLW, 'RW%': pRW, 'CE%': pC, 'Start%' : n_games_keeper}, ignore_index = True)
+
 
     keeper_sum = keeper_stat['Start%'].sum()
     keeper_stat['Start%'] = keeper_stat['Start%'] / keeper_sum

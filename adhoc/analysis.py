@@ -9,7 +9,7 @@ from create_pre_match_analysis import create_pre_match_analysis
 
 
 
-c.execute( "SELECT GAMEDATE, SERIE, HOMETEAM, AWAYTEAM, GAMEID FROM stats WHERE (SEASONID = ? OR SEASONID = ? OR SEASONID = ? OR SEASONID = ?) ORDER BY GAMEID",[2016, 2016, 2016, 2016])
+c.execute( "SELECT GAMEDATE, SERIE, HOMETEAM, AWAYTEAM, GAMEID FROM stats WHERE (SEASONID = ? OR SEASONID = ? OR SEASONID = ? OR SEASONID = ?) ORDER BY GAMEID",[2016, 2017, 2018, 2019])
 games = c.fetchall()
 
 count = 0
