@@ -3,9 +3,41 @@
   <component name="ChangeListManager">
     <list default="true" id="34d2bf4b-fd4c-4039-8ec7-45fbb538b0f4" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hockeystats.db" afterPath="$PROJECT_DIR$/hockeystats.db" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_away_shots_HA2018.sav" afterPath="$PROJECT_DIR$/models/lm_away_shots_HA2018.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_away_shots_HA2019.sav" afterPath="$PROJECT_DIR$/models/lm_away_shots_HA2019.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_away_shots_SHL2017.sav" afterPath="$PROJECT_DIR$/models/lm_away_shots_SHL2017.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_away_shots_SHL2018.sav" afterPath="$PROJECT_DIR$/models/lm_away_shots_SHL2018.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_away_shots_SHL2019.sav" afterPath="$PROJECT_DIR$/models/lm_away_shots_SHL2019.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_home_shots_HA2018.sav" afterPath="$PROJECT_DIR$/models/lm_home_shots_HA2018.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_home_shots_HA2019.sav" afterPath="$PROJECT_DIR$/models/lm_home_shots_HA2019.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_home_shots_SHL2017.sav" afterPath="$PROJECT_DIR$/models/lm_home_shots_SHL2017.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_home_shots_SHL2018.sav" afterPath="$PROJECT_DIR$/models/lm_home_shots_SHL2018.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_home_shots_SHL2019.sav" afterPath="$PROJECT_DIR$/models/lm_home_shots_SHL2019.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_shot_eff_away_HA2018.sav" afterPath="$PROJECT_DIR$/models/lm_shot_eff_away_HA2018.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_shot_eff_away_HA2019.sav" afterPath="$PROJECT_DIR$/models/lm_shot_eff_away_HA2019.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_shot_eff_away_SHL2017.sav" afterPath="$PROJECT_DIR$/models/lm_shot_eff_away_SHL2017.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_shot_eff_away_SHL2018.sav" afterPath="$PROJECT_DIR$/models/lm_shot_eff_away_SHL2018.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_shot_eff_away_SHL2019.sav" afterPath="$PROJECT_DIR$/models/lm_shot_eff_away_SHL2019.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_shot_eff_home_HA2018.sav" afterPath="$PROJECT_DIR$/models/lm_shot_eff_home_HA2018.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_shot_eff_home_HA2019.sav" afterPath="$PROJECT_DIR$/models/lm_shot_eff_home_HA2019.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_shot_eff_home_SHL2017.sav" afterPath="$PROJECT_DIR$/models/lm_shot_eff_home_SHL2017.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_shot_eff_home_SHL2018.sav" afterPath="$PROJECT_DIR$/models/lm_shot_eff_home_SHL2018.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/lm_shot_eff_home_SHL2019.sav" afterPath="$PROJECT_DIR$/models/lm_shot_eff_home_SHL2019.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/nGoals_model_2019.sav" afterPath="$PROJECT_DIR$/models/nGoals_model_2019.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/outcome_model1_HA2017.sav" afterPath="$PROJECT_DIR$/models/outcome_model1_HA2017.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/outcome_model1_HA2019.sav" afterPath="$PROJECT_DIR$/models/outcome_model1_HA2019.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/outcome_model1_SHL2017.sav" afterPath="$PROJECT_DIR$/models/outcome_model1_SHL2017.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/outcome_model1_SHL2018.sav" afterPath="$PROJECT_DIR$/models/outcome_model1_SHL2018.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/outcome_model1_SHL2019.sav" afterPath="$PROJECT_DIR$/models/outcome_model1_SHL2019.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/outcome_model2_HA2017.sav" afterPath="$PROJECT_DIR$/models/outcome_model2_HA2017.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/outcome_model2_HA2019.sav" afterPath="$PROJECT_DIR$/models/outcome_model2_HA2019.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/outcome_model2_SHL2017.sav" afterPath="$PROJECT_DIR$/models/outcome_model2_SHL2017.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/outcome_model2_SHL2018.sav" afterPath="$PROJECT_DIR$/models/outcome_model2_SHL2018.sav" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/outcome_model2_SHL2019.sav" afterPath="$PROJECT_DIR$/models/outcome_model2_SHL2019.sav" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/adhoc/analysis.py" afterPath="$PROJECT_DIR$/adhoc/analysis.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/create_pre_match_analysis.py" afterPath="$PROJECT_DIR$/create_pre_match_analysis.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scrape.py" afterPath="$PROJECT_DIR$/scrape.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/website_output.py" afterPath="$PROJECT_DIR$/website_output.py" />
     </list>
     <ignored path="hockeystats.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -29,7 +61,7 @@
       <file leaf-file-name="analysis.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/adhoc/analysis.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
+            <state relative-caret-position="135">
               <caret line="11" column="142" selection-start-line="11" selection-start-column="142" selection-end-line="11" selection-end-column="142" />
               <folding />
             </state>
@@ -40,7 +72,7 @@
         <entry file="file://$PROJECT_DIR$/website_output.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="435">
-              <caret line="29" column="43" selection-start-line="29" selection-start-column="43" selection-end-line="29" selection-end-column="43" />
+              <caret line="29" column="83" selection-start-line="29" selection-start-column="83" selection-end-line="29" selection-end-column="83" />
               <folding />
             </state>
           </provider>
@@ -49,7 +81,7 @@
       <file leaf-file-name="model_nGoals.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model_nGoals.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="250">
+            <state relative-caret-position="465">
               <caret line="31" column="21" selection-start-line="31" selection-start-column="21" selection-end-line="31" selection-end-column="21" />
               <folding />
             </state>
@@ -59,7 +91,7 @@
       <file leaf-file-name="get_live_games.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scfiles/get_live_games.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="355">
+            <state relative-caret-position="525">
               <caret line="43" column="22" selection-start-line="43" selection-start-column="22" selection-end-line="43" selection-end-column="22" />
               <folding />
             </state>
@@ -79,7 +111,7 @@
       <file leaf-file-name="model_shot_efficiency.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model_shot_efficiency.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
+            <state relative-caret-position="300">
               <caret line="20" column="34" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="34" />
               <folding />
             </state>
@@ -89,7 +121,7 @@
       <file leaf-file-name="model_game_shots.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model_game_shots.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="189">
+            <state relative-caret-position="1035">
               <caret line="69" column="23" selection-start-line="69" selection-start-column="18" selection-end-line="69" selection-end-column="23" />
               <folding />
             </state>
@@ -99,8 +131,8 @@
       <file leaf-file-name="scrape.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scrape.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="400">
-              <caret line="496" column="0" selection-start-line="496" selection-start-column="0" selection-end-line="496" selection-end-column="0" />
+            <state relative-caret-position="601">
+              <caret line="502" column="14" selection-start-line="502" selection-start-column="14" selection-end-line="502" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -109,13 +141,13 @@
       <file leaf-file-name="create_pre_match_analysis.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/create_pre_match_analysis.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="99">
-              <caret line="288" column="23" selection-start-line="288" selection-start-column="23" selection-end-line="288" selection-end-column="23" />
+            <state relative-caret-position="148">
+              <caret line="37" column="62" selection-start-line="37" selection-start-column="62" selection-end-line="37" selection-end-column="62" />
               <folding>
                 <element signature="e#1#59#0" expanded="true" />
-                <element signature="e#4884#7072#0" expanded="false" />
-                <element signature="e#7118#7368#0" expanded="false" />
-                <element signature="e#7416#8506#0" expanded="false" />
+                <element signature="e#4919#7107#0" expanded="false" />
+                <element signature="e#7153#7403#0" expanded="false" />
+                <element signature="e#7451#8541#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -185,19 +217,20 @@
         <option value="$PROJECT_DIR$/adhoc/update_code.py" />
         <option value="$PROJECT_DIR$/create_player_tables.py" />
         <option value="$PROJECT_DIR$/calcFunctions.py" />
-        <option value="$PROJECT_DIR$/scrape.py" />
         <option value="$PROJECT_DIR$/scfiles/get_live_games.py" />
-        <option value="$PROJECT_DIR$/website_output.py" />
         <option value="$PROJECT_DIR$/update_models.py" />
         <option value="$PROJECT_DIR$/adhoc/analysis.py" />
+        <option value="$PROJECT_DIR$/scrape.py" />
+        <option value="$PROJECT_DIR$/website_output.py" />
         <option value="$PROJECT_DIR$/create_pre_match_analysis.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
+    <option name="x" value="-5" />
     <option name="y" value="23" />
-    <option name="width" value="1920" />
-    <option name="height" value="1113" />
+    <option name="width" value="2560" />
+    <option name="height" value="1309" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -225,7 +258,6 @@
     </navigator>
     <panes>
       <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -272,12 +304,27 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="models" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hockeystats" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="hockeystats" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="adhoc" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -298,7 +345,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.analysis">
+  <component name="RunManager" selected="Python.scrape">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -1193,26 +1240,26 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1920" height="1113" extended-state="6" />
+    <frame x="-5" y="23" width="2560" height="1309" extended-state="0" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21327014" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21307601" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901296" sideWeight="0.19905214" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22512563" sideWeight="0.49815693" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901296" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19563392" sideWeight="0.49605057" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.37386936" sideWeight="0.80094784" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.37384745" sideWeight="0.80094784" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24947146" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39738432" sideWeight="0.49815693" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22512563" sideWeight="0.49815693" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
@@ -1474,9 +1521,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="900">
           <caret line="60" column="0" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#15#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1484,7 +1528,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1725">
           <caret line="115" column="21" selection-start-line="115" selection-start-column="21" selection-end-line="115" selection-end-column="21" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1492,7 +1535,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
           <caret line="16" column="26" selection-start-line="16" selection-start-column="26" selection-end-line="16" selection-end-column="26" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1500,7 +1542,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
           <caret line="11" column="25" selection-start-line="11" selection-start-column="25" selection-end-line="11" selection-end-column="25" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1532,7 +1573,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="162">
           <caret line="25" column="25" selection-start-line="25" selection-start-column="4" selection-end-line="25" selection-end-column="25" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1558,7 +1598,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1678">
           <caret line="387" column="31" selection-start-line="387" selection-start-column="31" selection-end-line="387" selection-end-column="31" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1570,17 +1609,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scrape.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="400">
-          <caret line="496" column="0" selection-start-line="496" selection-start-column="0" selection-end-line="496" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/model_nGoals.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
+        <state relative-caret-position="465">
           <caret line="31" column="21" selection-start-line="31" selection-start-column="21" selection-end-line="31" selection-end-column="21" />
           <folding />
         </state>
@@ -1588,23 +1619,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/scfiles/get_live_games.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="355">
+        <state relative-caret-position="525">
           <caret line="43" column="22" selection-start-line="43" selection-start-column="22" selection-end-line="43" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/website_output.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="29" column="43" selection-start-line="29" selection-start-column="43" selection-end-line="29" selection-end-column="43" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/model_game_shots.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="189">
+        <state relative-caret-position="1035">
           <caret line="69" column="23" selection-start-line="69" selection-start-column="18" selection-end-line="69" selection-end-column="23" />
           <folding />
         </state>
@@ -1612,8 +1635,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/model_shot_efficiency.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
+        <state relative-caret-position="300">
           <caret line="20" column="34" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/adhoc/analysis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="11" column="142" selection-start-line="11" selection-start-column="142" selection-end-line="11" selection-end-column="142" />
           <folding />
         </state>
       </provider>
@@ -1626,23 +1657,31 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/adhoc/analysis.py">
+    <entry file="file://$PROJECT_DIR$/scrape.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="11" column="142" selection-start-line="11" selection-start-column="142" selection-end-line="11" selection-end-column="142" />
+        <state relative-caret-position="601">
+          <caret line="502" column="14" selection-start-line="502" selection-start-column="14" selection-end-line="502" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/website_output.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="29" column="83" selection-start-line="29" selection-start-column="83" selection-end-line="29" selection-end-column="83" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/create_pre_match_analysis.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="99">
-          <caret line="288" column="23" selection-start-line="288" selection-start-column="23" selection-end-line="288" selection-end-column="23" />
+        <state relative-caret-position="148">
+          <caret line="37" column="62" selection-start-line="37" selection-start-column="62" selection-end-line="37" selection-end-column="62" />
           <folding>
             <element signature="e#1#59#0" expanded="true" />
-            <element signature="e#4884#7072#0" expanded="false" />
-            <element signature="e#7118#7368#0" expanded="false" />
-            <element signature="e#7416#8506#0" expanded="false" />
+            <element signature="e#4919#7107#0" expanded="false" />
+            <element signature="e#7153#7403#0" expanded="false" />
+            <element signature="e#7451#8541#0" expanded="false" />
           </folding>
         </state>
       </provider>

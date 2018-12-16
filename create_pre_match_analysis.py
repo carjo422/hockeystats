@@ -35,7 +35,7 @@ def get_adjusted_shots(home_shots, away_shots, hometeam, awayteam, gamedate, sea
         c.execute("SELECT COUNT(GAMEID), SUM(EXP_SHOTS2), SUM(ACT_SHOTS2) FROM (SELECT * FROM EXP_SHOTS_TABLE WHERE SEASON = ? AND AWAYTEAM = ? AND GAMEDATE < ? ORDER BY GAMEDATE DESC LIMIT 7)",[seasonYear, hometeam, gamedate])
         htas = c.fetchall()
 
-        if hths[0][0] != 0 and htas[0][0] != 0 and hths[0][0] + htas[0][0] > 0:
+        if hths[0][0] != 0 and hths[0][1] and htas[0][0] != 0 and htas[0][1] != 0 and hths[0][0] + htas[0][0] > 0:
 
             p = ((hths[0][0] + htas[0][0])/20)**(1/2)
 
