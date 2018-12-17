@@ -456,21 +456,28 @@ def create_pre_match_analysis(gamedate, seasonID, serie, hometeam, awayteam, gam
 
         # Get keeper stats
 
-        keeper_stat_home = get_keeper_data(hometeam, gamedate, seasonYear, starting_keeper_home, c, conn)
-        keeper_stat_away = get_keeper_data(awayteam, gamedate, seasonYear, starting_keeper_away, c, conn)
+        keeper_stat_home_temp = get_keeper_data(hometeam, gamedate, seasonYear, starting_keeper_home, c, conn)
+        keeper_stat_away_temp = get_keeper_data(awayteam, gamedate, seasonYear, starting_keeper_away, c, conn)
 
         #If available get the correct keepers to start
         if starting_keeper_home[0] != "":
-            keeper_stat_home = keeper_stat_home[keeper_stat_home['Forname'] == starting_keeper_home[0]]
-            keeper_stat_home = keeper_stat_home[keeper_stat_home['Surname'] == starting_keeper_home[1]]
+            keeper_stat_home = keeper_stat_home_temp[keeper_stat_home_temp['Forname'] == starting_keeper_home[0]]
+            keeper_stat_home = keeper_stat_home_temp[keeper_stat_home_temp['Surname'] == starting_keeper_home[1]]
         else:
-            keeper_stat_home = keeper_stat_home[keeper_stat_home['Forname'] == "GK"]
+            keeper_stat_home = keeper_stat_home_temp[keeper_stat_home_temp['Forname'] == "GK"]
 
         if starting_keeper_away[0] != "":
-            keeper_stat_away = keeper_stat_away[keeper_stat_away['Forname'] == starting_keeper_away[0]]
-            keeper_stat_away = keeper_stat_away[keeper_stat_away['Surname'] == starting_keeper_away[1]]
+            keeper_stat_away = keeper_stat_away_temp[keeper_stat_away_temp['Forname'] == starting_keeper_away[0]]
+            keeper_stat_away = keeper_stat_away_temp[keeper_stat_away_temp['Surname'] == starting_keeper_away[1]]
         else:
-            keeper_stat_away = keeper_stat_away[keeper_stat_away['Forname'] == "GK"]
+            keeper_stat_away = keeper_stat_away_temp[keeper_stat_away_temp['Forname'] == "GK"]
+
+
+        if keeper_stat_home.empty:
+            keeper_stat_home = keeper_stat_home_temp[keeper_stat_home_temp['Forname'] == "GK"]
+
+        if keeper_stat_away.empty:
+            keeper_stat_away = keeper_stat_away_temp[keeper_stat_away_temp['Forname'] == "GK"]
 
         print(keeper_stat_home.to_string())
         print(keeper_stat_away.to_string())
@@ -487,7 +494,6 @@ def create_pre_match_analysis(gamedate, seasonID, serie, hometeam, awayteam, gam
             cl['Personnr'] = ""
             cl_home = cl[['Forname','Surname','Personnr','Line']][cl['Team'] == hometeam]
             cl_away = cl[['Forname', 'Surname', 'Personnr', 'Line']][cl['Team'] == awayteam]
-
 
         home_player_stat = get_player_data(hometeam, gameid, gamedate, odds1X2['1'][0], keeper_stat_away, seasonYear, serie, cl_home, c, conn)
         away_player_stat = get_player_data(awayteam, gameid, gamedate, odds1X2['2'][0], keeper_stat_home, seasonYear, serie, cl_away, c, conn)

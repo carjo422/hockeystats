@@ -14,7 +14,7 @@ games = c.fetchall()
 
 count = 0
 
-for i in range(0, len(games)):
+for i in range(81, len(games)):
     count += 1
 
     gamedate = games[i][0]

@@ -601,12 +601,13 @@ def get_keeper_data(team, gamedate, seasonYear, starting_keeper, c, conn):
         c.execute("SELECT a.FORNAME, a.SURNAME, a.PERSONNR, b.POSITION, b.HANDLE, a.TEAM, SUM(1), SUM(a.GOALS), SUM(a.PPGOALS), SUM(a.ASSISTS), SUM(a.PLUS) FROM (SELECT * FROM LINEUPS) a LEFT JOIN ROSTERS b on a.FORNAME = b.forname AND a.SURNAME = b.SURNAME WHERE a.FORNAME = ? and a.SURNAME = ? GROUP BY a.FORNAME, a.SURNAME",[starting_keeper[0], starting_keeper[1]])
         output = c.fetchall()
 
-        teamplayers = pd.DataFrame(output)
-
-    if len(output) == 0:
-        c.execute("SELECT FORNAME, SURNAME, PERSONNR, POSITION, HANDLE, TEAM, 0, 0, 0, 0, 0 FROM ROSTERS WHERE SEASONID = ? AND TEAM = ?",[seasonYear, team])
-        output = c.fetchall()
-        teamplayers = pd.DataFrame(output)
+        if len(output) > 0:
+            if output[0][3] == "GK":
+                teamplayers = pd.DataFrame(output)
+            else:
+                c.execute("SELECT FORNAME, SURNAME, PERSONNR, POSITION, HANDLE, TEAM, 0, 0, 0, 0, 0 FROM ROSTERS WHERE SEASONID = ? AND TEAM = ?",[seasonYear, team])
+                output = c.fetchall()
+                teamplayers = pd.DataFrame(output)
 
 
     #Check rosters for all scorers
